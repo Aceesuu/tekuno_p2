@@ -48,10 +48,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             <!-- LOGO -->
             <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="100">
+                    <img src="assets/images/logo.png" alt="" height="100">
                 </span>
                 <span class="logo-sm" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="47">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>
@@ -81,6 +81,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
+                                      <li>
+                                    <a href="category.php">Product Category</a>
+                                </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>
@@ -107,11 +110,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         <li>
                                             <a href="order.php">Order Details</a>
                                         </li>
-                                        <li>
-                                            <a href="order_history_admin.php">Order History</a>
+                                         <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
                                         </li>
                                         <li>
-                                            <a href="order_onsite.php">Order Onsites</a>
+                                            <a href="order_history_admin.php">Order History</a>
                                         </li>
                                     </ul>
                                 </div>

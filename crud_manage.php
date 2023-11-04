@@ -21,7 +21,7 @@ if (isset($_POST['add_product'])) {
 
         // Now, insert variations into the 'product_variation' table with price
         if (isset($_POST['variation'])) {
-            $product_variation_query = $conn->prepare("INSERT INTO product_variation (product_id, name, variation, price) VALUES (?, ?, ?, ?)");
+            $product_variation_query = $conn->prepare("INSERT INTO product_variation (product_id, variation, price) VALUES (?, ?, ?)");
 
             $variations = $_POST['variation'];
 
@@ -30,7 +30,7 @@ if (isset($_POST['add_product'])) {
                 $individual_price = $_POST['price'][$i]; // Assuming you have an array of prices
 
                 // Bind the parameters for variations and insert them
-                $product_variation_query->bind_param("isss", $product_id, $p_name, $individual_variation, $individual_price);
+                $product_variation_query->bind_param("iss", $product_id, $individual_variation, $individual_price);
                 $product_variation_query->execute();
             }
 
@@ -49,7 +49,6 @@ if (isset($_POST['add_product'])) {
 } else {
     // Handle other cases or provide an error message
 }
-
 
 
 if (isset($_POST['update_product'])) {

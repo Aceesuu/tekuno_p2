@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 include "mysql_connect.php";
 session_start(); // Start the session
 

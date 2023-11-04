@@ -62,10 +62,10 @@ if ($result->num_rows > 0) {
             <!-- LOGO -->
             <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="100">
+                    <img src="assets/images/logo.png" alt="" height="100">
                 </span>
                 <span class="logo-sm">
-                    <img src="assets/images/logo1.png" alt="" height="47">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>

@@ -11,7 +11,7 @@
     <link
       rel="stylesheet"
       href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
-      <link rel="stylesheet" href="./css/design.css" />
+      <link rel="stylesheet" href="./css/design2.css" />
   <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/logoo.ico" >
   </head>
@@ -44,6 +44,10 @@
                 <li>
                   <a href="#contact">Contact Us</a>
                 </li>
+                <li>
+                  <a href="faqs1.php">FAQS</a>
+                </li>
+                <li>
                   <a href="login.php" class="active">LOGIN</a>
                 </li>
               </ul>
@@ -68,13 +72,13 @@
     <div class="swiper-container">
       <div class="swiper-wrapper">
         <div class="swiper-slide">
-          <img src="./img/p1.png" alt="Carousel Slide 1" />
+          <img src="./img/1p.png" alt="Carousel Slide 1" />
         </div>
         <div class="swiper-slide">
-          <img src="./img/p2.png" alt="Carousel Slide 2" />
+          <img src="./img/2p.png" alt="Carousel Slide 2" />
         </div>
         <div class="swiper-slide">
-          <img src="./img/p3.png" alt="Carousel Slide 3" />
+          <img src="./img/3p.png" alt="Carousel Slide 3" />
         </div>
       </div>
   <script>
@@ -118,11 +122,11 @@
                   <div class="grid">
                     <div class="grid-item logo-design">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/n1.jpg" alt="" />
+                        <img src="./img/portfolio/c1.jpg" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                            <center><h3>NAILS</h3></center>
-                            <center><h5>₱100.00</h5></center>
+                            <center><h3>COCO LUMBER</h3></center>
+                            <center><h5>₱100.00 - 150.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -130,11 +134,11 @@
                     </div>
                     <div class="grid-item webdev">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/m1.jpg" alt="" />
+                        <img src="./img/portfolio/pvc.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                            <center><h3>HAMMER</h3></center>
-                            <center><h5>₱220.00</h5></center>
+                            <center><h3>PVC</h3></center>
+                            <center><h5>₱50.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -142,11 +146,11 @@
                     </div>
                     <div class="grid-item ui webdev">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/c1.jpg" alt="" />
+                        <img src="./img/portfolio/pc.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                            <center><h3>COCO LUMBER</h3></center>
-                            <center><h5>₱150.00</h5></center>
+                            <center><h3>PVC Clamp</h3></center>
+                            <center><h5>₱95.00 - ₱105.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -154,11 +158,11 @@
                     </div>
                     <div class="grid-item ui">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/l1.jpg" alt="" />
+                        <img src="./img/portfolio/wc.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                          <center><h3>SAW</h3></center>
-                        <center><h5>₱350.00</h5></center>
+                          <center><h3>Water Meter</h3></center>
+                        <center><h5>₱220.00 - ₱250.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -166,11 +170,11 @@
                     </div>
                     <div class="grid-item logo-design">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/s1.jpg" alt="" />
+                        <img src="./img/portfolio/br.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                          <center><h3>SAND</h3></center>
-                        <center><h5>₱280.00</h5></center>
+                          <center><h3>Blind Rivets</h3></center>
+                        <center><h5>₱470.00 - ₱940.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -178,11 +182,11 @@
                     </div>
                     <div class="grid-item appdev">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/w1.jpg" alt="" />
+                        <img src="./img/portfolio/ph.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                          <center><h3>WRENCH</h3></center>
-                         <center><h5>₱190.00</h5></center>
+                          <center><h3>PVC Hose Coupling</h3></center>
+                         <center><h5>₱25.00 - ₱30.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -190,11 +194,11 @@
                     </div>
                     <div class="grid-item logo-design">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/wr1.jpg" alt="" />
+                        <img src="./img/portfolio/bg.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                          <center><h3>STEEL WIRE</h3></center>
-                        <center><h5>₱150.00</h5></center>
+                          <center><h3>Butane Gas</h3></center>
+                        <center><h5>₱75.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -202,11 +206,11 @@
                     </div>
                     <div class="grid-item appdev ui">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/p1.jpg" alt="" />
+                        <img src="./img/portfolio/ks.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                          <center><h3>SHOVEL</h3></center>
-                        <center><h5>₱230.00</h5></center>
+                          <center><h3>Kitchen Stain Stainless</h3></center>
+                        <center><h5>₱350.00 - ₱380.00</h5></center>
                           </div>
                           <a href="login.php" class="btn">Add to Cart</a>
                         </div>
@@ -214,11 +218,11 @@
                     </div>
                     <div class="grid-item ui webdev">
                       <div class="gallery-image">
-                        <img src="./img/portfolio/t1.jpg" alt="" />
+                        <img src="./img/portfolio/tt.png" alt="" />
                         <div class="img-overlay">
                           <div class="img-description">
-                          <center><h3>TAPE MEASURE</h3></center>
-                        <center><h5>₱90.00</h5></center>
+                          <center><h3>Teflon Tape</h3></center>
+                        <center><h5>₱5.00 - ₱8.00</h5></center>
                   </div>
                   <a href="login.php" class="btn">Add to Cart</a>
             </section>
@@ -414,7 +418,7 @@
                 <a href="#login">Login</a>
               </li>
               <li>
-                <a href="faqs.php">FAQS</a>
+                <a href="faqs1.php">FAQS</a>
               </li>
             </ul>
           </div>
@@ -439,7 +443,7 @@
 
           <div class="grid-4-col footer-newstletter">
             <div class="footer-input-wrap">
-              <input type="email" class="footer-input" placeholder="Email" />
+              <input type="email" class="footer-input" placeholder="tekuno.space@gmail.com" disabled />
               <a href="#" class="input-arrow">
                 <i class="fas fa-angle-right"></i>
               </a>
@@ -452,7 +456,7 @@
             <p class="text">
               Copyright&copy;2023 All rights reserved | Made by
               <span class="split-text" data-text="FORUM"><a
-                href="https://dopedevelopers.com/" > TEKUNO </a></span>
+                href="https://dopedevelopers.com/" class="tekuno-link">TEKUNO</a>
              
             </p>
           </div>

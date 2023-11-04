@@ -66,16 +66,12 @@ section{
    background-color: var(--red);
 }
 
-
 .products .box-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* This sets 4 containers in each row */
     gap: 1rem;
     justify-content: center;
 }
-
-
-
 
 .products .box-container .box {
     text-align: center;

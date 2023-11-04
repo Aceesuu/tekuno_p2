@@ -75,29 +75,22 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                             <li class="dropdown notification-list">
                                 <!-- Add to Home link -->
                                 <a class="nav-link" href="dashboard-customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-home-outline" style="font-size: 27px; margin-top: 15px;"></i>
+                                    <i class="dripicons-home" style="font-size: 25px; margin-top: 15px;"></i>
                                 </a>
                             </li>
 
                             <li class="dropdown notification-list">
                                 <!-- Add to Cart link -->
                                 <a class="nav-link" href="addcart.php" style="display: flex; align-items: center;">
-                                    <i class='uil uil-shopping-cart-alt' style="font-size: 25px; margin-top: 15px;"></i>
+                                    <i class='uil uil-shopping-cart-alt' style="font-size: 25px; margin-top: 17px;"></i>
                                     <span id="cart-count" class="red-number">0</span>
                                 </a>
                             </li>
 
                             <li class="dropdown notification-list">
                                 <!-- Add to proof link -->
-                                <a class="nav-link" href="order_customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-inbox-multiple" style="font-size: 25px; margin-top: 15px;"></i>
-                                </a>
-                            </li>
-
-                            <li class="dropdown notification-list">
-                                <!-- Add to proof link -->
                                 <a class="nav-link" href="proof_customer.php" style="display: flex; align-items: center;">
-                                    <i class="dripicons-wallet" style="font-size: 24px; margin-top: 15px;"></i>
+                                    <i class="dripicons-wallet" style="font-size: 25px; margin-top: 15px;"></i>
                                 </a>
                             </li>
 
@@ -316,6 +309,11 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                                                             // Add the subtotal to the grand total
                                                                             $grand_total += $sub_total;
+
+                                                                            // Add the discount for this item to the total discount
+                                                                            $total_discount += $discounted_price;
+
+                                                                            // Display the item information
                                                                     ?>
                                                                             <tr>
                                                                                 <td>
@@ -335,9 +333,6 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                                                     // Calculate the total before discount and shipping fee
                                                                     $total_before_discount_and_shipping = $grand_total;
-
-                                                                    $total_discount = ($total_before_discount_and_shipping + $shipping_fee) * 0.10;
-
                                                                     // Subtract the total discount from the grand total
                                                                     $grand_total -= $total_discount;
 
@@ -375,7 +370,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         <td>
                                                                             <h5 class="m-2"> Grand Total:</h5>
                                                                         </td>
-                                                                        <td>₱<?php echo number_format($grand_total, 2); ?></td>
+                                                                        <td>₱ <?php echo number_format($grand_total); ?></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
@@ -472,6 +467,11 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                                                             // Add the subtotal to the grand total
                                                                             $grand_total += $sub_total;
+
+                                                                            // Add the discount for this item to the total discount
+                                                                            $total_discount += $discounted_price;
+
+                                                                            // Display the item information
                                                                     ?>
                                                                             <tr>
                                                                                 <td>
@@ -489,15 +489,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         }
                                                                     }
 
-
                                                                     // Calculate the total before discount and shipping fee
                                                                     $total_before_discount_and_shipping = $grand_total;
-
-                                                                    $total_discount = ($total_before_discount_and_shipping + $shipping_fee) * 0.10;
-
                                                                     // Subtract the total discount from the grand total
                                                                     $grand_total -= $total_discount;
-
                                                                     // Add the shipping fee to the grand total
                                                                     $grand_total += $shipping_fee;
 
@@ -529,7 +524,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         <td>
                                                                             <h5 class="m-2"> Grand Total:</h5>
                                                                         </td>
-                                                                        <td>₱<?php echo number_format($grand_total, 2); ?></td>
+                                                                        <td>₱ <?php echo number_format($grand_total); ?></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>

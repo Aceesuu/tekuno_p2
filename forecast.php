@@ -48,10 +48,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             <!-- LOGO -->
             <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg">
-                    <img src="assets/images/adminss.png" alt="" height="106">
+                    <img src="assets/images/logo.png" alt="" height="106">
                 </span>
                 <span class="logo-sm">
-                    <img src="assets/images/adminss.png" alt="" height="47">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>
@@ -105,6 +105,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <ul class="side-nav-second-level">
                                         <li>
                                             <a href="order.php">Order Details</a>
+                                        </li>
+                                         <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
                                         </li>
                                         <li>
                                             <a href="order_history_admin.php">Order History</a>
@@ -209,7 +212,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </span>
                                 <span>
                                     <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
-                                    <span class="account-position">Admin</span>
+                                   <span class="account-position">Admin/Cashier</span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">

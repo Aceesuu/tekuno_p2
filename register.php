@@ -107,7 +107,7 @@ if (isset($_POST['register'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/regis.css"> <!-- Your custom CSS -->
+    <link rel="stylesheet" href="css/regis7.css"> <!-- Your custom CSS -->
      <link rel="shortcut icon" href="assets/images/logoo.ico">
 
 </head>
@@ -132,13 +132,13 @@ if (isset($_POST['register'])) {
         color: green;
     }
 
-    /*copy & paste symbol*/
     .valid:before {
         position: relative;
         left: -35px;
         content: "✅";
     }
 
+    /*copy & paste symbol*/
     /* Add a red text color and an "x" when the requirements are wrong */
     .invalid {
         color: red;
@@ -157,39 +157,40 @@ if (isset($_POST['register'])) {
     <div class="container">
         <div class="logo-container">
             <a href="index.html">
-                <span><img src="assets/images/custo.png" alt="" height="80"></span>
+                <span><img src="assets/images/logo.png" alt="" height="80"></span>
             </a>
         </div>
         <div class="text-center w-75 m-auto">
-            <h4 class="text-dark-50 text-center mt-0 fw-bold">Free Sign Up</h4>
-            <p class="text-muted mb-4">Don't have an account? Create your account, it takes less than a minute </p>
+            <h4 class="" style="color: white;">Free Sign Up</h4>
+            <p class="" style="color: white;"> Don't have an account? Create your account, it takes less than a minute. </p>
         </div>
+        <br>
         <div class="content">
             <form action="#" method="post" name="register">
                 <div class="row mb-3">
-                    <span class="title">Personal Details</span>
+                    <span class="title" style="color: white;">Personal Details</span>
 
                     <div class="col-md-4">
-                        <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
+                        <label for="lastname" class="form-label"><i class="fas fa-user"></i> Last Name</label>
                         <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" oninput="restrictToLettersWithSingleSpace(this)" required>
-                        <span class="note" style="display: none; color: red;">Please enter letters only</span>
+                        <span class="note" style="display: none; color: orange;">Please enter letters only.</span>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="firstname" class="form-label">First Name</label>
+                        <label for="firstname" class="form-label"> <i class="fas fa-user"></i> First Name</label>
                         <input class="form-control" type="text" name="firstName" id="firstNameInput" placeholder="Enter your First Name" oninput="restrictToLettersWithSingleSpace(this)" required>
-                        <span class="note" style="display: none; color: red;">Please enter letters only.</span>
+                        <span class="note" style="display: none; color: orange;">Please enter letters only.</span>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="middlename" class="form-label">Middle Name</label>
+                        <label for="middlename" class="form-label"> <i class="fas fa-user"></i> Middle Name</label>
                         <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" oninput="restrictToLettersWithSingleSpace(this)">
-                        <span class=" note" style="display: none; color: red;">Please enter letters only.</span>
-                        <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
+                        <span class=" note" style="display: none; color: orange;">Please enter letters only.</span>
+                        <small class="" style="color: orange;">If you don't have a middle name, you can leave this blank.</small>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="gender" class="form-label">Gender</label>
+                        <label for="gender" class="form-label"> <i class="fa-solid fa-venus-mars"></i> Gender</label>
                         <select name="gender" class="form-control" required>
                             <option value="" disabled selected>Select your gender</option>
                             <option value="Female">Female</option>
@@ -198,23 +199,23 @@ if (isset($_POST['register'])) {
                     </div>
 
                     <div class="col-md-4">
-                        <span class="details">Birthdate</span>
+                        <span class="details" style="color: white;"> <i class="fa-solid fa-calendar-days"></i> Birthdate</span>
                         <input type="date" class="form-control" name="bdate" id="bdate" required>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="contact" class="form-label">Contact Number</label>
-                        <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)">
-                        <span class="note" style="display: none; color: red;">Please enter a valid 11-digit number without symbols or letters.</span>
+                        <label for="contact" class="form-label"> <i class="fa-solid fa-phone"></i> Contact Number</label>
+                        <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" required>
+                        <span class="note" style="display: none; color: orange;">Please enter a valid 11-digit numbers.</span>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="City" class="form-label">City</label>
+                        <label for="City" class="form-label"> <i class="fa-solid fa-location-dot"></i> City</label>
                         <input type="text" class="form-control" name="city" placeholder="City of Pasig" value="City of Pasig" disabled>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="barangay" class="form-label">Barangay</label>
+                        <label for="barangay" class="form-label"> <i class="fa-solid fa-location-dot"></i> Barangay</label>
                         <select name="barangay" class="form-control" required>
                             <option value="" disabled selected>Select your barangay</option>
                             <option value="Bagong Ilog">Bagong Ilog</option>
@@ -251,26 +252,28 @@ if (isset($_POST['register'])) {
                     </div>
 
                     <div class="col-md-4">
-                        <label for="postal" class="form-label">Postal Code</label>
+                        <label for="postal" class="form-label"> <i class="fa-solid fa-location-dot"></i> Postal Code</label>
                         <input class="form-control" type="text" name="postal" id="postalInput" placeholder="Enter your Postal Code" oninput="restrictToNum(this)" required>
-                        <span class="note" style="display: none; color: red;">Please enter a valid 4-digit postal code without symbols or letters.</span>
+                        <span class="note" style="display: none; color: orange;">Please enter a valid 4-digit postal code.</span>
                     </div>
 
-                    <div class="col-md-4">
-                        <label for="houseNo" class="form-label">House/Building No.</label>
-                        <input class="form-control" type="text" name="houseNo" placeholder="Enter House/Building No." required>
+
+                   <div class="col-md-4">
+                        <label for="houseNo" class="form-label"> <i class="fa-solid fa-location-dot"></i> House/Building No.</label>
+                        <input class="form-control" type="text" name="houseNo" placeholder="Enter House/Building No." oninput="restrictToNumber(this)" required>
+                        <span class="note" style="display: none; color: orange;">Please enter numbers only.</span>
                     </div>
 
+
                     <div class="col-md-4">
-                        <label for="street" class="form-label">Street Name</label>
+                        <label for="street" class="form-label"> <i class="fa-solid fa-location-dot"></i> Street Name</label>
                         <input class="form-control" type="text" name="street" placeholder="Enter Street Name" required>
                     </div>
 
                     <div class="col-md-4">
-                        <label for="village" class="form-label">Village/District</label>
-                        <input class="form-control" type="text" name="village" placeholder="Enter Villag/District">
+                        <label for="village" class="form-label"> <i class="fa-solid fa-location-dot"></i> Village/District</label>
+                        <input class="form-control" type="text" name="village" placeholder="Enter Village/District">
                     </div>
-
                     <div class="col-md-4">
                         <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
                         <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
@@ -306,7 +309,7 @@ if (isset($_POST['register'])) {
 
                 <div class="row mt-3">
                     <div class="col-12 text-center">
-                        <p class="text-muted">Already have an account? <a href="index.php" class="text-muted ms-1"><b>Log In</b></a></p>
+                    <p class="" style="color: white;">Already have an account? <a href="index.php" class="" style="color: white;"><b>Log In</b></a></p>
                     </div> <!-- end col-->
                 </div>
 

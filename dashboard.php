@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start(); // Start the session
 include("mysql_connect.php");
 
@@ -40,6 +40,7 @@ if ($result->num_rows > 0) {
     $customerCount = 0;
 }
 
+// SQL query to count the orders
 $sql = "SELECT COUNT(*) AS admin_count FROM tb_admin";
 $result = $conn->query($sql);
 
@@ -50,6 +51,7 @@ if ($result->num_rows > 0) {
     $admin_count = 0;
 }
 
+// Close the MySQLi connection (optional, depending on your use case)
 $conn->close();
 ?>
 
@@ -82,10 +84,10 @@ $conn->close();
             <!-- LOGO -->
             <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="100">
+                    <img src="assets/images/logo.png" alt="" height="100">
                 </span>
                 <span class="logo-sm">
-                    <img src="assets/images/logo1.png" alt="" height="47">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>
@@ -114,6 +116,9 @@ $conn->close();
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
+                                      <li>
+                                    <a href="category.php">Product Category</a>
+                                </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>
@@ -139,6 +144,9 @@ $conn->close();
                                     <ul class="side-nav-second-level">
                                         <li>
                                             <a href="order.php">Order Details</a>
+                                        </li>
+                                         <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
                                         </li>
                                         <li>
                                             <a href="order_history_admin.php">Order History</a>
@@ -335,18 +343,7 @@ $conn->close();
                                             <div class="card shadow-none m-0 border-start">
                                                 <div class="card-body text-center">
                                                     <i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
-                                                    <h3><span>
-                                                            <?php
-                                                            if ($order_count > 0) {
-                                                                $percentage = min(100, round(($customerCount / $order_count) * 100));
-                                                                echo $percentage . "%";
-                                                            } else {
-                                                                echo "No orders";
-                                                            }
-                                                            ?>
-                                                        </span>
-                                                        <i class="mdi mdi-arrow-up text-success"></i>
-                                                    </h3>
+                                                    <h3><span><?php echo round(($customerCount / $order_count) * 100) . "%"; ?></span> <i class="mdi mdi-arrow-up text-success"></i></h3>
                                                     <p class="text-muted font-15 mb-0">Sales</p>
                                                 </div>
                                             </div>
@@ -423,6 +420,8 @@ $conn->close();
 
                                     <div id="sessions-browser" class="apex-charts mt-3" data-colors="#727cf5"></div>
                                     <?php
+                                    // Establish a database connection using PDO
+                                    include("mysql_connect.php");
 
                                     // Query to retrieve data from your database
                                     $sql = "SELECT name, price FROM tb_order";

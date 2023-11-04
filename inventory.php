@@ -29,14 +29,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
     <link rel="shortcut icon" href="assets/images/home_logo.ico">
 
     <!-- third party css -->
+    <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
     <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- third party css end -->
 
-    <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="text/design.css">
+
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
@@ -64,10 +62,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             <!-- LOGO -->
             <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="100">
+                    <img src="assets/images/logo.png" alt="" height="100">
                 </span>
                 <span class="logo-sm" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="47">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>
@@ -93,6 +91,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="products.php">List of Products</a>
+                                </li>
+                                 <li>
+                                    <a href="category.php">Product Category</a>
                                 </li>
                                 <li>
                                     <a href="manage_product.php">Manage Product</a>
@@ -120,6 +121,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <li>
                                         <a href="order.php">Order Details</a>
                                     </li>
+                                     <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
+                                        </li>
                                     <li>
                                         <a href="order_history_admin.php">Order History</a>
                                     </li>
@@ -219,7 +223,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </span>
                             <span>
                                 <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
-                                <span class="account-position">Admin</span>
+                         <span class="account-position">Admin/Cashier</span>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -290,8 +294,50 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     </div>
                                 </div>
 
+                                <!-- Add Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Add Purchase</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="crud_inventory.php" method="post" class="add-product-form" enctype="multipart/form-data">
+
+                                                    <div class="mb-3">
+                                                        <input type="hidden" name="update_p_id" value="<?php echo $row['product_id']; ?>">
+                                                        <label for="simpleinput" class="form-label">Product Name</label>
+                                                        <select name="p_name" class="form-control" required>
+                                                            <option value="" disabled selected>Select product</option>
+                                                            <?php
+                                                            $sql = "SELECT name FROM tb_product";
+                                                            $result = mysqli_query($conn, $sql);
+                                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                                echo '<option value="' . $row['name'] . '">' . $row['name'] . '</option>';
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label for="simpleinput" class="form-label">Quantity</label>
+                                                            <input type="number" min="1" value="1" name="p_qty" class="form-control" required style="width: 90px;">
+                                                        </div>
+                                                    </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" name="add_product" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="table-responsive">
-                                    <table id="example" class="table dt-responsive nowrap w-100" style="width:100%">
+                                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Product ID</th>
@@ -322,145 +368,103 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <button class="btn btn-danger btn-rounded delete-btn" data-product-id="<?php echo $row['product_id']; ?>"><i class="mdi mdi-delete"></i> Delete</button>
                                                         </td>
 
-                                                    </tr>
-                                                    <!-- Edit MODAL -->
-                                                    <div class="modal fade" id="edit_<?php echo $row['product_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="ModalLabel">Edit Product</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form method="POST" action="crud_inventory.php" enctype="multipart/form-data">
-                                                                        <input type="hidden" name="update_p_id" value="<?php echo $row['product_id']; ?>">
-                                                                        <div class="mb-3 row">
-                                                                            <label class="col-sm-2 col-form-label">Product Name</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input type="text" class="form-control" name="update_p_name" value="<?php echo $row['name']; ?>">
+                                                        <!-- Edit MODAL -->
+                                                        <div class="modal fade" id="edit_<?php echo $row['product_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="ModalLabel">Edit Product</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form method="POST" action="crud.php" enctype="multipart/form-data">
+                                                                            <input type="hidden" name="update_p_id" value="<?php echo $row['product_id']; ?>">
+                                                                            <div class="mb-3 row">
+                                                                                <label class="col-sm-2 col-form-label">Product Name</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control" name="update_p_name" value="<?php echo $row['name']; ?>">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
 
-                                                                        <div class="mb-3 row">
-                                                                            <label class="col-sm-2 col-form-label">Description</label>
-                                                                            <div class="col-sm-10">
-                                                                                <textarea class="form-control" name="update_p_desc"><?php echo $row['prod_desc']; ?></textarea>
+                                                                            <div class="mb-3 row">
+                                                                                <label class="col-sm-2 col-form-label">Description</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <textarea class="form-control" name="update_p_desc"><?php echo $row['prod_desc']; ?></textarea>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
 
-                                                                        <div class="mb-3 row">
-                                                                            <label class="col-sm-2 col-form-label">Price</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input type="text" class="form-control" name="update_p_price" value="<?php echo $row['price']; ?>">
+                                                                            <div class="mb-3 row">
+                                                                                <label class="col-sm-2 col-form-label">Price</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control" name="update_p_price" value="<?php echo $row['price']; ?>">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
 
-                                                                        <div class="mb-3 row">
-                                                                            <label class="col-sm-2 col-form-label">Quantity</label>
-                                                                            <div class="col-sm-10">
-                                                                                <input type="text" class="form-control" name="update_p_qty" value="<?php echo $row['qty']; ?>">
+                                                                            <div class="mb-3 row">
+                                                                                <label class="col-sm-2 col-form-label">Quantity</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control" name="update_p_qty" value="<?php echo $row['qty']; ?>">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
 
-                                                                        <div class="mb-3 row">
-                                                                            <div class="col-sm-10">
-                                                                                <?php
-                                                                                $existing_image = $row['image'];
-                                                                                if (!empty($existing_image)) {
-                                                                                    echo '<img src="uploaded_img/' . $existing_image . '" alt="Existing Image" style="max-width: 100px;">';
-                                                                                } else {
-                                                                                    echo 'No existing image available.';
-                                                                                }
-                                                                                ?>
+                                                                            <div class="mb-3 row">
+                                                                                <div class="col-sm-10">
+                                                                                    <?php
+                                                                                    $existing_image = $row['image'];
+                                                                                    if (!empty($existing_image)) {
+                                                                                        echo '<img src="uploaded_img/' . $existing_image . '" alt="Existing Image" style="max-width: 100px;">';
+                                                                                    } else {
+                                                                                        echo 'No existing image available.';
+                                                                                    }
+                                                                                    ?>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
 
-                                                                        <div class="mb-3 row">
-                                                                            <div class="col-sm-10">
-                                                                                <input type="file" class="form-control" name="update_p_image" value="<?php echo $row['image']; ?>">
+                                                                            <div class="mb-3 row">
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="file" class="form-control" name="update_p_image" value="<?php echo $row['image']; ?>">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="submit" name="update_product" class="btn btn-primary"> Update</a>
-                                                                        </form>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                        <button type="submit" name="update_product" class="btn btn-primary"> Update</a>
+                                                                            </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                            <?php
+                                                <?php
                                                 };
-                                            }
-                                            ?>
-                                            <!--DELETE MODAL -->
-                                            <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Are you sure you want to delete this product?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <!-- Add a form and submit the form when the user confirms deletion -->
-                                                            <form id="deleteForm" method="POST" action="crud_inventory.php">
-                                                                <input type="hidden" id="product_id" name="product_id" value="">
-                                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                                            </form>
+                                            } else {
+                                                echo "<div class='empty'>no product added</div>";
+                                            };
+                                                ?>
+                                                <!--DELETE MODAL -->
+                                                <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete this product?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <!-- Add a form and submit the form when the user confirms deletion -->
+                                                                <form id="deleteForm" method="POST" action="crud.php">
+                                                                    <input type="hidden" id="product_id" name="product_id" value="">
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                    </tr>
                                         </tbody>
                                     </table>
-
-                                    <!-- Add Modal -->
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Add Purchase</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form action="crud_inventory.php" method="post" class="add-product-form" enctype="multipart/form-data">
-
-                                                        <div class="mb-3">
-                                                            <input type="hidden" name="update_p_id" value="<?php echo $row['product_id']; ?>">
-                                                            <label for="simpleinput" class="form-label">Product Name</label>
-                                                            <select name="p_name" class="form-control" required>
-                                                                <option value="" disabled selected>Select product</option>
-                                                                <?php
-                                                                $sql = "SELECT name FROM tb_product";
-                                                                $result = mysqli_query($conn, $sql);
-                                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                                    echo '<option value="' . $row['name'] . '">' . $row['name'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="col-md-6">
-                                                            <div class="mb-3">
-                                                                <label for="simpleinput" class="form-label">Quantity</label>
-                                                                <input type="number" min="1" value="1" name="p_qty" class="form-control" required style="width: 90px;">
-                                                            </div>
-                                                        </div>
-
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" name="add_product" class="btn btn-primary">Save changes</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
                                 </div>
                             </div> <!-- end card-body-->
                         </div> <!-- end card-->

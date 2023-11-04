@@ -73,6 +73,7 @@ if (isset($_POST['submit'])) {
   <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <link rel="stylesheet" href="fonts/icomoon/style.css">
 
@@ -110,12 +111,12 @@ if (isset($_POST['submit'])) {
               </div>
 
               <form action="login.php" method="post">
-                <div class="form-group first">
-                  <label for="email" style="color: white;">Email Address</label>
+              <div class="form-group first">
+                  <label for="email" style="color: white;"> <i class="fa-solid fa-envelope"></i> Email Address: </label>
                   <input type="text" class="form-control" name="email" placeholder="your-email@gmail.com">
                 </div>
                 <div class="form-group last mb-3">
-                  <label for="password" style="color: white;">Password</label>
+                  <label for="password" style="color: white;"> <i class="fas fa-lock"></i> Password: </label>
                   <div class="input-group">
                     <input type="password" class="form-control" placeholder="Your Password" id="password" name="password">
                     <div class="input-group-append">
@@ -123,6 +124,7 @@ if (isset($_POST['submit'])) {
                     </div>
                   </div>
                 </div>
+
 
 
                 <div class="d-sm-flex justify-content-center mb-5 align-items-center">

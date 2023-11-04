@@ -118,6 +118,9 @@ if (!is_numeric($user_id)) {
                                         <li>
                                             <a href="order.php">Order Details</a>
                                         </li>
+                                         <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
+                                        </li>
                                         <li>
                                             <a href="order_history_admin.php">Order History</a>
                                         </li>

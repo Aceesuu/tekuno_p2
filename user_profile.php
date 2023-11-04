@@ -75,13 +75,13 @@ if ($result->num_rows > 0) {
                 <div class="navbar-custom topnav-navbar" style="background-color: #323B47;">
                     <div class="container-fluid">
 
-                        <!-- LOGO -->
+                          <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                              <img src="assets/images/logo1.png" alt="" height="100">
-                </span>
-                <span class="logo-sm">
-                    <img src="assets/images/logo1.png" alt="" height="47">
+                                <img src="assets/images/logo.png" alt="" height="69">
+                            </span>
+                            <span class="topnav-logo-sm">
+                                <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                         </a>
 

@@ -5,7 +5,7 @@ if (isset($_POST['update_user'])) {
 
     $update_p_image = $_FILES['update_p_image']['name'];
     $update_p_image_tmp_name = $_FILES['update_p_image']['tmp_name'];
-    $update_p_image_folder = 'user_profile_img/' . $update_p_image;
+    $update_p_image_folder = 'uploaded_img/' . $update_p_image;
 
     $update_query = mysqli_query($conn, "UPDATE `tb_user` SET image = '$update_p_image' WHERE user_id = '$update_p_id'");
 
@@ -45,4 +45,3 @@ if (isset($_POST['update'])) {
         echo "Update failed. Please try again.";
     }
 }
-?>

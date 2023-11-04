@@ -63,13 +63,13 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                 <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
                     <div class="container-fluid">
 
-                        <!-- LOGO -->
+                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                             <span class="topnav-logo-sm">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                         </a>
 

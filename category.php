@@ -52,10 +52,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             <!-- LOGO -->
             <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="97">
+                    <img src="assets/images/logo.png" alt="" height="100">
                 </span>
                 <span class="logo-sm" style="background-color: #212A37;">
-                    <img src="assets/images/logo1.png" alt="" height="47">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>
@@ -86,7 +86,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <a href="products.php">List of Products</a>
                                 </li>
                                 <li>
-                                    <a href="category.php">Category</a>
+                                    <a href="category.php">Product Category</a>
                                 </li>
                                 <li>
                                     <a href="manage_product.php">Manage Product</a>
@@ -113,6 +113,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <li>
                                     <a href="order.php">Order Details</a>
                                 </li>
+                                 <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
+                                        </li>
                                 <li>
                                     <a href="order_history_admin.php">Order History</a>
                                 </li>
@@ -303,9 +306,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td><?php echo $row['category_name']; ?></td>
                                                             <td class="table-action">
                                                                 <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $row['category_id']; ?>" style="background-color: #5C5470;">
-                                                                    <i class="mdi mdi-clipboard-edit"></i>
+                                                                    <i class="mdi mdi-clipboard-edit"></i> Edit
                                                                 </button>
-                                                                <button class="btn btn-danger btn-rounded delete-btn" data-category-id="<?php echo $row['category_id']; ?>"><i class="mdi mdi-delete"></i></button>
+                                                                <button class="btn btn-danger btn-rounded delete-btn" data-category-id="<?php echo $row['category_id']; ?>"><i class="mdi mdi-delete"></i> Delete</button>
                                                             </td>
                                                         </tr>
 
