@@ -1,0 +1,21 @@
+.custom-button {
+    background-color: #6169D0 !important;
+    color: white !important;
+    border-color: transparent !important;
+    /* Set the border color to transparent */
+}
+
+.custom-button:focus,
+.custom-button:hover {
+    box-shadow: none !important;
+}
+
+.custom-button:hover {
+    background-color: #3F4491 !important;
+    /* Hover color for the buttons */
+}
+
+.custom-button {
+    margin-right: 10px;
+    /* Adjust the value to control the spacing */
+}

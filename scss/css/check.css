@@ -1,0 +1,57 @@
+.border {
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+.p-3 {
+            padding: 1rem;
+        }
+
+.mb-3 {
+            margin-bottom: 1rem;
+        }
+
+.rounded {
+            border-radius: 0.25rem;
+        }
+
+.mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+.row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .col-sm-8 {
+            flex: 0 0 66.666667%;
+            max-width: 66.666667%;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .ps-3 {
+            padding-left: 1rem;
+        }
+
+        .pt-1 {
+            padding-top: 0.25rem;
+        }
+
+        #filePreview {
+            margin-top: 1rem;
+        }
+.red-number {
+    color: red;
+}
+
+/* Override box-sizing for the specific element */
+.custom-bg-color {
+    background-color: #212A37;
+    border: 1px solid #212A37;
+}
