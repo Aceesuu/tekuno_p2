@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 04, 2023 at 11:11 AM
+-- Generation Time: Nov 04, 2023 at 12:53 PM
 -- Server version: 10.5.19-MariaDB-cll-lve
 -- PHP Version: 7.2.34
 
@@ -123,14 +123,6 @@ CREATE TABLE `tb_cart` (
   `discount` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tb_cart`
---
-
-INSERT INTO `tb_cart` (`cart_id`, `user_id`, `product_id`, `name`, `price`, `image`, `quantity`, `variation`, `subtotal`, `discount`) VALUES
-(519, 1042, 1058, 'Kitchen Sink - Stainless', '350.00', 'k1.png', 1, '', '350', '0'),
-(520, 1042, 1064, 'Omega HD PVC Faucet Crown Handle', '80.00', '0013780_omega-plastic-tap-faucet-ball-type-with-hose-bib-12-in-x-4-in-pt-8125-1_625.jpeg', 1, 'Without Bib', '80', '0');
-
 -- --------------------------------------------------------
 
 --
@@ -217,8 +209,8 @@ INSERT INTO `tb_order` (`id`, `order_id`, `user_id`, `product_id`, `name`, `pric
 (218, 251, 1044, 1057, 'Teflon Tape ', '7.50', 't1.jpg', '5', '3/4', '6543e6871d8b7_aa.png', 'Pending', '2023-11-02 18:12:23', '37.5', '2.25'),
 (219, 251, 1044, 1059, 'Ordinary PVC Faucet', '20.00', 'c1ae040062f3fb82814d2d0d9bf87f68.jpg', '1', 'With Bib', '6543e6871d8b7_aa.png', 'Pending', '2023-11-02 18:12:23', '20', '0'),
 (220, 227, 1045, 1061, 'PVC Clamp', '95.00', 'pc.jpg', '1', '', '6543e75e4f3fd_aa.png', 'Pending', '2023-11-02 18:15:58', '95', '0'),
-(221, 0, 1042, 0, 'Kitchen Sink - Stainless', '350.00', 'k1.png', '1', '', '6545ea48b9353_boy.jpg', 'Pending', '2023-11-04 00:00:00', '', ''),
-(222, 0, 1042, 0, 'Omega HD PVC Faucet Crown Handle', '80.00', '0013780_omega-plastic-tap-faucet-ball-type-with-hose-bib-12-in-x-4-in-pt-8125-1_625.jpeg', '1', '', '6545ea48b9353_boy.jpg', 'Pending', '2023-11-04 00:00:00', '', '');
+(225, 419, 1042, 1058, 'Kitchen Sink - Stainless', '350.00', 'k1.png', '2', '', '65463daf68ca5_boy.jpg', 'Pending', '2023-11-04 12:48:47', '700', '0'),
+(226, 419, 1042, 1064, 'Omega HD PVC Faucet Crown Handle', '80.00', '0013780_omega-plastic-tap-faucet-ball-type-with-hose-bib-12-in-x-4-in-pt-8125-1_625.jpeg', '1', 'Without Bib', '65463daf68ca5_boy.jpg', 'Pending', '2023-11-04 12:48:47', '80', '0');
 
 -- --------------------------------------------------------
 
@@ -255,13 +247,13 @@ INSERT INTO `tb_product` (`product_id`, `name`, `category`, `prod_desc`, `price`
 (1055, 'Water Meter', 'Plumbing Pipes & Accessories', 'A water meter is a device used to measure the volume of water consumed in residential, commercial, and industrial settings. Typically installed in water supply lines, it records the usage of water in cubic meters or gallons. ', '250', '-1', 0, 'Instock', 'ww.png', '2023-11-01 21:57:10', '0000-00-00', 220),
 (1056, 'Butane Torch', 'Chemicals', 'ahah', '600', '41', 0, 'Instock', 'bt.jpg', '2023-11-03 10:35:37', '2025-01-25', 550),
 (1057, 'Teflon Tape ', 'Plumbing Pipes & Accessories', 'Teflon tape, also known as PTFE tape, is a versatile sealing material used for creating a secure, watertight seal in plumbing and pipe connections. It is made of polytetrafluoroethylene (PTFE), a non-stick and heat-resistant material.', '4.50', '32', 0, 'Instock', 't1.jpg', '2023-11-02 18:12:23', '0000-00-00', 4),
-(1058, 'Kitchen Sink - Stainless', 'Plumbing Pipes & Accessories', 'A stainless steel kitchen sink is a sleek and durable fixture for your kitchen. Crafted from high-quality stainless steel, it offers a hygienic and easy-to-clean surface for washing dishes and food prep. ', '350', '99', 0, 'Instock', 'k1.png', '2023-11-02 18:11:45', '0000-00-00', 320),
+(1058, 'Kitchen Sink - Stainless', 'Plumbing Pipes & Accessories', 'A stainless steel kitchen sink is a sleek and durable fixture for your kitchen. Crafted from high-quality stainless steel, it offers a hygienic and easy-to-clean surface for washing dishes and food prep. ', '350', '97', 0, 'Instock', 'k1.png', '2023-11-04 12:48:47', '0000-00-00', 320),
 (1059, 'Ordinary PVC Faucet', 'Plumbing Pipes & Accessories', 'An ordinary PVC faucet, also known as a plastic faucet, is a simple plumbing fixture designed for controlling the flow of water in various household applications. It is typically made from polyvinyl chloride (PVC) material, which is a type of plastic known for its durability and resistance to corrosion. ', '20', '65', 0, 'Instock', 'c1ae040062f3fb82814d2d0d9bf87f68.jpg', '2023-11-03 11:04:29', '0000-00-00', 15),
 (1060, 'PVC Hose Coupling', 'Plumbing Pipes & Accessories', 'A PVC hose coupling is a connecting component made from durable polyvinyl chloride (PVC) material. Its primary purpose is to join or extend PVC hoses in a secure and leak-resistant manner. These couplings typically come in various shapes and sizes, with threaded or barbed ends that fit snugly into the hoses.', '25', '75', 0, 'Instock', 'j1.png', '2023-11-02 08:56:13', '0000-00-00', 20),
 (1061, 'PVC Clamp', 'Plumbing Pipes & Accessories', 'A PVC clamp is a versatile fastening device made from durable PVC (polyvinyl chloride) material. It is designed to secure and support pipes, tubes, or cables in various applications. These clamps feature a simple yet effective design, typically with a hinged or two-piece construction for easy installation.', '95', '66', 1, 'Instock', 'pc.jpg', '2023-11-02 22:29:38', '0000-00-00', 90),
 (1062, 'Goose Neck PVC Faucet', 'Plumbing Pipes & Accessories', 'A goose neck PVC faucet, also known as a swan-neck faucet, is a specific type of plumbing fixture designed for various outdoor water applications, such as gardens and yards.', '150', '36', 0, 'Instock', 'b82489054b50e9eebcf57325fdeacf07.jpg', '2023-11-03 10:35:13', '0000-00-00', 100),
 (1063, 'Blind Rivets', 'Drywall & Ceiling', 'Blind rivets, also known as pop rivets, are fasteners used to join two or more materials together when you can only access one side. They consist of a cylindrical shaft with a flange at one end and a mandrel (a stem) at the other. ', '470', '73', 0, 'Instock', 'b1.jpg', '2023-11-01 18:04:25', '0000-00-00', 450),
-(1064, 'Omega HD PVC Faucet Crown Handle', 'Plumbing Pipes & Accessories', 'The \"Omega HD PVC Faucet Crown Handle,\" it is likely made of polyvinyl chloride (PVC), a durable plastic suitable for outdoor use.', '105', '76', 0, 'Instock', '0013780_omega-plastic-tap-faucet-ball-type-with-hose-bib-12-in-x-4-in-pt-8125-1_625.jpeg', '2023-11-02 18:11:45', '0000-00-00', 95),
+(1064, 'Omega HD PVC Faucet Crown Handle', 'Plumbing Pipes & Accessories', 'The \"Omega HD PVC Faucet Crown Handle,\" it is likely made of polyvinyl chloride (PVC), a durable plastic suitable for outdoor use.', '105', '75', 0, 'Instock', '0013780_omega-plastic-tap-faucet-ball-type-with-hose-bib-12-in-x-4-in-pt-8125-1_625.jpeg', '2023-11-04 12:48:47', '0000-00-00', 95),
 (1065, 'Omega HD PVC Faucet Lever Handle ', 'Plumbing Pipes & Accessories', 'The \"Omega HD PVC Faucet Lever Handle\" handles are typically made from durable polyvinyl chloride (PVC) plastic. This material is known for its resistance to corrosion, making it suitable for outdoor use. The lever handle is designed in a lever or handle shape, providing a convenient and ergonomic grip for easy operation.', '95', '73', 0, 'Instock', 'water-tap79.jpg', '2023-11-01 18:06:33', '0000-00-00', 90),
 (1066, 'Cocolumber', 'Wood Products', '', '99', '100', 0, 'Instock', 'lumber-stock-photo.jpg', '2023-11-01 18:07:23', '0000-00-00', 200);
 
@@ -443,7 +435,7 @@ ALTER TABLE `tb_inventory`
 -- AUTO_INCREMENT for table `tb_order`
 --
 ALTER TABLE `tb_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=223;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
 
 --
 -- AUTO_INCREMENT for table `tb_product`
