@@ -68,7 +68,7 @@
               </div>
     
               <div class="content">
-                <p>1. Click the Registration.</p>
+                <p>1. Click the <a href="register.php" style="color: blue;">Registration</a>.</p>
                 <p>2. Enter your personal details and wait for the confirmation code that will be sent in the email.</p>
               </div>
             </div>
@@ -114,7 +114,7 @@
                 <p>3. Submit the proof of payment.</p>
               </div>
             </div>
-
+            
             <div class="content-container">
               <div class="faq-header">
                 <h3>How can I track my order?</h3>
@@ -126,8 +126,21 @@
                 <p>1. Click the order summary in the dashboard.</p>
                 <p>2. Track the status of your order, whether it's pending, in the process of being shipped, or ready to receive.</p>
               </div>
-            </div>
-            </main>
+         
+
+            <div class="content-container">
+              <div class="faq-header">
+                <h3>How do I contact the customer service team?</h3>
+                <span class="open active">+</span>
+                <span class="close">-</span>
+                </div>
+    
+              <div class="content">
+                <p>1. If you have any concerns with our products, please contact our customer service team.</p>
+                <p>2. To ensure we can address your concerns effectively, kindly provide us with all the necessary information.</p>
+              </div>
+          
+        </main>
 
             <br><br><br>
             <footer class="footer">
