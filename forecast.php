@@ -80,6 +80,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
+                                     <li>
+                                    <a href="category.php">Product Category</a>
+                                </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>

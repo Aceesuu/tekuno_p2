@@ -85,9 +85,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
-                                      <li>
-                                    <a href="category.php">Product Category</a>
-                                </li>
+                                    <li>
+                                        <a href="category.php">Product Category</a>
+                                    </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>
@@ -114,7 +114,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         <li>
                                             <a href="order.php">Order Details</a>
                                         </li>
-                                         <li>
+                                        <li>
                                             <a href="order_onsite.php">Order Onsites</a>
                                         </li>
                                         <li>
@@ -297,7 +297,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <th class="all">Product ID</th>
                                                     <th>Product Name</th>
                                                     <th>Variation</th>
+                                                    <th>Supplier Price</th>
                                                     <th>Price</th>
+                                                    <th>Quantity</th>
                                                     <th style="width: 85px;">Action</th>
                                                 </tr>
                                             </thead>
@@ -311,7 +313,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td><?php echo $row['product_id']; ?></td>
                                                             <td><?php echo $row['name']; ?></td>
                                                             <td><?php echo $row['variation']; ?></td>
+                                                            <td><?php echo $row['supplier_price']; ?></td>
                                                             <td><?php echo $row['price']; ?></td>
+                                                            <td><?php echo $row['qty']; ?></td>
                                                             <td class="table-action">
 
                                                                 <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $row['variation_id']; ?>" style="background-color: #5C5470;">
@@ -339,19 +343,29 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                                 <input type="text" class="form-control" name="update_p_variant" value="<?php echo $row['variation']; ?>">
                                                                             </div>
 
+                                                                            <label>Supplier Price</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="update_sup" value="<?php echo $row['supplier_price']; ?>">
+                                                                            </div>
+
                                                                             <label class="col-sm-2 col-form-label">Price</label>
                                                                             <div class="col-sm-10">
                                                                                 <input type="text" class="form-control" name="update_p_price" value="<?php echo $row['price']; ?>">
                                                                             </div>
+                                                                            <label class="col-sm-2 col-form-label">Quantity</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="update_qty" value="<?php echo $row['qty']; ?>">
+                                                                            </div>
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                        <button type="submit" name="update_product" class="btn btn-primary"> Update</a>
-                                                                            </form>
+                                                                        <button type="submit" name="update_product" class="btn btn-primary">Update</button>
+                                                                        </form>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                 <?php
                                                     };
                                                 }
@@ -414,8 +428,17 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                     <input type="text" name="variation[]" class="form-control" placeholder="Enter a variation" required>
                                                                 </div>
                                                                 <div class="mb-3">
+                                                                    <label for="variation" class="form-label">Supplier Price</label>
+                                                                    <input type="number" name="supplier_price[]" class="form-control" placeholder="Enter a Supplier price" required step="0.01">
+                                                                </div>
+                                                                <div class="mb-3">
                                                                     <label for="variation" class="form-label">Price</label>
                                                                     <input type="number" name="price[]" class="form-control" placeholder="Enter a price" required step="0.01">
+                                                                </div>
+
+                                                                <div class="mb-3">
+                                                                    <label for="variation" class="form-label">Quantity</label>
+                                                                    <input type="number" name="qty[]" class="form-control" placeholder="Enter a quantity" required>
                                                                 </div>
 
 
@@ -493,35 +516,32 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
 
     <script>
-        // JavaScript to dynamically add variation and price fields
         document.getElementById("addVariation").addEventListener("click", function() {
             const variationFields = document.getElementById("variationFields");
 
-            // Create variation input field
+            // Create variation input fields
             const variationInput = document.createElement("div");
             variationInput.innerHTML = `
-            <div class="mb-3">
-                <label for="variation" class="form-label">Variant</label>
-                <input type="text" name="variation[]" class="form-control" placeholder="Enter a variation">
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="text" name="price[]" class="form-control" placeholder="Enter a price">
-            </div>
-        `;
+    <div class="mb-3">
+        <label for="variation" class="form-label">Variant</label>
+        <input type="text" name="variation[]" class="form-control" placeholder="Enter a variation">
+    </div>
+    <div class="mb-3">
+        <label for="supplier_price" class="form-label">Supplier Price</label>
+        <input type="number" name="supplier_price[]" class="form-control" placeholder="Enter a Supplier price" step="0.01">
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" name="price[]" class="form-control" placeholder="Enter a price" step="0.01">
+    </div>
+    <div class="mb-3">
+        <label for="qty" class="form-label">Quantity</label>
+        <input type="number" name="qty[]" class="form-control" placeholder="Enter a quantity">
+    </div>
+    `;
+
             // Append variation input fields
             variationFields.appendChild(variationInput);
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $(".delete-btn").click(function() {
-                var variation_id = $(this).data('variation-id');
-                console.log("Delete button clicked with variation_id: " + variation_id); // Add this line
-                $("#variation_id").val(variation_id);
-                $('#deleteConfirmationModal').modal('show');
-            });
         });
     </script>
 

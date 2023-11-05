@@ -92,10 +92,10 @@ if (isset($_GET['order_id'])) {
                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="90">
                             </span>
                             <span class="topnav-logo-sm">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="37">
                             </span>
                         </a>
 
@@ -212,10 +212,10 @@ if (isset($_GET['order_id'])) {
                             <div class="page-title-box">
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item active">Invoice</li>
+                                        <li class="breadcrumb-item active"></li>
                                     </ol>
                                 </div>
-                                <h4 class="page-title">Invoice</h4>
+                                <h4 class="page-title"></h4>
                             </div>
                         </div>
                     </div>
@@ -229,7 +229,7 @@ if (isset($_GET['order_id'])) {
                                     <!-- Invoice Logo-->
                                     <div class="clearfix">
                                         <div class="float-start mb-3">
-                                            <img src="assets/images/logoo.png" alt="" height="67">
+                                            <img src="assets/images/invoicelogo.png" alt="" height="80">
                                         </div>
                                         <div class="float-end">
                                             <h4 class="m-0 d-print-none">Invoice</h4>
@@ -241,13 +241,15 @@ if (isset($_GET['order_id'])) {
                                         <div class="col-sm-6">
                                             <div class="float-end mt-3">
                                                 <p><b>Hello, <?php echo $user_data['firstName'] . ' ' . $user_data['lastName']; ?></b></p>
-                                                <p class="text-muted font-13">Please make payment at your earliest convenience, and do not hesitate to contact our number for further questions.</p>
+                                                <p class="text-muted font-13">The payment has already been received, and here is the invoice for your order. If you have any further questions, please don't hesitate to contact our number.
+                                                </p>
                                             </div>
 
                                         </div><!-- end col -->
                                         <div class="col-sm-4 offset-sm-2">
                                             <div class="mt-3 float-sm-end">
                                                 <p class="font-13"><strong>Order Date: </strong> &nbsp;&nbsp;&nbsp; <?php echo $order_data['order_date']; ?></p>
+                                                <p class="font-13"><strong>Order ID: </strong> &nbsp;&nbsp;&nbsp; #<?php echo $order_data['order_id']; ?></p>
                                                 <p class="font-13"><strong>Order Status: </strong> <span class="badge bg-success float-end"><?php echo $order_data['order_status']; ?></span></p>
                                             </div>
                                         </div><!-- end col -->
@@ -256,7 +258,7 @@ if (isset($_GET['order_id'])) {
 
                                     <div class="row mt-4">
                                         <div class="col-sm-4">
-                                            <h6>Billing Address</h6>
+                                            <h6>Company Address</h6>
                                             <address>
                                                 Kat & Ren Construction Supply<br>
                                                 84 Urbano Velasco Ave. Pinagbuhatan<br>
@@ -266,7 +268,7 @@ if (isset($_GET['order_id'])) {
                                         </div> <!-- end col-->
 
                                         <div class="col-sm-4">
-                                            <h6>Shipping Address</h6>
+                                            <h6>Billed To</h6>
                                             <address>
                                                 <?php echo $user_data['firstName'] . ' ' . $user_data['lastName']; ?><br>
                                                 <?php echo $user_data['street'] . ' ' . $user_data['barangay']; ?><br>
@@ -350,15 +352,17 @@ if (isset($_GET['order_id'])) {
                                                 <div class="clearfix pt-3">
                                                     <h6 class="text-muted">Notes:</h6>
                                                     <small>
-                                                        All accounts are to be paid within 7 days from receipt of invoice. To be paid by Gcash online. If the account is not paid within 7 days, the order will be declined.
+                                                        If the customer has already received the item, please click the "Order Received" button. For any further questions or inquiries, please feel free to contact us.
                                                     </small>
                                                 </div>
                                             </div> <!-- end col -->
                                             <div class="col-sm-6">
                                                 <div class="float-end mt-3 mt-sm-0">
-                                                    <p><b>Total Subtotal:</b> <span class="float-end">₱<?= number_format($total_subtotal, 2); ?></span></p>
+                                                    <p><b>Subtotal:</b> <span class="float-end">₱<?= number_format($total_subtotal, 2); ?></span></p>
                                                     <p><b>Shipping Fee:</b> <span class="float-end">₱<?= number_format($shipping_fee, 2) ?></span></p>
-                                                    <p><b>Total Discount:</b> <span class="float-end">₱-<?= number_format($total_discount, 2); ?></span></p>
+                                                    <p><b>Total Discount: </b> <span class="float-end">₱-<?= number_format($total_discount, 2); ?></span></p>
+                                                    <p><b>VAT (12%):</b> <span class="float-end">₱-<?= number_format($total_discount, 2); ?></span></p>
+                                                    <p><b>Grand Total:</b> 
                                                     <h3>₱<?php echo number_format($total_subtotal + $shipping_fee - $total_discount, 2); ?></h3>
                                                 </div>
                                             </div> <!-- end col -->

@@ -255,7 +255,7 @@ if (isset($_GET['delete_all'])) {
                                         $user_image = $user_data['image'];
                                         if (!empty($user_image)) {
                                             // Display the user's image if available
-                                            echo '<img src="user_profile_img/' . $user_image . '" alt="user" class="rounded-circle">';
+                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
                                         } else {
                                             // Display a default avatar image when no user image is available
                                             echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle">';

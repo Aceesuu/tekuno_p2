@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start(); // Start the session
 
 if (!isset($_SESSION['user_id'])) {
@@ -151,7 +151,7 @@ if ($result->num_rows > 0) {
                                         $user_image = $user_data['image'];
                                         if (!empty($user_image)) {
                                             // Display the user's image if available
-                                            echo '<img src="user_profile_img/' . $user_image . '" alt="user" class="rounded-circle" style="height: auto;">';
+                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle" style="height: auto;">';
                                         } else {
                                             // Display a default avatar image when no user image is available
                                             echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle" style="height: auto;">';
@@ -211,7 +211,7 @@ if ($result->num_rows > 0) {
 
                                                     if (!empty($user_image)) {
                                                         // Display the user's image if available
-                                                        echo '<img src="user_profile_img/' . $user_image . '" alt="user">';
+                                                        echo '<img src="uploaded_img/' . $user_image . '" alt="user">';
                                                     } else {
                                                         // Display a default avatar image when no user image is available
                                                         echo '<img src="assets/images/profile.jpg" alt="Default Avatar">';
@@ -239,7 +239,7 @@ if ($result->num_rows > 0) {
                                                                                 <?php
                                                                                 $existing_image = $row['image'];
                                                                                 if (!empty($existing_image)) {
-                                                                                    echo '<img src="user_profile_img/' . $existing_image . '" alt="Existing Image">';
+                                                                                    echo '<img src="uploaded_img/' . $existing_image . '" alt="Existing Image">';
                                                                                 } else {
                                                                                     // Display a default avatar image when no user image is available
                                                                                     echo '<img src="assets/images/profile.jpg" alt="Default Avatar" style="max-width: 100px;">';

@@ -47,6 +47,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/check.css">
 
+
 </head>
 
 <body class="loading" data-layout="topnav" data-layout-config='{"layoutBoxed":false,"darkMode":false,"showRightSidebarOnStart": true}'>
@@ -66,10 +67,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                                <img src="assets/images/logo.png" alt="" height="69">
+                                <img src="assets/images/logo1.png" alt="" height="69">
                             </span>
                             <span class="topnav-logo-sm">
-                                <img src="assets/images/logo.png" alt="" height="69">
+                                <img src="assets/images/logo1.png" alt="" height="69">
                             </span>
                         </a>
 
@@ -137,7 +138,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                         $user_image = $user_data['image'];
                                         if (!empty($user_image)) {
                                             // Display the user's image if available
-                                            echo '<img src="user_profile_img/' . $user_image . '" alt="user" class="rounded-circle">';
+                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
                                         } else {
                                             // Display a default avatar image when no user image is available
                                             echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle">';
@@ -187,7 +188,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                             <table class="table table-centered mb-0">
                                 <tbody>
                                     <?php
-                                    $select_products = mysqli_query($conn, "SELECT DISTINCT order_id, proof_image, order_date FROM `tb_order` WHERE `user_id` = $user_id");
+                                    $select_products = mysqli_query($conn, "SELECT DISTINCT order_id, proof_image, order_date, order_status FROM `tb_order` WHERE `user_id` = $user_id");
 
                                     if (mysqli_num_rows($select_products) > 0) {
                                         while ($row = mysqli_fetch_assoc($select_products)) {
@@ -200,6 +201,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <th>Image</th>
                                                             <th>Uploaded Date</th>
                                                             <th>Invoice</th>
+                                                            <th></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -211,10 +213,65 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <td><?php echo $row['order_date']; ?></td>
                                                             <td> <a href="invoice.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a>
                                                             </td>
+                                                            <td><?php
+                                                            // Check if the order status is "To Ship" to allow cancellation
+                                                            if ($row['order_status'] == "Pending") {
+                                                                ?>
+                                                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<?php echo $row['order_id']; ?>">Cancel Order</button>
+                                                                <?php
+                                                            }
+                                                            ?>
+
+                                                            <?php
+                                                            // Check if the order status is "To Ship" to allow cancellation
+                                                            if ($row['order_status'] == "To Receive") {
+                                                                ?>
+                                                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#markReceivedModal_<?php echo $row['order_id']; ?>">Order Received</button>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <!-- Pending modal -->
+                                            <div class="modal fade" id="cancelOrderModal_<?php echo $row['order_id']; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="standard-modalLabel">Cancel Order Confirmation</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                           Are you sure you want to cancel this order?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                            <a href="cancel_order.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-primary">Yes, Cancel Order</a>
+                                                        </div>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
+
+                                            <!-- To Receive modal -->
+                                            <div class="modal fade" id="markReceivedModal_<?php echo $row['order_id']; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="standard-modalLabel">Mark Order as Received</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                           Are you sure you want to mark this order as received?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                            <a href="mark_received.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-primary">Yes, Mark as Received</a>
+                                                        </div>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
                                     <?php
                                         }
                                     } else {
@@ -224,11 +281,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                 </tbody>
                             </table>
+                            
                         </div>
                     </div> <!-- end col -->
 
-
-                    <!-- end table-responsive -->
                 </div> <!-- end .border-->
 
             </div> <!-- end row-->

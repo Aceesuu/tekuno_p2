@@ -306,7 +306,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td>
                                                                 <?php
                                                                 if (!empty($row['image'])) {
-                                                                    echo '<img src="user_profile_img/' . $row['image'] . '" height="100" alt="">';
+                                                                    echo '<img src="uploaded_img/' . $row['image'] . '" height="100" alt="">';
                                                                 } else {
                                                                     echo '<img src="assets/images/profile.jpg" height="100" alt="Default Profile Picture">';
                                                                 }
@@ -336,7 +336,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                             $existing_image = $row['image'];
 
                                                                             if (!empty($existing_image)) {
-                                                                                echo '<img src="user_profile_img/' . $existing_image . '" alt="profile-image" class="rounded-circle avatar-lg img-thumbnail">';
+                                                                                echo '<img src="uploaded_img/' . $existing_image . '" alt="profile-image" class="rounded-circle avatar-lg img-thumbnail">';
                                                                             } else {
                                                                                 // If $existing_image is empty, display the default image
                                                                                 echo '<img src="assets/images/profile.jpg" alt="profile-image" class="rounded-circle avatar-lg img-thumbnail">';

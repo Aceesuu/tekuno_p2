@@ -7,18 +7,19 @@ include "mysql_connect.php";
 
 if (isset($_POST['add_product'])) {
     $p_name = $_POST['p_name'];
+    $p_cat = $_POST['p_cat'];
     $p_desc = $_POST['p_desc'];
     $p_price = $_POST['p_price'];
     $p_qty = $_POST['p_qty'];
+    $exp_date = $_POST['exp_date'];
     $p_image = $_FILES['p_image']['name'];
     $p_image_tmp_name = $_FILES['p_image']['tmp_name'];
     $p_image_folder = 'uploaded_img/' . $p_image;
+    $supplier_price = $_POST['supplier_price'];
 
     // Prepare the SQL statement with placeholders
-    $insert_query = $conn->prepare("INSERT INTO tb_product (name, prod_desc, price, qty, image) VALUES (?, ?, ?, ?, ?)");
-
-    // Bind the parameters to the prepared statement
-    $insert_query->bind_param("ssdis", $p_name, $p_desc, $p_price, $p_qty, $p_image);
+    $insert_query = $conn->prepare("INSERT INTO tb_product (name, category, prod_desc, price, qty, image, exp_date, supplier_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $insert_query->bind_param("sssdissd", $p_name, $p_cat, $p_desc, $p_price, $p_qty, $p_image, $exp_date, $supplier_price);
 
     // Execute the prepared statement
     if ($insert_query->execute()) {
@@ -38,26 +39,27 @@ if (isset($_POST['add_product'])) {
 if (isset($_POST['update_product'])) {
     $update_p_id = $_POST['update_p_id'];
     $update_p_name = $_POST['update_p_name'];
+    $update_p_category = $_POST['update_category'];
     $update_p_desc = $_POST['update_p_desc'];
     $update_p_price = $_POST['update_p_price'];
+    $update_sup = $_POST['update_sup']; // Retrieve the supplier price
     $update_p_qty = $_POST['update_p_qty'];
-    $update_p_image = $_FILES['update_p_image']['name'];
-    $update_p_image_tmp_name = $_FILES['update_p_image']['tmp_name'];
-    $update_p_image_folder = 'uploaded_img/' . $update_p_image;
-
-    // Fetch the existing image value from the database
-    $fetch_existing_image_query = mysqli_query($conn, "SELECT image FROM `tb_product` WHERE product_id = '$update_p_id'");
-    $existing_image_row = mysqli_fetch_assoc($fetch_existing_image_query);
-    $existing_image = $existing_image_row['image'];
+    $update_exp_date = $_POST['update_exp_date'];
 
     // Check if a new image was uploaded
-    if (!empty($update_p_image)) {
-        // New image was uploaded
+    if (!empty($_FILES['update_p_image']['name'])) {
+        $update_p_image = $_FILES['update_p_image']['name'];
+        $update_p_image_tmp_name = $_FILES['update_p_image']['tmp_name'];
+        $update_p_image_folder = 'uploaded_img/' . $update_p_image;
+
+        // Move uploaded image to the folder
         move_uploaded_file($update_p_image_tmp_name, $update_p_image_folder);
-        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', prod_desc = '$update_p_desc', price = '$update_p_price', qty = $update_p_qty, image = '$update_p_image' WHERE product_id = '$update_p_id'");
+
+        // Update query with the new image, supplier price, and expiry date
+        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', category = '$update_p_category', prod_desc = '$update_p_desc', price = '$update_p_price', supplier_price = '$update_sup', qty = $update_p_qty, image = '$update_p_image', exp_date = '$update_exp_date' WHERE product_id = '$update_p_id'");
     } else {
-        // No new image was uploaded, so use the existing image value
-        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', prod_desc = '$update_p_desc', price = '$update_p_price', qty = $update_p_qty, image = '$existing_image' WHERE product_id = '$update_p_id'");
+        // No new image was uploaded, so use the existing image value and update the supplier price and expiry date
+        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', category = '$update_p_category', prod_desc = '$update_p_desc', price = '$update_p_price', supplier_price = '$update_sup', qty = $update_p_qty, exp_date = '$update_exp_date' WHERE product_id = '$update_p_id'");
     }
 
     if ($update_query) {
@@ -69,6 +71,7 @@ if (isset($_POST['update_product'])) {
     }
 }
 
+
 //DELETE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['product_id'])) {
@@ -79,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($query_run) {
             echo "product_id Deleted Successfully";
-            header('location: manage_product.php');
+            header('location: products.php');
         } else {
             echo "product_id Not Deleted";
         }
