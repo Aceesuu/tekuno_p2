@@ -57,7 +57,7 @@ if ($result->num_rows > 0) {
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link rel="stylesheet" href="css/custom1.css">
+    <link rel="stylesheet" href="css/prof1.css">
 
 </head>
 
