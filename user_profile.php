@@ -72,7 +72,7 @@ if ($result->num_rows > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #323B47;">
+                <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
                     <div class="container-fluid">
 
                           <!-- LOGO -->
