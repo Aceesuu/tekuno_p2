@@ -67,10 +67,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                                <img src="assets/images/logo1.png" alt="" height="69">
+                                <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                             <span class="topnav-logo-sm">
-                                <img src="assets/images/logo1.png" alt="" height="69">
+                                <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                         </a>
 

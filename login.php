@@ -101,7 +101,7 @@ if (isset($_POST['submit'])) {
             <div class="form-block">
               <div class="logo-container">
                 <a href="login.php" style="display: flex; justify-content: center; align-items: center;">
-                  <span><img src="assets/images/logo1.png" alt="" height="100"></span>
+                  <span><img src="assets/images/logo.png" alt="" height="100"></span>
                 </a>
               </div>
               <br>

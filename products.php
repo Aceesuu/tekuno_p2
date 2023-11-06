@@ -442,13 +442,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                             </div>
 
                                                                             <div class="mb-3 row">
-                                                                                <label class="col-sm-2 col-form-label">Expiry Date</label>
-                                                                                <div class="col-sm-10">
-                                                                                    <input type="date" class="form-control" name="update_exp_date" value="<?php echo $row['exp_date']; ?>">
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="mb-3 row">
                                                                                 <div class="col-sm-10">
                                                                                     <?php
                                                                                     $existing_image = $row['image'];
@@ -559,11 +552,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <div class="mb-3">
                                                                 <label for="simpleinput" class="form-label">Quantity</label>
                                                                 <input type="number" min="1" name="p_qty" class="form-control" required>
-                                                            </div>
-
-                                                            <div class="col-md-6">
-                                                                <label for="simpleinput" class="form-label">Expiry Date</label>
-                                                                <input type="date" class="form-control" name="exp_date">
                                                             </div>
 
                                                             <div class="mb-3">

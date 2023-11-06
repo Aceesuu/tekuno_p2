@@ -11,15 +11,14 @@ if (isset($_POST['add_product'])) {
     $p_desc = $_POST['p_desc'];
     $p_price = $_POST['p_price'];
     $p_qty = $_POST['p_qty'];
-    $exp_date = $_POST['exp_date'];
     $p_image = $_FILES['p_image']['name'];
     $p_image_tmp_name = $_FILES['p_image']['tmp_name'];
     $p_image_folder = 'uploaded_img/' . $p_image;
     $supplier_price = $_POST['supplier_price'];
 
     // Prepare the SQL statement with placeholders
-    $insert_query = $conn->prepare("INSERT INTO tb_product (name, category, prod_desc, price, qty, image, exp_date, supplier_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $insert_query->bind_param("sssdissd", $p_name, $p_cat, $p_desc, $p_price, $p_qty, $p_image, $exp_date, $supplier_price);
+    $insert_query = $conn->prepare("INSERT INTO tb_product (name, category, prod_desc, price, qty, image, supplier_price) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $insert_query->bind_param("sssdiss", $p_name, $p_cat, $p_desc, $p_price, $p_qty, $p_image, $supplier_price);
 
     // Execute the prepared statement
     if ($insert_query->execute()) {
@@ -44,7 +43,6 @@ if (isset($_POST['update_product'])) {
     $update_p_price = $_POST['update_p_price'];
     $update_sup = $_POST['update_sup']; // Retrieve the supplier price
     $update_p_qty = $_POST['update_p_qty'];
-    $update_exp_date = $_POST['update_exp_date'];
 
     // Check if a new image was uploaded
     if (!empty($_FILES['update_p_image']['name'])) {
@@ -55,11 +53,11 @@ if (isset($_POST['update_product'])) {
         // Move uploaded image to the folder
         move_uploaded_file($update_p_image_tmp_name, $update_p_image_folder);
 
-        // Update query with the new image, supplier price, and expiry date
-        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', category = '$update_p_category', prod_desc = '$update_p_desc', price = '$update_p_price', supplier_price = '$update_sup', qty = $update_p_qty, image = '$update_p_image', exp_date = '$update_exp_date' WHERE product_id = '$update_p_id'");
+        // Update query with the new image and supplier price (excluding expiry date)
+        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', category = '$update_p_category', prod_desc = '$update_p_desc', price = '$update_p_price', supplier_price = '$update_sup', qty = $update_p_qty, image = '$update_p_image' WHERE product_id = '$update_p_id'");
     } else {
-        // No new image was uploaded, so use the existing image value and update the supplier price and expiry date
-        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', category = '$update_p_category', prod_desc = '$update_p_desc', price = '$update_p_price', supplier_price = '$update_sup', qty = $update_p_qty, exp_date = '$update_exp_date' WHERE product_id = '$update_p_id'");
+        // No new image was uploaded, so use the existing image value and update the supplier price (excluding expiry date)
+        $update_query = mysqli_query($conn, "UPDATE `tb_product` SET name = '$update_p_name', category = '$update_p_category', prod_desc = '$update_p_desc', price = '$update_p_price', supplier_price = '$update_sup', qty = $update_p_qty WHERE product_id = '$update_p_id'");
     }
 
     if ($update_query) {

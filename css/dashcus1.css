@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+:root{
+   --blue:#2980b9;
+   --red:tomato;
+   --orange:orange;
+   --darkorange: darkorange;
+   --black:#333;
+   --white:#fff;
+   --bg-color:#eee;
+   --dark-bg:rgba(0,0,0,.7);
+   --box-shadow:0 .5rem 1rem rgba(0,0,0,.1);
+   --border:.1rem solid #999;
+}
+
+*{
+   font-family: 'Poppins', sans-serif;
+   margin:0; padding:0;
+   box-sizing: border-box;
+   outline: none; border:none;
+   text-decoration: none;
+   text-transform: capitalize;
+}
+
+.container{
+   max-width: 100px;
+   margin:0 auto;
+}
+
+section{
+   padding:2rem;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    text-align: center; /* Center the text horizontally */
+    background-color: var(--darkorange);
+    color: var(--white);
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.btn:hover {
+    background-color: var(--orange);
+}
+
+
+.option-btn i,
+delete-btn i {
+    padding-right: 0.5rem;
+}
+
+option-btn {
+    background-color: var(--orange);
+}
+
+.delete-btn {
+    margin-top: 0;
+    background-color: var(--red);
+}
+
+
+.products .box-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    justify-content: center;
+}
+
+.products .box-container .box {
+    text-align: center;
+    padding: 0.5rem;
+    box-shadow: var(--box-shadow);
+    border: var(--border);
+    border-radius: 0.3rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Vertically align content inside the box */
+    height: 22rem;
+    width: 15rem;
+}
+
+.products .box-container .box img {
+    height: 10rem;
+}
+
+.products .box-container .box h3 {
+    margin: 0.3rem 0;
+    font-size: 1.2rem; /* Adjust the font size as needed */
+    color: var(--black);
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.products .box-container .box .price {
+    font-size: 1.3rem; /* Adjust the font size as needed */
+    color: var(--black);
+}
+
+.products .box-container .box .btn {
+    width: 80%;
+    background-color: var(--darkorange);
+    color: var(--white);
+    font-size: 1.2rem;
+    padding: 1rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    align-self: center; /* Center the button vertically within the container */
+}
+
+.products .box-container .box .btn:hover {
+    background-color: var(--orange);
+}
+
+
+a {
+    color: #e04c2b;
+}
+.red-number {
+   color: red;
+}
+/* Override box-sizing for the specific element */
+.custom-bg-color {
+   background-color: #212A37;
+    border: 1px solid #212A37;
+}
+
+/* CATEGORYYY */
+/* Add styles for the top bar */
+.topbar {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background-color: #212A37;
+   color: #fff;
+   padding: 1rem;
+}
+
+/* Style the category list */
+.categories {
+   list-style-type: none;
+   padding: 0;
+   display: flex;
+}
+
+.category {
+   margin-right: 20px;
+   /* Adjust the spacing between categories */
+   cursor: pointer;
+}
+
+.category:hover {
+   color: #e04c2b;
+}
+
+.active-category {
+   background-color: var(--orange);
+   /* Set the desired background color */
+   color: var(--white);
+   /* Set the desired text color */
+   font-weight: bold;
+   /* Add additional styling as needed */
+}
