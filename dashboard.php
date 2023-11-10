@@ -546,6 +546,497 @@ $conn->close();
                         </div> <!-- end col-->
                     </div>
 
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Daily Sales</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT product_id, subtotal, order_date, 'Complete' AS order_status
+                                                FROM tb_order
+                                                WHERE order_status = 'Complete'
+                                                UNION
+                                                SELECT product_id, subtotal, order_date, 'Onsite' AS order_status
+                                                FROM order_onsite
+                                                ORDER BY order_date ASC";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+
+                                            $data = array();
+                                            $data[] = array('Date', 'Sales');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["order_date"], (float) $row["subtotal"]);
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Date'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("daily-sales"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="daily-sales"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Weekly Sales</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT
+                                                    week_number,
+                                                    SUM(subtotal) AS weekly_sales
+                                                FROM (
+                                                    SELECT
+                                                        WEEK(order_date) AS week_number,
+                                                        subtotal
+                                                    FROM tb_order
+                                                    WHERE order_status = 'Complete'
+                                                    AND DATE_SUB(CURDATE(), INTERVAL 2 WEEK) <= order_date
+                                                    UNION ALL
+                                                    SELECT
+                                                        WEEK(order_date) AS week_number,
+                                                        subtotal
+                                                    FROM order_onsite
+                                                    WHERE DATE_SUB(CURDATE(), INTERVAL 2 WEEK) <= order_date
+                                                ) AS combined_data
+                                                GROUP BY week_number
+                                                ORDER BY week_number";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+
+                                            $data = array();
+                                            $data[] = array('Week', 'Sales');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["week_number"], (float) $row["weekly_sales"]);
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Week'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("weekly-sales"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="weekly-sales"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Monthly Sales</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT
+                                                    YEAR(order_date) AS year,
+                                                    MONTHNAME(order_date) AS month,
+                                                    SUM(price) AS monthly_sales
+                                                FROM (
+                                                    SELECT order_date, price
+                                                    FROM tb_order
+                                                    WHERE order_status = 'Complete'
+                                                    UNION ALL
+                                                    SELECT order_date, price
+                                                    FROM order_onsite
+                                                ) AS combined_data
+                                                GROUP BY year, month
+                                                ORDER BY year, month";
+                                                
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+
+                                            $data = array();
+                                            $data[] = array('Month', 'Sales');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["month"], (float) $row["monthly_sales"]);
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Month'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("monthly-sales"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="monthly-sales"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Daily Profit</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT o.product_id, 
+                                                        o.price AS sale_price, 
+                                                        p.supplier_price, 
+                                                        (o.price - p.supplier_price) * o.qty AS profit, 
+                                                        o.order_date
+                                                FROM tb_order AS o
+                                                        INNER JOIN tb_product AS p
+                                                        ON o.product_id = p.product_id
+                                                WHERE o.order_status = 'Complete'
+                                                ORDER BY o.order_date ASC";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+
+                                            $data = array();
+                                            $data[] = array('Date', 'Profit');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["order_date"], (float) $row["profit"]);
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Date'),
+                                                'vAxis' => array('title' => 'Profit'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("daily-profit"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="daily-profit"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Weekly Profit</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT
+                                                        YEARWEEK(o.order_date) AS week,
+                                                        SUM(o.price - p.supplier_price) * SUM(o.qty) AS weekly_profit
+                                                    FROM tb_order AS o
+                                                    INNER JOIN tb_product AS p ON o.product_id = p.product_id
+                                                    WHERE o.order_status = 'Complete'
+                                                    GROUP BY week
+                                                    ORDER BY week ASC";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+
+                                            $data = array();
+                                            $data[] = array('Week', 'Profit');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["week"], (float) $row["weekly_profit"]);
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Week'),
+                                                'vAxis' => array('title' => 'Profit'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("weekly-profit"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="weekly-profit"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Monthly Profit</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT
+                                                        DATE_FORMAT(o.order_date, '%Y-%m') AS month,
+                                                        SUM(o.price - p.supplier_price) * SUM(o.qty) AS monthly_profit
+                                                    FROM tb_order AS o
+                                                    INNER JOIN tb_product AS p ON o.product_id = p.product_id
+                                                    WHERE o.order_status = 'Complete'
+                                                    GROUP BY month
+                                                    ORDER BY month ASC";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+
+                                            $data = array();
+                                            $data[] = array('Month', 'Sales');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["month"], (float) $row["monthly_profit"]);
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Month'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("monthly-profit"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="monthly-profit"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Moving Average</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT
+                                                order_date,
+                                                price AS sale_price,
+                                                AVG(price) OVER (
+                                                    PARTITION BY YEAR(order_date), MONTH(order_date)
+                                                    ORDER BY order_date
+                                                    ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING
+                                                ) AS two_month_moving_average
+                                            FROM tb_order
+                                            WHERE order_status = 'Complete'
+                                            AND (
+                                                (YEAR(order_date) = YEAR(CURRENT_DATE()) AND MONTH(order_date) = MONTH(CURRENT_DATE()))
+                                                OR
+                                                (YEAR(order_date) = YEAR(CURRENT_DATE()) AND MONTH(order_date) = MONTH(CURRENT_DATE()) + 1)
+                                                OR
+                                                (YEAR(order_date) = YEAR(CURRENT_DATE()) AND MONTH(order_date) = MONTH(CURRENT_DATE()) + 2)
+                                            )
+                                            ORDER BY order_date";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+                                            $data = array();
+                                            $data[] = array('Date', 'Sales');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["order_date"], (float) $row["two_month_moving_average"]); // Use 'two_month_moving_average' for sales
+                                            }
+
+                                            $json_data = json_encode($data);
+
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Date'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                            );
+
+                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.BarChart(document.getElementById("moving-average"));
+                                                chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo chart HTML and JavaScript
+                                            echo '<div id="moving-average"></div>';
+                                            echo $chart_html1;
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Footer Start -->
                     <footer class="footer">
                         <div class="container-fluid">

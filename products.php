@@ -16,6 +16,13 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 } else {
     $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
 }
+
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    require './PHPMailer/src/Exception.php';
+    require './PHPMailer/src/PHPMailer.php';
+    require './PHPMailer/src/SMTP.php';
 ?>
 
 <!DOCTYPE html>
@@ -336,6 +343,23 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                         }
                                                         $stock_status = ($row['qty'] <= 0) ? 'Out of Stock' : 'Instock';
                                                         $badge_class = ($stock_status == 'Instock') ? 'badge-success-lighten' : 'badge-danger-lighten';
+
+                                                        if ($row['qty'] <= 5) {
+                                                            $mail = new PHPMailer(true);
+                                                            $mail->isSMTP();
+                                                            $mail->Host = 'smtp.gmail.com';
+                                                            $mail->SMTPAuth = true;
+                                                            $mail->Username = 'ksnjsmn@gmail.com';
+                                                            $mail->Password = 'fgphmbjyyrxfbbnf';
+                                                            $mail->Port = 587;
+                                                            $mail->SMTPSecure = 'tls';
+                                                            $mail->isHTML(true);
+                                                            $mail->setFrom('ksnjsmn@gmail.com', 'Admin');
+                                                            $mail->addAddress('estrera.evalyngrace@gmail.com');
+                                                            $mail->Subject = ('Product Quantity Notification');
+                                                            $mail->Body = ('Good Day. The product ID ' . $row['product_id'] . 'has only have ' . $row['qty'] . '. Please replenish the quantity immediately. Thank you' );
+                                                            $mail->send();
+                                                        }
                                                 ?>
                                                         <tr>
                                                             <td><?php echo $row['product_id']; ?></td>
