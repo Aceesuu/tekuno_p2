@@ -68,7 +68,7 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
     if (mysqli_num_rows($result) === 1) {
         $product = mysqli_fetch_assoc($result);
 
-        if ($product['qty'] > 0) {
+        if ($product['qty'] + $product['new_qty'] > 0) {
             if (isset($_POST['add_to_cart'])) {
                 $user_id = $_SESSION['user_id'];
                 $product_id = $_POST['product_id'];
@@ -338,11 +338,11 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                 </h3>
                                                 <p class="font-16">
                                                 <h4>
-                                                    <span class="badge <?php echo ($product['qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
-                                                        <?php echo ($product['qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
+                                                    <span class="badge <?php echo ($product['qty'] +  $product['new_qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
+                                                        <?php echo ($product['qty'] + $product['new_qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
                                                     </span>
                                                 </h4>
-                                                <h5><span>Stocks:</span>&nbsp<?php echo $product['qty']; ?></h5>
+                                                <h5><span>Stocks:</span>&nbsp<?php echo $product['qty'] + $product['new_qty']; ?></h5>
 
                                                 </p>
 

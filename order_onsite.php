@@ -366,10 +366,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <select name="p_name" id="p_name" class="form-control" required>
                                                                     <option value="" disabled selected>Select product</option>
                                                                     <?php
-                                                                    $sql = "SELECT name, price, qty FROM tb_product";
+                                                                    $sql = "SELECT name, price, qty, new_qty FROM tb_product";
                                                                     $result = mysqli_query($conn, $sql);
                                                                     while ($row = mysqli_fetch_assoc($result)) {
-                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] . '">' . $row['name'] . '</option>';
+                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] + $row['new_qty'] . '">' . $row['name'] . '</option>';
                                                                     }
                                                                     ?>
                                                                 </select>
