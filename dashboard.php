@@ -969,63 +969,85 @@ $conn->close();
                                     <?php
                                         include("mysql_connect.php");
 
-                                        $sqlquery = "SELECT
-                                                order_date,
-                                                price AS sale_price,
-                                                AVG(price) OVER (
-                                                    PARTITION BY YEAR(order_date), MONTH(order_date)
-                                                    ORDER BY order_date
-                                                    ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING
-                                                ) AS two_month_moving_average
-                                            FROM tb_order
-                                            WHERE order_status = 'Complete'
-                                            AND (
-                                                (YEAR(order_date) = YEAR(CURRENT_DATE()) AND MONTH(order_date) = MONTH(CURRENT_DATE()))
-                                                OR
-                                                (YEAR(order_date) = YEAR(CURRENT_DATE()) AND MONTH(order_date) = MONTH(CURRENT_DATE()) + 1)
-                                                OR
-                                                (YEAR(order_date) = YEAR(CURRENT_DATE()) AND MONTH(order_date) = MONTH(CURRENT_DATE()) + 2)
-                                            )
-                                            ORDER BY order_date";
+                                        $sqlquery = "WITH MonthlySales AS (
+                                            SELECT
+                                                YEAR(order_date) AS year,
+                                                MONTHNAME(order_date) AS month,
+                                                SUM(price) AS monthly_sales
+                                            FROM (
+                                                SELECT order_date, price
+                                                FROM tb_order
+                                                WHERE order_status = 'Complete'
+                                                UNION ALL
+                                                SELECT order_date, price
+                                                FROM order_onsite
+                                            ) AS combined_data
+                                            GROUP BY year, month
+                                        )
+                                        
+                                        SELECT
+                                            year,
+                                            month,
+                                            monthly_sales,
+                                            -- Calculate 3-month Simple Moving Average
+                                            ROUND(AVG(monthly_sales) OVER (ORDER BY year, month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS moving_average,
+                                            -- Data for the next month
+                                            LEAD(monthly_sales) OVER (ORDER BY year, month) AS next_month_sales,
+                                            -- Data for the next next month
+                                            LEAD(monthly_sales, 2) OVER (ORDER BY year, month) AS next_next_month_sales
+                                        FROM MonthlySales
+                                        ORDER BY year ASC, month DESC;";
 
                                         $results = mysqli_query($conn, $sqlquery);
 
                                         if (mysqli_num_rows($results) > 0) {
                                             $data = array();
-                                            $data[] = array('Date', 'Sales');
+                                            // Add a new array for moving average data
+                                            $data[] = array('Date', 'Sales', 'Moving Average');
 
                                             while ($row = mysqli_fetch_assoc($results)) {
-                                                $data[] = array($row["order_date"], (float) $row["two_month_moving_average"]); // Use 'two_month_moving_average' for sales
+                                                $data[] = array($row["month"], (float) $row["monthly_sales"], (float) $row["moving_average"]);
                                             }
 
+                                            // Encode data for both bar and line charts
                                             $json_data = json_encode($data);
 
+                                            // Add options for both charts
                                             $options = array(
                                                 'legend' => 'top',
                                                 'chartArea' => array('width' => '70%', 'height' => '60%'),
                                                 'hAxis' => array('title' => 'Date'),
                                                 'vAxis' => array('title' => 'Sales'),
                                                 'orientation' => 'horizontal',
+                                                'series' => array(
+                                                    0 => array('type' => 'bars'), // Bar chart settings
+                                                    1 => array('type' => 'line', 'targetAxisIndex' => 1) // Line chart settings
+                                                ),
+                                                'axes' => array(
+                                                    1 => array('title' => 'Moving Average')
+                                                )
                                             );
 
-                                            $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            // Draw both bar and line charts
+                                            $chart_html = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                                             <script type="text/javascript">
-                                                google.charts.load("current", {"packages":["bar"]});
+                                                google.charts.load("current", {"packages":["bar", "corechart"]});
                                                 google.charts.setOnLoadCallback(drawChart);
 
                                                 function drawChart() {
-                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+                                                    var data = new google.visualization.arrayToDataTable(' . $json_data . ');
 
-                                                var options = ' . json_encode($options) . ';
+                                                    var options = ' . json_encode($options) . ';
 
-                                                var chart = new google.visualization.BarChart(document.getElementById("moving-average"));
-                                                chart.draw(data, options);
+                                                    var chart = new google.visualization.ComboChart(document.getElementById("moving-average"));
+                                                    chart.draw(data, options);
                                                 }
                                             </script>';
 
-                                            // Echo chart HTML and JavaScript
+                                            // Echo combined chart HTML and JavaScript
                                             echo '<div id="moving-average"></div>';
-                                            echo $chart_html1;
+                                            echo $chart_html;
+
                                         } else {
                                             echo "0 results";
                                         }

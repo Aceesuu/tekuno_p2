@@ -366,10 +366,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <select name="p_name" id="p_name" class="form-control" required>
                                                                     <option value="" disabled selected>Select product</option>
                                                                     <?php
-                                                                    $sql = "SELECT name, price, qty, new_qty FROM tb_product";
+                                                                    $sql = "SELECT name, price, qty FROM tb_product";
                                                                     $result = mysqli_query($conn, $sql);
                                                                     while ($row = mysqli_fetch_assoc($result)) {
-                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] + $row['new_qty'] . '">' . $row['name'] . '</option>';
+                                                                        $productName = $row['name'];
+                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] . '">' . $row['name'] . '</option>';
                                                                     }
                                                                     ?>
                                                                 </select>
@@ -390,6 +391,29 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <label for="discount" class="form-label">Discount (%)</label>
                                                                 <input type="number" name="discount" id="discount" class="form-control" min="0" step="0.01">
                                                             </div>
+
+                                                            <!-- <div class="mb-3">
+                                                                <label for="simpleinput" class="form-label">Variation</label>
+                                                                <select name="variation" id="variation" class="form-control" required>
+                                                                    <option value="" disabled selected>Select product variation</option>
+                                                                    <?php
+                                                                        if (isset($_POST['product_id'])) {
+                                                                            $product_id = $_POST['product_id'];
+
+                                                                            // Use $product_id in your SQL query to fetch variations
+                                                                            $sql = "SELECT * FROM product_variation WHERE name = '$product_id'";
+                                                                            $result = mysqli_query($conn, $sql);
+                                                                        
+                                                                            // Build and echo the options for the #variation select element
+                                                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                                                echo '<option value="' . $row['variation_id'] . '" data-price="' . $row['price'] . '" data-supplier="' . $row['supplier_price'] . '">' . $row['variation'] . '</option>';
+                                                                            }
+                                                                        
+                                                                            exit(); // Terminate the script after handling the AJAX request
+                                                                        }
+                                                                    ?>
+                                                                </select>
+                                                            </div> -->
 
                                                             <label for="total_price" class="form-label">Total Price</label>
                                                             <input type="text" id="total_price" class="form-control" readonly>

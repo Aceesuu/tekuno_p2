@@ -357,7 +357,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             $mail->setFrom('ksnjsmn@gmail.com', 'Admin');
                                                             $mail->addAddress('estrera.evalyngrace@gmail.com');
                                                             $mail->Subject = ('Product Quantity Notification');
-                                                            $mail->Body = ('Good Day. The product ID ' . $row['product_id'] . 'has only have ' . $row['qty'] . '. Please replenish the quantity immediately. Thank you' );
+                                                            $mail->Body = ('Good Day. The product ID ' . $row['product_id'] . ' - ' . $row['name'] . ' has only have ' . $row['qty'] . '. Please replenish the quantity immediately. Thank you' );
                                                             $mail->send();
                                                         }
                                                 ?>

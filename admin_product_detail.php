@@ -318,11 +318,11 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
                                             </h3>
                                             <p class="font-16">
                                             <h4>
-                                                <span class="badge <?php echo ($product['qty'] + $product['new_qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
-                                                    <?php echo ($product['qty'] + $product['new_qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
+                                                <span class="badge <?php echo ($product['qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
+                                                    <?php echo ($product['qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
                                                 </span>
                                             </h4>
-                                            <h5><span>Stocks:</span>&nbsp;<?php echo $product['qty'] + $product['new_qty']; ?></h5>
+                                            <h5><span>Stocks:</span>&nbsp;<?php echo $product['qty']; ?></h5>
                                             </p>
 
                                             <!-- Product description -->
@@ -335,7 +335,7 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
                                             <div class="mt-4">
                                                 <h6 class="font-14">Quantity</h6>
                                                 <div class="d-flex">
-                                                    <?php echo $product['qty'] + $product['new_qty']; ?>
+                                                    <?php echo $product['qty']; ?>
                                                 </div>
                                             </div>
 
