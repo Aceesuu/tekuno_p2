@@ -61,7 +61,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
+           <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
                         <!-- LOGO -->
@@ -189,6 +189,14 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 <tbody>
                                     <?php
                                     $select_products = mysqli_query($conn, "SELECT DISTINCT order_id, proof_image, order_date, order_status FROM `tb_order` WHERE `user_id` = $user_id");
+                                     $statusBadgeClasses = [
+                                        'Pending' => 'badge-info-lighten',
+                                        'To Ship' => 'badge-primary-lighten',
+                                        'To Receive' => 'badge-warning-lighten',
+                                        'Declined' => 'badge-danger-lighten',
+                                        'Complete' => 'badge-success-lighten',
+                                        'Cancelled' => 'badge-danger-lighten',
+                                    ];
 
                                     if (mysqli_num_rows($select_products) > 0) {
                                         while ($row = mysqli_fetch_assoc($select_products)) {
@@ -201,8 +209,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <th>Image</th>
                                                             <th>Uploaded Date</th>
                                                             <th>Invoice</th>
-                                                            <th></th>
-                                                        </tr>
+                                                            <th>Order Status</th>                                                        </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
@@ -211,9 +218,8 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                 <img src="proof/<?php echo $row['proof_image']; ?>" height="450" alt="proof-img" title="contact-img" class="rounded me-2">
                                                             </td>
                                                             <td><?php echo $row['order_date']; ?></td>
-                                                            <td> <a href="invoice.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a>
-                                                            </td>
-                                                            <td><?php
+                                                            <td> <a href="invoice.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a> <br><br>
+                                                                <?php
                                                             // Check if the order status is "To Ship" to allow cancellation
                                                             if ($row['order_status'] == "Pending") {
                                                                 ?>
@@ -230,7 +236,6 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                 <?php
                                                             }
                                                             ?>
-                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
