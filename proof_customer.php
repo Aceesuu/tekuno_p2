@@ -61,7 +61,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-           <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
+                <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
                     <div class="container-fluid">
 
                         <!-- LOGO -->
@@ -116,7 +116,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
+                                                <a href="" class="text-dark">
                                                     <small>Clear All</small>
                                                 </a>
                                             </span>Notification
@@ -189,7 +189,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 <tbody>
                                     <?php
                                     $select_products = mysqli_query($conn, "SELECT DISTINCT order_id, proof_image, order_date, order_status FROM `tb_order` WHERE `user_id` = $user_id");
-                                     $statusBadgeClasses = [
+                                    $statusBadgeClasses = [
                                         'Pending' => 'badge-info-lighten',
                                         'To Ship' => 'badge-primary-lighten',
                                         'To Receive' => 'badge-warning-lighten',
@@ -209,7 +209,9 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <th>Image</th>
                                                             <th>Uploaded Date</th>
                                                             <th>Invoice</th>
-                                                            <th>Order Status</th>                                                        </tr>
+                                                            <th>Order Status</th>
+                                                            <th></th>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
@@ -220,26 +222,45 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <td><?php echo $row['order_date']; ?></td>
                                                             <td> <a href="invoice.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a> <br><br>
                                                                 <?php
-                                                            // Check if the order status is "To Ship" to allow cancellation
-                                                            if ($row['order_status'] == "Pending") {
+                                                                // Check if the order status is "To Ship" to allow cancellation
+                                                                if ($row['order_status'] == "Pending") {
                                                                 ?>
-                                                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<?php echo $row['order_id']; ?>">Cancel Order</button>
+                                                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<?php echo $row['order_id']; ?>">Cancel Order</button>
                                                                 <?php
-                                                            }
-                                                            ?>
+                                                                }
+                                                                ?>
 
-                                                            <?php
-                                                            // Check if the order status is "To Ship" to allow cancellation
-                                                            if ($row['order_status'] == "To Receive") {
-                                                                ?>
-                                                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#markReceivedModal_<?php echo $row['order_id']; ?>">Order Received</button>
                                                                 <?php
-                                                            }
-                                                            ?>
+                                                                // Check if the order status is "To Ship" to allow cancellation
+                                                                if ($row['order_status'] == "To Receive") {
+                                                                ?>
+                                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#markReceivedModal_<?php echo $row['order_id']; ?>">Order Received</button>
+                                                                <?php
+                                                                }
+                                                                ?>
+
+                                                                <?php
+                                                                // Display "Request Refund" button only if status is "Declined" or "Cancelled"
+                                                                if ($row['order_status'] == 'Declined' || $row['order_status'] == 'Cancelled') {
+                                                                ?>
+                                                                    <a href="refund.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">Request Refund</a>
+                                                                <?php
+                                                                }
+                                                                ?>
+                                                            </td>
+                                                            <td>
+                                                                <h5><span class="badge <?php echo isset($statusBadgeClasses[$row['order_status']]) ? $statusBadgeClasses[$row['order_status']] : 'badge-info-lighten'; ?>">
+                                                                        <?php echo $row['order_status']; ?>
+                                                                    </span></h5>
+                                                            </td>
+
+
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
+
+
                                             <!-- Pending modal -->
                                             <div class="modal fade" id="cancelOrderModal_<?php echo $row['order_id']; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
@@ -249,7 +270,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                           Are you sure you want to cancel this order?
+                                                            Are you sure you want to cancel this order?
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -268,7 +289,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                           Are you sure you want to mark this order as received?
+                                                            Are you sure you want to mark this order as received?
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -286,7 +307,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                 </tbody>
                             </table>
-                            
+
                         </div>
                     </div> <!-- end col -->
 
@@ -402,6 +423,45 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         // Call the updateCartCount function to initialize the cart count
         updateCartCount();
     </script>
+
+    <!-- Add this script to your HTML page -->
+    <script>
+        // Function to update the notification badge count
+        function updateNotificationBadge(count) {
+            const badge = document.querySelector('.noti-icon-badge');
+            badge.innerText = count;
+        }
+
+        // Function to show a notification
+        function showNotification(message) {
+            // Use your preferred notification library or method here
+            alert(message);
+        }
+
+        // Function to handle status change
+        function handleStatusChange(newStatus) {
+            // Check if the status is from tb_refund
+            if (newStatus === 'tb_refund') {
+                // Increment the notification count (you might want to get the current count from the server)
+                const currentCount = parseInt(document.querySelector('.noti-icon-badge').innerText) || 0;
+                updateNotificationBadge(currentCount + 1);
+
+                // Show a notification
+                showNotification('Status changed to tb_refund');
+            }
+        }
+
+        // Simulate a status change (replace this with your actual logic)
+        function simulateStatusChange() {
+            // Replace this with the actual status from your application
+            const newStatus = 'tb_refund';
+            handleStatusChange(newStatus);
+        }
+
+        // Call the function to simulate a status change
+        simulateStatusChange();
+    </script>
+
 </body>
 
 </html>
