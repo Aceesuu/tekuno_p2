@@ -45,14 +45,25 @@ today = datetime.now()
 # Create a DataFrame for predicted data
 predicted_data = []
 
+# Use the highest and lowest values from the past 2 months for prediction
+past_2_months_data = df.iloc[-3:-1]  # Get the data from the past 2 months, excluding the current month
+
+# Filter out NaN values before calculating min and max
+min_value = past_2_months_data["moving_average"].min(skipna=True)
+max_value = past_2_months_data["moving_average"].max(skipna=True)
+
+# Replace NaN values with a default value (e.g., 0)
+min_value = min_value if not pd.isna(min_value) else 0
+max_value = max_value if not pd.isna(max_value) else 0
+
 # Predict monthly sales and moving average for the next 5 months
 for i in range(5):
     next_month_date = today + timedelta(days=30 * (i + 1))
     next_month_name = next_month_date.strftime("%B")
 
-    # Replace the following lines with your actual prediction logic
-    predicted_sales = np.random.randint(800, 1200)  # Replace with your prediction logic
-    predicted_average = np.random.randint(700, 1100)  # Replace with your prediction logic
+    # Use the highest and lowest values for prediction
+    predicted_sales = np.random.randint(past_2_months_data["monthly_sales"].min(), past_2_months_data["monthly_sales"].max() + 1)
+    predicted_average = np.random.randint(700, 1500)  # Replace with your prediction logic
 
     predicted_data.append({
         "year": next_month_date.year,
@@ -67,6 +78,9 @@ predicted_df = pd.DataFrame(predicted_data)
 # Concatenate the original DataFrame with the predicted DataFrame
 result_df = pd.concat([df, predicted_df], ignore_index=True)
 
+# Sort the DataFrame by year and month in ascending order
+result_df.sort_values(by=["year", "month_numeric"], inplace=True)
+
 # Define the column data types for the SQL table
 dtype = {
     "year": Integer,
@@ -79,4 +93,4 @@ dtype = {
 result_df.to_sql('moving_average_tbl', engine, index=False, if_exists='replace', dtype=dtype)
 
 # Print the updated DataFrame with predictions
-print(result_df.tail(6))  # Displaying the last 6 rows to include the predictions
+print(result_df)

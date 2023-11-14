@@ -299,6 +299,78 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     $data = array_column($rows, 1);   // Assuming the Y values are in the second column
                     ?>
 
+<div class="row">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Moving Average</h4>
+
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT * FROM moving_average_tbl";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+                                            $data = array();
+                                            // Add a new array for moving average data
+                                            $data[] = array('Month', 'Sales', 'Moving Average');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["month"], (float) $row["monthly_sales"], (float) $row["moving_average"]);
+                                            }
+
+                                            // Encode data for both bar and line charts
+                                            $json_data = json_encode($data);
+
+                                            // Add options for both charts
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Date'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                                'series' => array(
+                                                    0 => array('type' => 'bars'), // Bar chart settings
+                                                    1 => array('type' => 'line', 'targetAxisIndex' => 1) // Line chart settings
+                                                ),
+                                                'axes' => array(
+                                                    1 => array('title' => 'Moving Average')
+                                                )
+                                            );
+
+                                            // Draw both bar and line charts
+                                            $chart_html = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar", "corechart"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                    var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                    var options = ' . json_encode($options) . ';
+
+                                                    var chart = new google.visualization.ComboChart(document.getElementById("moving-average"));
+                                                    chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo combined chart HTML and JavaScript
+                                            echo '<div id="moving-average"></div>';
+                                            echo $chart_html;
+
+                                        } else {
+                                            echo "0 results";
+                                        }
+
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <script>
                         // JavaScript code to create a line chart using Chart.js
                         var ctx = document.getElementById('myChart').getContext('2d');
