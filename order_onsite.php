@@ -366,11 +366,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <select name="p_name" id="p_name" class="form-control" required>
                                                                     <option value="" disabled selected>Select product</option>
                                                                     <?php
-                                                                    $sql = "SELECT name, price, qty FROM tb_product";
+                                                                    $sql = "SELECT name, price, qty, product_id FROM tb_product";
                                                                     $result = mysqli_query($conn, $sql);
                                                                     while ($row = mysqli_fetch_assoc($result)) {
                                                                         $productName = $row['name'];
-                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] . '">' . $row['name'] . '</option>';
+                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] . '" data-id="' . $row['product_id'] . '">' . $row['name'] . '</option>';
                                                                     }
                                                                     ?>
                                                                 </select>
@@ -392,28 +392,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <input type="number" name="discount" id="discount" class="form-control" min="0" step="0.01">
                                                             </div>
 
-                                                            <!-- <div class="mb-3">
+                                                            <div class="mb-3">
                                                                 <label for="simpleinput" class="form-label">Variation</label>
                                                                 <select name="variation" id="variation" class="form-control" required>
                                                                     <option value="" disabled selected>Select product variation</option>
-                                                                    <?php
-                                                                        if (isset($_POST['product_id'])) {
-                                                                            $product_id = $_POST['product_id'];
-
-                                                                            // Use $product_id in your SQL query to fetch variations
-                                                                            $sql = "SELECT * FROM product_variation WHERE name = '$product_id'";
-                                                                            $result = mysqli_query($conn, $sql);
-                                                                        
-                                                                            // Build and echo the options for the #variation select element
-                                                                            while ($row = mysqli_fetch_assoc($result)) {
-                                                                                echo '<option value="' . $row['variation_id'] . '" data-price="' . $row['price'] . '" data-supplier="' . $row['supplier_price'] . '">' . $row['variation'] . '</option>';
-                                                                            }
-                                                                        
-                                                                            exit(); // Terminate the script after handling the AJAX request
-                                                                        }
-                                                                    ?>
                                                                 </select>
-                                                            </div> -->
+                                                            </div>
 
                                                             <label for="total_price" class="form-label">Total Price</label>
                                                             <input type="text" id="total_price" class="form-control" readonly>
@@ -491,16 +475,19 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                 </script>
 
                 <script>
-                    function updateTotalPrice() {
+                    function updateTotalPrice(variationPrice) {
                         var product_id = parseFloat($('#product_id').val()) || 0;
                         var price = parseFloat($('#price').val()) || 0;
                         var qty = parseInt($('#p_qty').val()) || 0;
                         var discount = parseFloat($('#discount').val()) || 0;
+                        var varPrice = parseFloat(variationPrice) || 0;
 
-                        var total_price = price * qty;
+                        var total_price = (price * qty) + varPrice;
+
                         if (discount > 0) {
                             total_price = total_price - (total_price * (discount / 100));
                         }
+
 
                         $('#total_price').val(total_price.toFixed(2));
                         }
@@ -522,6 +509,52 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     $('#total_price').val('');
                                     $('#product_id').val('');
                                 }
+
+                                //ID
+                                var productId = selectedOption.data('id');
+
+                                $.ajax({
+                                    type: 'GET',
+                                    url: 'product_variation.php',
+                                    data: { 
+                                        product_id: productId 
+                                    },
+                                    success: function(response) {
+                                        // Assuming the response is in JSON format
+                                        var variations = JSON.parse(response);
+                                        console.log(variations)
+                                        // Assuming you have a select element with id "variation"
+                                        var selectElement = $('#variation');
+
+                                        // Clear existing options
+                                        selectElement.empty();
+
+                                        // Add the default option
+                                        var defaultOption = '<option disabled selected>Select Variation</option>';
+                                        selectElement.append(defaultOption);
+
+                                        // Build and append new options to the select element
+                                        variations.forEach(function(row) {
+                                            var option = '<option value="' + row.variation_id + '" data-variation_price="' + row.price + '" data-supplier="' + row.supplier_price + '">' + row.variation + '</option>';
+                                            selectElement.append(option);
+                                        });
+
+                                        $('#variation').on('change', function() {
+                                            var selectedOption = $(this).find('option:selected');
+
+                                            if (selectedOption) {
+                                                var variationPrice = selectedOption.data('variation_price');
+                                                console.log(variationPrice)
+                                                updateTotalPrice(variationPrice);
+                                            } else {
+                                                var variationPrice = '';
+                                            }
+                                        });
+                                    },
+                                    error: function(error) {
+                                        console.error('Error fetching data: ', error);
+                                    }
+                                });
                             });
 
                             $('#p_qty, #discount').on('input', function() {

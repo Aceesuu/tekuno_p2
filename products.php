@@ -325,6 +325,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <th>Unit Price</th>
                                                     <th>Starting Quantity</th>
                                                     <th>New Stock</th>
+                                                    <th>New Price</th>
                                                     <th>Total Quantity</th>
                                                     <th>Stocks</th>
                                                     <th style="width: 85px;">Action</th>
@@ -378,6 +379,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 }
                                                                 ?>
                                                             </td>
+                                                            <td>₱<?php echo $row['new_price']; ?></td>
                                                             <td>
                                                                 <?php
                                                                 $total_qty = $row['qty'] + $row['new_qty'];
