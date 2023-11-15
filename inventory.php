@@ -320,10 +320,19 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                         </select>
                                                     </div>
 
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="simpleinput" class="form-label">Quantity</label>
-                                                            <input type="number" min="1" value="1" name="p_qty" class="form-control" required style="width: 90px;">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="simpleinput" class="form-label">Quantity</label>
+                                                                <input type="number" min="1" value="1" name="p_qty" class="form-control" required>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="simpleinput" class="form-label">Price</label>
+                                                                <input type="number" name="p_price" class="form-control" required>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -343,6 +352,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 <th>Product ID</th>
                                                 <th>Product Name</th>
                                                 <th>New Quantity</th>
+                                                <th>New Price</th>
                                                 <th>Date Added</th>
                                                 <th style="width: 85px;">Action</th>
                                             </tr>
@@ -358,6 +368,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                         <td><?php echo $row['product_id']; ?></td>
                                                         <td><?php echo $row['name']; ?></td>
                                                         <td><?php echo $row['new_qty']; ?></td>
+                                                        <td><?php echo $row['new_price']; ?></td>
                                                         <td><?php echo $row['purchase_date']; ?></td>
                                                         <td class="table-action">
 
