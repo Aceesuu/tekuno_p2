@@ -16,6 +16,13 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 } else {
     $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
 }
+
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    require './PHPMailer/src/Exception.php';
+    require './PHPMailer/src/PHPMailer.php';
+    require './PHPMailer/src/SMTP.php';
 ?>
 
 <!DOCTYPE html>
@@ -153,11 +160,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             <span> Admins </span>
                         </a>
                     </li>
-
+                    
                     <li class="side-nav-item">
-                        <a href="forecast.php" class="side-nav-link">
-                            <i class="uil-chart"></i>
-                            <span> Forecast </span>
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
                         </a>
                     </li>
                     <!-- End Sidebar -->
@@ -190,28 +197,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
 
                             </div>
                         </li>
@@ -242,7 +228,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </div>
 
                                 <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <a href="profile_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
                                     <span>My Account</span>
                                 </a>
@@ -261,11 +247,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -317,8 +298,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <th>Supplier Price</th>
                                                     <th>Unit Price</th>
                                                     <th>Starting Quantity</th>
-                                                    <th>New Stock</th>
-                                                    <th>Total Quantity</th>
                                                     <th>Stocks</th>
                                                     <th style="width: 85px;">Action</th>
                                                 </tr>
@@ -330,12 +309,26 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 if (mysqli_num_rows($select_products) > 0) {
                                                     $total_quantity = 0;
                                                     while ($row = mysqli_fetch_assoc($select_products)) {
-                                                        if ($row['qty'] == 0 && $row['new_qty'] > 0) {
-                                                            $row['qty'] = $row['new_qty'];
-                                                            $row['new_qty'] = 0;
-                                                        }
+                                                        
                                                         $stock_status = ($row['qty'] <= 0) ? 'Out of Stock' : 'Instock';
                                                         $badge_class = ($stock_status == 'Instock') ? 'badge-success-lighten' : 'badge-danger-lighten';
+
+                                                        if ($row['qty'] <= 5) {
+                                                            $mail = new PHPMailer(true);
+                                                            $mail->isSMTP();
+                                                            $mail->Host = 'smtp.gmail.com';
+                                                            $mail->SMTPAuth = true;
+                                                            $mail->Username = 'ksnjsmn@gmail.com';
+                                                            $mail->Password = 'fgphmbjyyrxfbbnf';
+                                                            $mail->Port = 587;
+                                                            $mail->SMTPSecure = 'tls';
+                                                            $mail->isHTML(true);
+                                                            $mail->setFrom('ksnjsmn@gmail.com', 'Admin');
+                                                            $mail->addAddress('estrera.evalyngrace@gmail.com');
+                                                            $mail->Subject = ('Product Quantity Notification');
+                                                            $mail->Body = ('Good Day. The product ID ' . $row['product_id'] . ' - ' . $row['name'] . ' has only have ' . $row['qty'] . '. Please replenish the quantity immediately. Thank you' );
+                                                            $mail->send();
+                                                        }
                                                 ?>
                                                         <tr>
                                                             <td><?php echo $row['product_id']; ?></td>
@@ -345,22 +338,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td>₱<?php echo $row['supplier_price']; ?></td>
                                                             <td>₱<?php echo $row['price']; ?></td>
                                                             <td><?php echo $row['qty']; ?></td>
-                                                            <td>
-                                                                <?php
-                                                                if ($row['new_qty'] > 0) {
-                                                                    echo $row['new_qty'];
-                                                                } else {
-                                                                    echo "No New <br> Quantity available";
-                                                                }
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php
-                                                                $total_qty = $row['qty'] + $row['new_qty'];
-                                                                echo $total_qty;
-                                                                $total_quantity += $total_qty;
-                                                                ?>
-                                                            </td>
+                                                        
                                                             <td>
                                                                 <h4><span class="badge <?php echo $badge_class; ?>"><?php echo $stock_status; ?></span></h4>
                                                             </td>

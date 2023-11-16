@@ -131,9 +131,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <li>
                                     <a href="order.php">Order Details</a>
                                 </li>
-                                 <li>
-                                            <a href="order_onsite.php">Order Onsites</a>
-                                        </li>
+                                <li>
+                                    <a href="order_onsite.php">Order Onsites</a>
+                                </li>
                                 <li>
                                     <a href="order_history_admin.php">Order History</a>
                                 </li>
@@ -153,11 +153,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             <span> Admins </span>
                         </a>
                     </li>
-
+                    
                     <li class="side-nav-item">
-                        <a href="forecast.php" class="side-nav-link">
-                            <i class="uil-chart"></i>
-                            <span> Forecast </span>
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
                         </a>
                     </li>
                     <!-- End Sidebar -->
@@ -190,28 +190,8 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
+                      
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
 
                             </div>
                         </li>
@@ -242,7 +222,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </div>
 
                                 <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <a href="profile_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
                                     <span>My Account</span>
                                 </a>
@@ -261,11 +241,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
+                         
                         </form>
                     </div>
                 </div>
@@ -317,13 +293,19 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <th>Quantity</th>
                                                     <th>Price</th>
                                                     <th>Subtotal</th>
-                                                    <th>Discount</th>
                                                     <th>Grand Total</th>
+                                                    <th>Invoice</th>
+
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 $select_products = mysqli_query($conn, "SELECT * FROM `order_onsite` ORDER BY order_date DESC");
+                                                $grand_total = 0;
+                                                $total = 0;
+                                                $sub_total = 0;
+                                                $discounted_price = 0;
+                                                $discount_rate = 0.03;
                                                 if (mysqli_num_rows($select_products) > 0) {
                                                     while ($row = mysqli_fetch_assoc($select_products)) {
                                                         // Convert the order_date timestamp to a DateTime object
@@ -331,6 +313,20 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                         // Format the date in the desired format
                                                         $formattedDate = $orderDateTime->format('F d Y');
                                                         $formattedTime = $orderDateTime->format('h:i A');
+
+                                                        // Calculate the discounted price without shipping fee
+                                                        $subtotal = $row['subtotal'];
+                                                        $discounted_price = ($subtotal >= 5000) ? $subtotal * (1 - $discount_rate) : $subtotal;
+
+                                                        // Calculate tax on the discounted subtotal
+                                                        $tax_rate = 0.12;
+                                                        $tax = $discounted_price * $tax_rate;
+
+                                                        // Calculate the grand total without shipping fee
+                                                        $grand_total = $discounted_price + $tax;
+
+                                                        // Calculate the discount
+                                                        $discount = ($subtotal >= 5000) ? $subtotal - $discounted_price : 0;
                                                 ?>
                                                         <tr>
                                                             <td><b>Order #<?php echo $row['order_id']; ?></b></td>
@@ -338,9 +334,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td><?php echo $row['name']; ?></td>
                                                             <td><?php echo $row['qty']; ?></td>
                                                             <td><?php echo $row['price']; ?></td>
-                                                            <td><?php echo $row['subtotal']; ?></td>
-                                                            <td><?php echo $row['discount']; ?></td>
-                                                            <td><?php echo $row['total_price']; ?></td>
+                                                            <td><?php echo $subtotal; ?></td>
+                                                            <td><?php echo number_format($grand_total, 2); ?></td>
+                                                            <td> <a href="invoice_onsite.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a>
                                                         </tr>
                                                 <?php
                                                     }
@@ -366,10 +362,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <select name="p_name" id="p_name" class="form-control" required>
                                                                     <option value="" disabled selected>Select product</option>
                                                                     <?php
-                                                                    $sql = "SELECT name, price, qty FROM tb_product";
+                                                                    $sql = "SELECT name, price, qty, product_id FROM tb_product";
                                                                     $result = mysqli_query($conn, $sql);
                                                                     while ($row = mysqli_fetch_assoc($result)) {
-                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] . '">' . $row['name'] . '</option>';
+                                                                    $productName = $row['name'];
+                                                                        echo '<option value="' . $row['name'] . '" data-price="' . $row['price'] . '" data-qty="' . $row['qty'] . '" data-id="' . $row['product_id'] . '">' . $row['name'] . '</option>';
                                                                     }
                                                                     ?>
                                                                 </select>
@@ -385,11 +382,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                                                             <label for="p_qty" class="form-label">Quantity</label>
                                                             <input type="number" name="p_qty" id="p_qty" class="form-control" required>
-
-                                                            <div class="mb-3">
-                                                                <label for="discount" class="form-label">Discount (%)</label>
-                                                                <input type="number" name="discount" id="discount" class="form-control" min="0" step="0.01">
-                                                            </div>
 
                                                             <label for="total_price" class="form-label">Total Price</label>
                                                             <input type="text" id="total_price" class="form-control" readonly>
@@ -468,42 +460,36 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                 <script>
                     function updateTotalPrice() {
-                        var product_id = parseFloat($('#product_id').val()) || 0;
                         var price = parseFloat($('#price').val()) || 0;
                         var qty = parseInt($('#p_qty').val()) || 0;
-                        var discount = parseFloat($('#discount').val()) || 0;
 
                         var total_price = price * qty;
-                        if (discount > 0) {
-                            total_price = total_price - (total_price * (discount / 100));
-                        }
-
                         $('#total_price').val(total_price.toFixed(2));
-                        }
+                    }
 
-                        $(document).ready(function() {
-                            $('#p_name').on('change', function() {
-                                var selectedOption = $(this).find('option:selected');
-                                if (selectedOption) {
-                                    var price = selectedOption.data('price');
-                                    var qty = selectedOption.data('qty');
-                                    var product_id = selectedOption.val(); // Get the product ID
-                                    $('#price').val(price);
-                                    $('#avail_quan').val(qty);
-                                    $('#product_id').val(product_id);
-                                    updateTotalPrice();
-                                } else {
-                                    $('#price').val('');
-                                    $('#avail_quan').val('');
-                                    $('#total_price').val('');
-                                    $('#product_id').val('');
-                                }
-                            });
-
-                            $('#p_qty, #discount').on('input', function() {
+                    $(document).ready(function() {
+                        $('#p_name').on('change', function() {
+                            var selectedOption = $(this).find('option:selected');
+                            if (selectedOption) {
+                                var price = selectedOption.data('price');
+                                var qty = selectedOption.data('qty');
+                                var product_id = selectedOption.val(); // Get the product ID
+                                $('#price').val(price);
+                                $('#avail_quan').val(qty);
+                                $('#product_id').val(product_id);
                                 updateTotalPrice();
-                            });
+                            } else {
+                                $('#price').val('');
+                                $('#avail_quan').val('');
+                                $('#total_price').val('');
+                                $('#product_id').val('');
+                            }
                         });
+
+                        $('#p_qty').on('input', function() {
+                            updateTotalPrice();
+                        });
+                    });
                 </script>
 
 </body>

@@ -86,7 +86,7 @@ if (isset($_GET['order_id'])) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
+                <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
                         <!-- LOGO -->
@@ -229,7 +229,7 @@ if (isset($_GET['order_id'])) {
                                     <!-- Invoice Logo-->
                                     <div class="clearfix">
                                         <div class="float-start mb-3">
-                                            <img src="assets/images/invoicelogo.png" alt="" height="80">
+                                            <img src="assets/images/logoinv.png" alt="" height="100">
                                         </div>
                                         <div class="float-end">
                                             <h4 class="m-0 d-print-none">Invoice</h4>
@@ -292,6 +292,7 @@ if (isset($_GET['order_id'])) {
 
                                         // Query the database to get orders with the specified order_id
                                         $select_orders = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE user_id = '$user_id' AND order_id = '$order_id'");
+
                                         $grand_total = 0;
                                         $total_discount = 0; // Initialize total discount
                                         $discountApplied = false;
@@ -308,24 +309,43 @@ if (isset($_GET['order_id'])) {
                                                                 <th>Item</th>
                                                                 <th>Price</th>
                                                                 <th>Quantity</th>
-                                                                <th class="text-end">Total</th>
-                                                                <th class="text-end">Discount</th> <!-- Add a discount column -->
+                                                                <th>Total</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <?php
+
+                                                            $grand_total = 0;
+                                                            $total = 0;
+                                                            $sub_total = 0;
+                                                            $shipping_fee = 40;
+                                                            $discounted_price = 0;
+                                                            $discount_rate = 0.03;
+
                                                             while ($fetch_cart = mysqli_fetch_assoc($select_orders)) {
                                                                 $quantity = $fetch_cart['qty'];
                                                                 $price = $fetch_cart['price'];
                                                                 $subtotal = $fetch_cart['subtotal'];
 
-                                                                // Calculate the discount for each item (if available)
-                                                                $discount = $fetch_cart['discount'];
 
-                                                                // Accumulate the total discount
-                                                                $total_discount += $discount;
+                                                                // Calculate the total for this item
+                                                                $item_total = $price * $quantity;
+                                                                // Add this item's total to the overall total
+                                                                $total += $item_total;
 
-                                                                $total_subtotal += $subtotal;
+                                                                $sub_total += $item_total;
+
+                                                                if ($sub_total >= 5000) {
+                                                                    $discounted_price = $sub_total * (1 - $discount_rate); // Apply the 3% discount
+                                                                } else {
+                                                                    $discounted_price = $sub_total; // No discount
+                                                                }
+
+                                                                // Calculate tax on the discounted sub total
+                                                                $tax = $discounted_price * 0.12;
+
+                                                                // Calculate the grand total
+                                                                $grand_total = $discounted_price + $tax + $shipping_fee;
                                                             ?>
                                                                 <tr>
                                                                     <td>
@@ -336,8 +356,8 @@ if (isset($_GET['order_id'])) {
                                                                     </td>
                                                                     <td><?php echo number_format($fetch_cart['price']); ?></td>
                                                                     <td><?php echo $fetch_cart['qty']; ?></td>
-                                                                    <td class="text-end">₱<?php echo $fetch_cart['subtotal']; ?></td>
-                                                                    <td class="text-end">₱<?php echo number_format($discount, 2); ?></td> <!-- Display item-level discount -->
+                                                                    <td>₱<?php echo $fetch_cart['subtotal']; ?></td>
+                                                                    <!-- Display item-level discount -->
                                                                 </tr>
                                                             <?php
                                                             }
@@ -359,12 +379,15 @@ if (isset($_GET['order_id'])) {
                                             </div> <!-- end col -->
                                             <div class="col-sm-6">
                                                 <div class="float-end mt-3 mt-sm-0">
-                                                    <p><b>Subtotal:</b> <span class="float-end">₱<?= number_format($total_subtotal, 2); ?></span></p>
+                                                    <p><b>Subtotal:</b> <span class="float-end">₱<?= number_format($sub_total, 2) ?></span></p>
+                                                    <?php if ($sub_total >= 5000) { ?>
+                                                        <p><b>Discounted Rate: </b> &nbsp; 3%</p>
+                                                        <p><b>Discounted Price:</b> &nbsp; <span class="float-end">₱<?= number_format($discounted_price, 2) ?></span></p>
+                                                    <?php } ?>
+                                                    <p><b>Sales Tax:</b> <span class="float-end">₱<?= number_format($tax, 2) ?></span></p>
                                                     <p><b>Shipping Fee:</b> <span class="float-end">₱<?= number_format($shipping_fee, 2) ?></span></p>
-                                                    <p><b>Total Discount: </b> <span class="float-end">₱-<?= number_format($total_discount, 2); ?></span></p>
-                                                    <p><b>VAT (12%):</b> <span class="float-end">₱-<?= number_format($total_discount, 2); ?></span></p>
-                                                    <p><b>Grand Total:</b> 
-                                                    <h3>₱<?php echo number_format($total_subtotal + $shipping_fee - $total_discount, 2); ?></h3>
+                                                    <p><b>Grand Total:</b>
+                                                    <h3>₱<?= number_format($grand_total, 2) ?></h3>
                                                 </div>
                                             </div> <!-- end col -->
                                         </div>

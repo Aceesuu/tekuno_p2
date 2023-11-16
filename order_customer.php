@@ -60,7 +60,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
+              <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
                          <!-- LOGO -->

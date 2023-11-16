@@ -141,10 +141,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </li>
 
                         <li class="side-nav-item">
-                            <a href="forecast.php" class="side-nav-link">
-                                <i class="uil-chart"></i>
-                                <span> Forecast </span>
-                            </a>
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
+                        </a>
                         </li>
                         <!-- End Sidebar -->
 
@@ -176,31 +176,8 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
-
-                            </div>
                         </li>
 
                         <li class="dropdown notification-list">
@@ -248,11 +225,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
+                            
                         </form>
 
                     </div>
@@ -368,7 +341,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             </div>
                                                         </tr>
 
-                                                        <!-- Edit MODAL -->
+                                                        <!-- Edit MODALs -->
                                                         <div class="modal fade" id="edit_<?php echo $row['admin_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -378,7 +351,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <form method="POST" action="crud_admin.php">
-                                                                            <input type="hidden" name="update_user_id" value="<?php echo $row['admin_id']; ?>">
+                                                                            <input type="hidden" name="update_admin_id" value="<?php echo $row['admin_id']; ?>">
 
                                                                             <div class="mb-3">
                                                                                 <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
@@ -412,6 +385,16 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                                 <label for="contact" class="form-label">Contact Number</label>
                                                                                 <input class="form-control" type="text" name="update_contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11" value="<?php echo $row['contact']; ?>">
                                                                                 <span class="note" style="display: none; color: red;">Please enter a valid 11-digit number without symbols or letters.</span>
+                                                                            </div>
+                                                                                
+                                                                                <div class="mb-3">
+                                                                                <label for="role" class="form-label">Role</label>
+                                                                                <select name="update_role" class="form-control" required>
+                                                                                    <option value="" disabled>Select your role</option>
+                                                                                    <option value="Inventory Manager" <?php if ($row['role'] === 'Inventory Manager') echo 'selected'; ?>>Inventory Manager</option>
+                                                                                    <option value="Order Manager" <?php if ($row['role'] === 'Order Manager') echo 'selected'; ?>>Order Manager</option>
+                                                                                    <option value="Customer Management" <?php if ($row['role'] === 'Customer Management') echo 'selected'; ?>>Customer Management</option>
+                                                                                </select>
                                                                             </div>
 
                                                                             <div class="mb-3">
@@ -447,7 +430,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                                 <!-- Add a form and submit the form when the user confirms deletion -->
                                                                 <form id="deleteForm" method="POST" action="crud_admin.php">
-                                                                    <input type="hidden" id="user_id" name="user_id" value="">
+                                                                    <input type="hidden" id="admin_id" name="admin_id" value="">
                                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                                 </form>
                                                             </div>
@@ -456,6 +439,8 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 </div>
                                             </tbody>
                                         </table>
+
+
                                         <!-- Add Modal -->
                                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -500,6 +485,16 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11">
                                                                 <span class="note" style="display: none; color: red;">Please enter a valid 11-digit number without symbols or letters.</span>
                                                             </div>
+                                                            
+                                                                <div class="mb-3">
+                                                                <label for="role" class="form-label">Role</label>
+                                                                <select name="role" class="form-control" required>
+                                                                    <option value="" disabled selected>Select your role</option>
+                                                                    <option value="Inventory Manager">Inventory Manager</option>
+                                                                    <option value="Order Manager">Order Manager</option>
+                                                                    <option value="Customer Management">Customer Management</option>
+                                                                </select>
+                                                            </div>
 
                                                             <div class="mb-3">
                                                                 <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
@@ -511,14 +506,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <div class="input-group">
                                                                     <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
                                                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="fas fa-eye"></i></button>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="mb-3">
-                                                                <label for="confirmPassword" class="form-label"><i class="fas fa-lock"></i> Confirm Password</label>
-                                                                <div class="input-group">
-                                                                    <input type="password" class="form-control" name="confirm" id="confirmPassword" placeholder="Confirm your password" required>
-                                                                    <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword"><i class="fas fa-eye"></i></button>
                                                                 </div>
                                                             </div>
 
@@ -576,14 +563,15 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous">
+    </script>
 
-    <script>
+      <script>
         $(document).ready(function() {
             $(".delete-btn").click(function() {
-                var user_id = $(this).data('user-id');
-                console.log("Delete button clicked with user_id: " + user_id); // Add this line
-                $("#user_id").val(user_id);
+                var admin_id = $(this).data('user-id');
+                console.log("Delete button clicked with admin_id: " + admin_id); // Add this line
+                $("#admin_id").val(admin_id);
                 $('#deleteConfirmationModal').modal('show');
             });
         });

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start(); // Start the session
 include "mysql_connect.php";
 
@@ -63,10 +63,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="67">
                             </span>
                             <span class="topnav-logo-sm">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="67">
                             </span>
                         </a>
 
@@ -222,8 +222,8 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                         send you the order's invoice.</p>
 
                                                     <div class="row">
-                                                        <div class="col-md-6 mx-auto w-70">
-                                                            <div class="border p-3 rounded mb-3 mb-md-0">
+                                                   <div class="col-md-6 w-70">
+                                                   <div class="border p-3 rounded mb-3 mb-md-0"> 
                                                                 <?php
                                                                 $select_query = mysqli_query($conn, "SELECT * FROM `tb_user` WHERE user_id = '$user_id'");
                                                                 if (mysqli_num_rows($select_query) > 0) {
@@ -295,27 +295,29 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                     $select_cart = mysqli_query($conn, "SELECT * FROM `tb_cart` WHERE user_id = '$user_id'");
 
                                                                     $grand_total = 0;
-                                                                    $total_discount = 0; // Initialize total discount
-                                                                    $discountApplied = false;
-                                                                    $shipping_fee = 40; // Shipping fee value
+                                                                    $total = 0;
+                                                                    $subtotal = 0;
+                                                                    $shipping_fee = 40;
+                                                                    $discounted_price = 0;
+                                                                    $discount_rate = 0.03;
 
                                                                     if (mysqli_num_rows($select_cart) > 0) {
                                                                         while ($fetch_cart = mysqli_fetch_assoc($select_cart)) {
                                                                             $quantity = $fetch_cart['quantity'];
                                                                             $price = $fetch_cart['price'];
 
-                                                                            // Calculate the discount for this item
-                                                                            $discounted_price = 0; // Default price without discount
-                                                                            if ($quantity >= 5) {
-                                                                                $discounted_price = $price * 0.1; // 10% discount
-                                                                                $discountApplied = true; // Set the flag to true
+                                                                            // Calculate the total for this item
+                                                                            $item_total = $price * $quantity;
+                                                                            // Add this item's total to the overall total
+                                                                            $total += $item_total;
+
+                                                                            $subtotal += $item_total;
+
+                                                                            if ($subtotal >= 5000) {
+                                                                                $discounted_price = $subtotal * (1 - $discount_rate); // Apply the 3% discount
+                                                                            } else {
+                                                                                $discounted_price = $subtotal; // No discount
                                                                             }
-
-                                                                            // Calculate the subtotal for this item
-                                                                            $sub_total = $price * $quantity;
-
-                                                                            // Add the subtotal to the grand total
-                                                                            $grand_total += $sub_total;
                                                                     ?>
                                                                             <tr>
                                                                                 <td>
@@ -333,22 +335,31 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         }
                                                                     }
 
-                                                                    // Calculate the total before discount and shipping fee
-                                                                    $total_before_discount_and_shipping = $grand_total;
+                                                                    // Calculate tax on the discounted sub total
+                                                                    $tax = $discounted_price * 0.12;
 
-                                                                    $total_discount = ($total_before_discount_and_shipping + $shipping_fee) * 0.10;
-
-                                                                    // Subtract the total discount from the grand total
-                                                                    $grand_total -= $total_discount;
-
-                                                                    // Add the shipping fee to the grand total
-                                                                    $grand_total += $shipping_fee;
+                                                                    // Calculate the grand total
+                                                                    $grand_total = $discounted_price + $tax + $shipping_fee;
 
                                                                     ?>
                                                                     <tr class="text-end">
                                                                     <tr>
                                                                         <td>Subtotal:</td>
-                                                                        <td>₱<?= number_format($total_before_discount_and_shipping, 2) ?></td>
+                                                                        <td>₱<?= number_format($subtotal, 2) ?></td>
+                                                                    </tr>
+                                                                    <?php if ($subtotal >= 5000) { ?>
+                                                                        <tr>
+                                                                            <td>Discounted Rate :</td>
+                                                                            <td>3%</td>
+                                                                        </tr>
+                                                                    <?php } ?>
+                                                                    <tr>
+                                                                        <td>Discounted Price : </td>
+                                                                        <td> ₱<?= number_format($discounted_price, 2) ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Sales Tax:</td>
+                                                                        <td> ₱<?= number_format($tax, 2) ?></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
@@ -358,18 +369,6 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                             ₱ <?= number_format($shipping_fee, 2) ?>
                                                                         </td>
                                                                     </tr>
-
-                                                                    <tr>
-                                                                        <td>Discount : </td>
-                                                                        <td> <?php
-                                                                                if ($discountApplied) {
-                                                                                    echo '₱-' . number_format($total_discount, 2) . '</td>';
-                                                                                } else {
-                                                                                    echo '₱0.00</td>';
-                                                                                }
-                                                                                ?></td>
-                                                                    </tr>
-
 
                                                                     <tr class="text-end">
                                                                         <td>
@@ -393,27 +392,22 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                             <div class="row">
 
                                                 <div class="col-lg-8">
-                                                    <h4 class="mt-2">Payment Selection</h4>
 
-                                                    <p class="text-muted mb-4">Fill the form below in order to
-                                                        send you the order's invoice.</p>
-
-                                                    <!-- Pay with Gcash box-->
+                                                  <!-- Pay with Gcash box-->
                                                     <div class="border p-3 mb-3 rounded">
                                                         <div class="row">
                                                             <div class="col-sm-8 text-center">
-                                                                <p class=" mb-0 ps-3 pt-1">You need to scan the QR to pay of the company to pay</p>
-                                                                <img src="assets/images/gcash payment.jpg" alt="" height="500">
+                                                                <p class=" mb-0 ps-3 pt-1"></p>
+                                                                <img src="assets/images/pay.png" alt="" height="400" width="750">
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <!-- end Pay with Gcash box-->
 
                                                     <!-- Pay with proof box-->
                                                     <div class="border p-3 mb-3 rounded mx-auto">
                                                         <div class="row">
                                                             <div class="col-sm-8">
-                                                                <p class="mb-0 ps-3 pt-1">Upload your proof payment</p>
+                                                                <p class="mb-0 ps-3 pt-1">Upload your proof payment</p> <br>
                                                                 <form action="place_order.php" method="post" enctype="multipart/form-data">
                                                                     <input type="file" name="proof_image" id="proofFile" accept=".jpg, .jpeg, .png" required>
                                                                     <div id="filePreview"></div> <!-- Container for the file preview -->
@@ -450,28 +444,30 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                     $select_cart = mysqli_query($conn, "SELECT * FROM `tb_cart` WHERE user_id = '$user_id'");
 
                                                                     $grand_total = 0;
-                                                                    $total_discount = 0; // Initialize total discount
-                                                                    $discountApplied = false;
-                                                                    $shipping_fee = 40; // Shipping fee value
-
+                                                                    $total = 0;
+                                                                    $subtotal = 0;
+                                                                    $shipping_fee = 40;
+                                                                    $discounted_price = 0;
+                                                                    $discount_rate = 0.03;
 
                                                                     if (mysqli_num_rows($select_cart) > 0) {
                                                                         while ($fetch_cart = mysqli_fetch_assoc($select_cart)) {
                                                                             $quantity = $fetch_cart['quantity'];
                                                                             $price = $fetch_cart['price'];
 
-                                                                            // Calculate the discount for this item
-                                                                            $discounted_price = 0; // Default price without discount
-                                                                            if ($quantity >= 5) {
-                                                                                $discounted_price = $price * 0.1; // 10% discount
-                                                                                $discountApplied = true; // Set the flag to true
+
+                                                                            // Calculate the total for this item
+                                                                            $item_total = $price * $quantity;
+                                                                            // Add this item's total to the overall total
+                                                                            $total += $item_total;
+
+                                                                            $subtotal += $item_total;
+
+                                                                            if ($subtotal >= 5000) {
+                                                                                $discounted_price = $subtotal * (1 - $discount_rate); // Apply the 3% discount
+                                                                            } else {
+                                                                                $discounted_price = $subtotal; // No discount
                                                                             }
-
-                                                                            // Calculate the subtotal for this item
-                                                                            $sub_total = $price * $quantity;
-
-                                                                            // Add the subtotal to the grand total
-                                                                            $grand_total += $sub_total;
                                                                     ?>
                                                                             <tr>
                                                                                 <td>
@@ -490,22 +486,31 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                     }
 
 
-                                                                    // Calculate the total before discount and shipping fee
-                                                                    $total_before_discount_and_shipping = $grand_total;
+                                                                    // Calculate tax on the discounted sub total
+                                                                    $tax = $discounted_price * 0.12;
 
-                                                                    $total_discount = ($total_before_discount_and_shipping + $shipping_fee) * 0.10;
-
-                                                                    // Subtract the total discount from the grand total
-                                                                    $grand_total -= $total_discount;
-
-                                                                    // Add the shipping fee to the grand total
-                                                                    $grand_total += $shipping_fee;
+                                                                    // Calculate the grand total
+                                                                    $grand_total = $discounted_price + $tax + $shipping_fee;
 
                                                                     ?>
                                                                     <tr class="text-end">
                                                                     <tr>
                                                                         <td>Subtotal:</td>
-                                                                        <td>₱<?= number_format($total_before_discount_and_shipping, 2) ?></td>
+                                                                        <td>₱<?= number_format($subtotal, 2) ?></td>
+                                                                    </tr>
+                                                                    <?php if ($subtotal >= 5000) { ?>
+                                                                        <tr>
+                                                                            <td>Discounted Rate :</td>
+                                                                            <td>3%</td>
+                                                                        </tr>
+                                                                    <?php } ?>
+                                                                    <tr>
+                                                                        <td>Discounted Price : </td>
+                                                                        <td> ₱<?= number_format($discounted_price, 2) ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Sales Tax:</td>
+                                                                        <td> ₱<?= number_format($tax, 2) ?></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
@@ -515,16 +520,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                             ₱ <?= number_format($shipping_fee, 2) ?>
                                                                         </td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <td>Discount : </td>
-                                                                        <td> <?php
-                                                                                if ($discountApplied) {
-                                                                                    echo '₱-' . number_format($total_discount, 2) . '</td>';
-                                                                                } else {
-                                                                                    echo '₱0.00</td>';
-                                                                                }
-                                                                                ?></td>
-                                                                    </tr>
+                                                                    
                                                                     <tr class="text-end">
                                                                         <td>
                                                                             <h5 class="m-2"> Grand Total:</h5>
@@ -586,6 +582,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                         <h4 class="header-title mb-3">Order Summary</h4>
 
                                                         <div class="table-responsive">
+                                                            
                                                             <table class="table table-centered mb-0">
                                                                 <thead>
                                                                     <th>Product</th>

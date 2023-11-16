@@ -188,14 +188,20 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                             <table class="table table-centered mb-0">
                                 <tbody>
                                     <?php
-                                    $select_products = mysqli_query($conn, "SELECT DISTINCT order_id, proof_image, order_date, order_status FROM `tb_order` WHERE `user_id` = $user_id");
+                                    $select_products = mysqli_query($conn, "SELECT DISTINCT o.order_id, o.proof_image, o.order_date, o.order_status, r.status, r.message 
+                                    FROM `tb_order` o
+                                    LEFT JOIN `tb_refund` r ON o.order_id = r.order_id
+                                    WHERE o.`user_id` = $user_id");
+
                                     $statusBadgeClasses = [
                                         'Pending' => 'badge-info-lighten',
                                         'To Ship' => 'badge-primary-lighten',
                                         'To Receive' => 'badge-warning-lighten',
                                         'Declined' => 'badge-danger-lighten',
                                         'Complete' => 'badge-success-lighten',
+                                        'Accept' => 'badge-success-lighten',
                                         'Cancelled' => 'badge-danger-lighten',
+                                        'Decline' => 'badge-danger-lighten',
                                     ];
 
                                     if (mysqli_num_rows($select_products) > 0) {
@@ -210,7 +216,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <th>Uploaded Date</th>
                                                             <th>Invoice</th>
                                                             <th>Order Status</th>
-                                                            <th></th>
+                                                            <th>Refund Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -253,7 +259,18 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         <?php echo $row['order_status']; ?>
                                                                     </span></h5>
                                                             </td>
-
+                                                            <td>
+                                                                <h5>
+                                                                    <?php if (!empty($row['status'])) : ?>
+                                                                        <span class="badge <?php echo isset($statusBadgeClasses[$row['status']]) ? $statusBadgeClasses[$row['status']] : 'badge-info-lighten'; ?>">
+                                                                            <?php echo $row['status']; ?>
+                                                                        </span>
+                                                                        <?php if ($row['status'] === 'Decline') : ?>
+                                                                            <p><?php echo "Message: " . $row['message']; ?></p>
+                                                                        <?php endif; ?>
+                                                                    <?php endif; ?>
+                                                                </h5>
+                                                            </td>
 
                                                         </tr>
                                                     </tbody>
@@ -422,44 +439,6 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
         // Call the updateCartCount function to initialize the cart count
         updateCartCount();
-    </script>
-
-    <!-- Add this script to your HTML page -->
-    <script>
-        // Function to update the notification badge count
-        function updateNotificationBadge(count) {
-            const badge = document.querySelector('.noti-icon-badge');
-            badge.innerText = count;
-        }
-
-        // Function to show a notification
-        function showNotification(message) {
-            // Use your preferred notification library or method here
-            alert(message);
-        }
-
-        // Function to handle status change
-        function handleStatusChange(newStatus) {
-            // Check if the status is from tb_refund
-            if (newStatus === 'tb_refund') {
-                // Increment the notification count (you might want to get the current count from the server)
-                const currentCount = parseInt(document.querySelector('.noti-icon-badge').innerText) || 0;
-                updateNotificationBadge(currentCount + 1);
-
-                // Show a notification
-                showNotification('Status changed to tb_refund');
-            }
-        }
-
-        // Simulate a status change (replace this with your actual logic)
-        function simulateStatusChange() {
-            // Replace this with the actual status from your application
-            const newStatus = 'tb_refund';
-            handleStatusChange(newStatus);
-        }
-
-        // Call the function to simulate a status change
-        simulateStatusChange();
     </script>
 
 </body>
