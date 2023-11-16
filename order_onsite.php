@@ -395,6 +395,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <div class="mb-3">
                                                                 <label for="simpleinput" class="form-label">Variation</label>
                                                                 <select name="variation" id="variation" class="form-control" required>
+                                                                    <input type="hidden" name="variation_price" id="variation_price" value="">
                                                                     <option value="" disabled selected>Select product variation</option>
                                                                 </select>
                                                             </div>
@@ -544,6 +545,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                                             if (selectedOption) {
                                                 var variationPrice = selectedOption.data('variation_price');
+                                                $('#variation_price').val(variationPrice);
                                                 console.log(variationPrice)
                                                 updateTotalPrice(variationPrice);
                                             } else {

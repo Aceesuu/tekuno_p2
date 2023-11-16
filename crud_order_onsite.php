@@ -5,12 +5,13 @@ if (isset($_POST['add_product'])) {
     $p_name = $_POST['p_name'];
     $p_qty = $_POST['p_qty'];
     $p_price = $_POST['price'];
-    $subtotal = $p_qty * $p_price;
+    $var_price = $_POST['variation_price'];
+    $subtotal = ($p_qty * $p_price) + $var_price;
     $discount = isset($_POST['discount']) ? floatval($_POST['discount']) : 0;
 
     if ($discount > 0) {
         // Calculate the total price with the discount taken into account
-        $total_price = $p_qty * $p_price * (1 - ($discount / 100));
+        $total_price = $p_qty * $p_price * (1 - ($discount / 100)) + $var_price;
     } else {
         // If there's no discount, the total price is the same as the price
         $total_price = $subtotal;
