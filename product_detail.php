@@ -340,16 +340,44 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                 <h4>
                                                     <span class="badge <?php echo ($product['qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
                                                         <?php echo ($product['qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
+                                                        <?php 
+                                                            if ($product['qty'] > 0) {
+                                                                echo 'Instock';
+                                                            } else {
+                                                                if ($product['new_qty'] > 0) {
+                                                                    echo 'Instock';
+                                                                } else {
+                                                                    echo 'Out of Stock';
+                                                                }
+                                                            }
+                                                        ?>
                                                     </span>
                                                 </h4>
-                                                <h5><span>Stocks:</span>&nbsp<?php echo $product['qty']; ?></h5>
+                                                <h5><span>Stocks:</span>&nbsp
+                                                    <?php 
+                                                        if ($product['qty'] == 0) {
+                                                            echo $product['new_qty'];
+                                                        } else {    
+                                                            echo $product['qty'];
+                                                        }
+                                                    ?>
+                                                </h5>
 
                                                 </p>
 
                                                 <!-- Product price -->
                                                 <div class="mt-4">
                                                     <h6 class="font-14">Price:</h6>
-                                                    <h3 id="displayed_price">₱<?php echo !empty($variations) ? $variations[0]['price'] : $product['price']; ?></h3>
+                                                    <h3 id="displayed_price">
+                                                        <!-- ₱<?php echo !empty($variations) ? $variations[0]['price'] : $product['price']; ?> -->
+                                                        <?php 
+                                                            if ($product['qty'] == 0) {
+                                                                echo !empty($variations) ? $variations[0]['price'] : $product['new_price'];
+                                                            } else {    
+                                                                echo !empty($variations) ? $variations[0]['price'] : $product['price'];
+                                                            }
+                                                        ?>
+                                                    </h3>
                                                 </div>
 
                                                 <!-- Variation options -->
