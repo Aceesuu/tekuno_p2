@@ -34,6 +34,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <link rel="shortcut icon" href="assets/images/logoo.ico">
 
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <!-- third party css -->
@@ -43,7 +44,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link href="css/dashcus1.css" rel="stylesheet" />
+    <link href="css/dashcc.css" rel="stylesheet" />
 </head>
 
 <body class="loading" data-layout="topnav" data-layout-config='{"layoutBoxed":false,"darkMode":false,"showRightSidebarOnStart": true}'>
@@ -58,8 +59,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 80px;">
-
+                <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
                         <!-- LOGO -->
@@ -71,78 +71,116 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                         </a>
-
+                        <br>
                         <!-- Search Bar -->
                         <div class="topnav-search">
                             <form action="search.php" method="get">
-                                <input type="text" name="query" placeholder="Search...">
-                                <button type="submit"><i class="fa fa-search"></i></button>
+                                <div class="search-bar">
+                                    <input type="text" name="query" id="search-input" placeholder="Search...">
+                                    <input type="hidden" name="original-query" id="original-query">
+                                    <button type="submit"><i class="fa fa-search"></i></button>
+                                </div>
                             </form>
                         </div>
 
                         <ul class="list-unstyled topbar-menu float-end mb-0">
 
-                            <li class="dropdown notification-list">
+                            <li class="dropdown notification-list" style="display: flex; justify-content: center; align-items: center;">
                                 <!-- Add to Home link -->
-                                <a class="nav-link" href="dashboard-customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-home-outline" style="font-size: 27px; margin-top: 15px;"></i>
+                                <a class="nav-link" href="dashboard-customer.php">
+                                    <i class="mdi mdi-home-outline" style="font-size: 28px;"></i>
                                 </a>
                             </li>
 
                             <li class="dropdown notification-list">
                                 <!-- Add to Cart link -->
-                                <a class="nav-link" href="addcart.php" style="display: flex; align-items: center;">
-                                    <i class='uil uil-shopping-cart-alt' style="font-size: 25px; margin-top: 15px;"></i>
+                                <a class="nav-link" href="addcart.php" style="display: flex; justify-content: center; align-items: center;">
+                                    <i class='uil uil-shopping-cart-alt' style="font-size: 27px;"></i>
                                     <span id="cart-count" class="red-number">0</span>
                                 </a>
                             </li>
 
                             <li class="dropdown notification-list">
                                 <!-- Add to proof link -->
-                                <a class="nav-link" href="order_customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-inbox-multiple" style="font-size: 25px; margin-top: 15px;"></i>
+                                <a class="nav-link" href="order_customer.php" style="display: flex; justify-content: center; align-items: center;">
+                                    <i class="mdi mdi-inbox-multiple" style="font-size: 27px;"></i>
                                 </a>
                             </li>
 
                             <li class="dropdown notification-list">
                                 <!-- Add to proof link -->
-                                <a class="nav-link" href="proof_customer.php" style="display: flex; align-items: center;">
-                                    <i class="dripicons-wallet" style="font-size: 24px; margin-top: 15px;"></i>
+                                <a class="nav-link" href="proof_customer.php" style="display: flex; justify-content: center; align-items: center;">
+                                    <i class="dripicons-wallet" style="font-size: 26px;"></i>
                                 </a>
                             </li>
+
 
 
 
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <i class="dripicons-bell noti-icon"></i>
-                                    <span class="noti-icon-badge"></span>
+                                    <i class="dripicons-bell noti-icon" style="display: flex; justify-content: center; align-items: flex-end; margin-top: 8px;"></i>
+
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop">
-
 
                                     <!-- item-->
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
+
                                             </span>Notification
+
                                         </h5>
                                     </div>
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id`, `order_date` DESC");
 
-                                    <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                        View All
-                                    </a>
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
+
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
+
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
+
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
+
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Order # <?php echo $order['order_id']; ?> has status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
 
                                 </div>
+
                             </li>
 
                             <li class="dropdown notification-list">
-                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="position: relative; top: -10px;">
                                     <span class="account-user-avatar">
                                         <?php
                                         $user_image = $user_data['image'];
@@ -231,8 +269,9 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                 </script>
 
                 <div class="topbar">
-                    <h3>Category</h3>
+                    <h3>PRODUCT CATEGORY: </h3>
                     <ul class="categories">
+                        <li class="category active-category" data-category-name="all">All</li>
                         <?php
                         $sql = "SELECT DISTINCT category FROM tb_product";
                         $result = mysqli_query($conn, $sql);
@@ -248,6 +287,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                         ?>
                     </ul>
                 </div>
+
 
                 <!-- PRODUCTS DISPLAY -->
                 <div class="container">
@@ -441,20 +481,31 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                 // Add the 'active-category' class to the clicked category
                 $(this).addClass('active-category');
 
-                $.ajax({
-                    url: 'filter_products.php',
-                    type: 'POST',
-                    data: {
-                        category: category
-                    },
-                    success: function(data) {
-                        $('.box-container').html(data);
-                    }
-                });
+                if (category === 'all') {
+                    // If "Show All" is clicked, load all products
+                    $.ajax({
+                        url: 'show_all_products.php', // Create a PHP file to handle showing all products
+                        type: 'POST',
+                        success: function(data) {
+                            $('.box-container').html(data);
+                        }
+                    });
+                } else {
+                    // Load products for the selected category
+                    $.ajax({
+                        url: 'filter_products.php',
+                        type: 'POST',
+                        data: {
+                            category: category
+                        },
+                        success: function(data) {
+                            $('.box-container').html(data);
+                        }
+                    });
+                }
             });
         });
     </script>
-
 </body>
 
 </html>

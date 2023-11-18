@@ -338,7 +338,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                 </h3>
                                                 <p class="font-16">
                                                 <h4>
-                                                    <span class="badge <?php echo ($product['qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
+                                                     <span class="badge <?php echo ($product['qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
                                                         <?php echo ($product['qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
                                                         <?php 
                                                             if ($product['qty'] > 0) {

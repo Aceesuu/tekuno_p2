@@ -155,12 +155,12 @@ if (isset($_GET['order_id'])) {
                                 <span> Admins </span>
                             </a>
                         </li>
-
+                        
                         <li class="side-nav-item">
-                            <a href="forecast.php" class="side-nav-link">
-                                <i class="uil-chart"></i>
-                                <span> Forecast </span>
-                            </a>
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
+                        </a>
                         </li>
 
                         <!-- End Sidebar -->
@@ -379,45 +379,62 @@ if (isset($_GET['order_id'])) {
 
                                                     if ($order_result && mysqli_num_rows($order_result) > 0) {
                                                         $grand_total = 0;
+                                                        $sub_total = 0;
+                                                        $shipping_fee = 40;
+                                                        $discounted_price = 0;
+                                                        $discount_rate = 0.03;
 
                                                         while ($order_data = mysqli_fetch_assoc($order_result)) {
-                                                            $item_total = $order_data['qty'] * $order_data['price'];
-                                                            $grand_total += $item_total;
-                                                            $discount = $order_data['discount'];
+                                                            $quantity = $order_data['qty'];
+                                                            $price = $order_data['price'];
+                                                            $item_total = $quantity * $price;
+
+                                                            // Add this item's total to the overall total
+                                                            $sub_total += $item_total;
                                                         }
 
-                                                        // Display the Grand Total
+                                                        if ($sub_total >= 5000) {
+                                                            $discounted_price = $sub_total * (1 - $discount_rate); // Apply the 3% discount
+                                                        } else {
+                                                            $discounted_price = $sub_total; // No discount
+                                                        }
+
+                                                        // Calculate tax on the discounted sub total
+                                                        $tax = $discounted_price * 0.12;
+
+                                                        // Calculate the grand total
+                                                        $grand_total = $discounted_price + $tax + $shipping_fee;
                                                 ?>
                                                         <tr>
-                                                            <td>Subtotal :</td>
-                                                            <td>₱<?php echo $grand_total; ?></td>
+                                                            <td>Subtotal:</td>
+                                                            <td>₱<?= number_format($sub_total, 2) ?></td>
                                                         </tr>
-                                                        <?php
+                                                        <?php if ($sub_total >= 5000) { ?>
+                                                            <tr>
+                                                                <td>Discounted Rate :</td>
+                                                                <td>3%</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Discounted Price : </td>
+                                                                <td> ₱<?= number_format($discounted_price, 2) ?></td>
+                                                            </tr>
+                                                        <?php } ?>
 
-                                                        // Display the Shipping Charge
-                                                        $shipping_charge = 40;
-                                                        ?>
+
                                                         <tr>
-                                                            <td>Shipping Charge :</td>
-                                                            <td>₱<?php echo $shipping_charge; ?></td>
+                                                            <td>Sales Tax:</td>
+                                                            <td> ₱<?= number_format($tax, 2) ?></td>
                                                         </tr>
-                                                        <?php
-
-                                                        ?>
                                                         <tr>
-                                                            <td>Discount :</td>
-                                                            <td>₱<?php echo $discount; ?></td>
+                                                            <td>Shipping Fee:</td>
+                                                            <td> ₱<?= number_format($shipping_fee, 2) ?></td>
                                                         </tr>
-                                                        <?php
 
-                                                        // Calculate and display the Total
-                                                        $total = ($grand_total + $shipping_charge) - $discount;
-                                                        ?>
                                                         <tr>
                                                             <td>Total :</td>
-                                                            <td>₱<?php echo $total; ?></td>
+                                                            <td>₱<?= number_format($grand_total, 2) ?></td>
                                                         </tr>
-                                                <?php
+                                                    <?php
                                                     } else {
                                                         // Handle the case where order data couldn't be retrieved
                                                         $error_message = "Error: Unable to retrieve order data.";
@@ -426,8 +443,18 @@ if (isset($_GET['order_id'])) {
                                                     // Handle the case where the order_id parameter is not provided in the URL
                                                     $error_message = "Error: Missing order_id parameter.";
                                                 }
+
+                                                // Display error message if there is an issue
+                                                if (isset($error_message)) {
+                                                    ?>
+                                                    <tr>
+                                                        <td colspan="2"><?php echo $error_message; ?></td>
+                                                    </tr>
+                                                <?php
+                                                }
                                                 ?>
                                             </tbody>
+
                                         </table>
                                     </div>
 

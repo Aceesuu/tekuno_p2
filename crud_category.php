@@ -27,9 +27,9 @@ if (isset($_POST['add_product'])) {
 
 if (isset($_POST['update_product'])) {
     $update_p_id = $_POST['update_p_id'];
-    $update_p_name = $_POST['update_p_name'];
+    $update_p_cat = $_POST['update_p_cat'];
 
-    $update_query = mysqli_query($conn, "UPDATE `tb_category` SET category_name = '$update_p_name' WHERE category_id = '$update_p_id'");
+    $update_query = mysqli_query($conn, "UPDATE `tb_category` SET category_name = '$update_p_cat' WHERE category_id = '$update_p_id'");
 
     // Check if the update was successful
     if ($update_query) {

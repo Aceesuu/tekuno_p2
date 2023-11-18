@@ -135,11 +135,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             <span> Admins </span>
                         </a>
                     </li>
-
                     <li class="side-nav-item">
-                        <a href="forecast.php" class="side-nav-link">
-                            <i class="uil-chart"></i>
-                            <span> Forecast </span>
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
                         </a>
                     </li>
                     <!-- End Sidebar -->
@@ -172,29 +171,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
-
                             </div>
                         </li>
 
@@ -224,7 +201,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </div>
 
                                 <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <a href="profile_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
                                     <span>My Account</span>
                                 </a>
@@ -243,11 +220,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
+                         
                         </form>
                     </div>
                 </div>

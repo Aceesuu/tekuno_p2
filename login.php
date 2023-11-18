@@ -44,13 +44,13 @@ if (isset($_POST['submit'])) {
       header("Location: dashboard.php");
     } elseif ($role == "Inventory Manager") {
       $_SESSION['admin_id'] = $admin['admin_id'];
-      header("Location: admin-inventory.php");
+     header("Location: dashboard-inventory.php");
     } elseif ($role == "Order Manager") {
       $_SESSION['admin_id'] = $admin['admin_id'];
-      header("Location: admin-orders.php");
+       header("Location: dashboard-order.php");
     } elseif ($role == "Customer Management") {
       $_SESSION['admin_id'] = $admin['admin_id'];
-      header("Location: admin-role-customer.php");
+    header("Location: dashboard-role-customer.php");
     }
     exit();
   } else {
@@ -113,12 +113,12 @@ if (isset($_POST['submit'])) {
               <form action="login.php" method="post">
               <div class="form-group first">
                   <label for="email" style="color: white;"> <i class="fa-solid fa-envelope"></i> Email Address: </label>
-                  <input type="text" class="form-control" name="email" placeholder="your-email@gmail.com">
+                  <input type="text" class="form-control" name="email" placeholder="Enter your email address">
                 </div>
                 <div class="form-group last mb-3">
                   <label for="password" style="color: white;"> <i class="fas fa-lock"></i> Password: </label>
                   <div class="input-group">
-                    <input type="password" class="form-control" placeholder="Your Password" id="password" name="password">
+                    <input type="password" class="form-control" placeholder="Enter your password" id="password" name="password">
                     <div class="input-group-append">
                       <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="mdi mdi-eye" style="color: white;"></i></button>
                     </div>

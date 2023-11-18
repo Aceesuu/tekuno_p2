@@ -38,7 +38,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <link rel="shortcut icon" href="assets/images/logoo.ico">
 
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- third party css -->
     <link href="assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css">
@@ -47,7 +47,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link href="css/dashcus1.css" rel="stylesheet" />
+    <link href="css/dashcc.css" rel="stylesheet"/>
 </head>
 
 <body class="loading" data-layout="topnav" data-layout-config='{"layoutBoxed":false,"darkMode":false,"showRightSidebarOnStart": true}'>
@@ -62,7 +62,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 80px;">
+                <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
 
                     <div class="container-fluid">
 
@@ -75,91 +75,96 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 <img src="assets/images/logo.png" alt="" height="69">
                             </span>
                         </a>
-
-                        <!-- Search Bar -->
-                        <div class="topnav-search">
-                            <form action="search.php" method="get">
-                                <input type="text" name="query" placeholder="Search...">
-                                <button type="submit"><i class="fa fa-search"></i></button>
-                            </form>
-                        </div>
-
-                        <ul class="list-unstyled topbar-menu float-end mb-0">
-
-                            <li class="dropdown notification-list">
-                                <!-- Add to Home link -->
-                                <a class="nav-link" href="dashboard-customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-home-outline" style="font-size: 27px; margin-top: 15px;"></i>
-                                </a>
-                            </li>
-
-                            <li class="dropdown notification-list">
-                                <!-- Add to Cart link -->
-                                <a class="nav-link" href="addcart.php" style="display: flex; align-items: center;">
-                                    <i class='uil uil-shopping-cart-alt' style="font-size: 25px; margin-top: 15px;"></i>
-                                    <span id="cart-count" class="red-number">0</span>
-                                </a>
-                            </li>
-
-                            <li class="dropdown notification-list">
-                                <!-- Add to proof link -->
-                                <a class="nav-link" href="order_customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-inbox-multiple" style="font-size: 25px; margin-top: 15px;"></i>
-                                </a>
-                            </li>
-
-                            <li class="dropdown notification-list">
-                                <!-- Add to proof link -->
-                                <a class="nav-link" href="proof_customer.php" style="display: flex; align-items: center;">
-                                    <i class="dripicons-wallet" style="font-size: 24px; margin-top: 15px;"></i>
-                                </a>
-                            </li>
+                        <br>
+                    <!-- Search Bar -->
+                    <div class="topnav-search">
+    <form action="search.php" method="get">
+        <div class="search-bar">
+            <input type="text" name="query" id="search-input" placeholder="Search...">
+            <input type="hidden" name="original-query" id="original-query">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </div>
+    </form>
+</div>
 
 
 
-                            <li class="dropdown notification-list">
-                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <i class="dripicons-bell noti-icon"></i>
-                                    <span class="noti-icon-badge"></span>
-                                </a>
+<ul class="list-unstyled topbar-menu float-end mb-0">
 
-                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop">
+<li class="dropdown notification-list" style="display: flex; justify-content: center; align-items: center;">
+ <!-- Add to Home link -->
+ <a class="nav-link" href="dashboard-customer.php">
+    <i class="mdi mdi-home-outline" style="font-size: 28px;"></i>
+  </a>
+</li>
+
+    <li class="dropdown notification-list">
+        <!-- Add to Cart link -->
+        <a class="nav-link" href="addcart.php" style="display: flex; justify-content: center; align-items: center;">
+            <i class='uil uil-shopping-cart-alt' style="font-size: 27px;"></i>
+            <span id="cart-count" class="red-number">0</span>
+        </a>
+    </li>
+
+    <li class="dropdown notification-list">
+        <!-- Add to proof link -->
+        <a class="nav-link" href="order_customer.php" style="display: flex; justify-content: center; align-items: center;">
+            <i class="mdi mdi-inbox-multiple" style="font-size: 27px;"></i>
+        </a>
+    </li>
+
+    <li class="dropdown notification-list">
+        <!-- Add to proof link -->
+        <a class="nav-link" href="proof_customer.php" style="display: flex; justify-content: center; align-items: center;">
+            <i class="dripicons-wallet" style="font-size: 26px;"></i>
+        </a>
+    </li>
 
 
-                                    <!-- item-->
-                                    <div class="dropdown-item noti-title">
-                                        <h5 class="m-0">
-                                            <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
-                                            </span>Notification
-                                        </h5>
-                                    </div>
+    <li class="dropdown notification-list">
+        <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="dripicons-bell noti-icon"style="display: flex; justify-content: center; align-items: flex-end; margin-top: 8px;"></i>
 
-                                    <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                        View All
-                                    </a>
 
-                                </div>
-                            </li>
+            <span class="noti-icon-badge"></span>
+        </a>
 
-                            <li class="dropdown notification-list">
-                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <span class="account-user-avatar">
-                                        <?php
-                                        $user_image = $user_data['image'];
-                                        if (!empty($user_image)) {
-                                            // Display the user's image if available
-                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
-                                        } else {
-                                            // Display a default avatar image when no user image is available
-                                            echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle">';
-                                        }
-                                        ?>
-                                    </span>
-                                    <span>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop">
+
+
+            <!-- item-->
+            <div class="dropdown-item noti-title">
+                <h5 class="m-0">
+                    <span class="float-end">
+                        <a href="javascript: void(0);" class="text-dark">
+                            <small>Clear All</small>
+                        </a>
+                    </span>Notification
+                </h5>
+            </div>
+
+            <!-- All-->
+            <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                View All
+            </a>
+
+        </div>
+    </li>
+
+    <li class="dropdown notification-list">
+<a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="position: relative; top: -10px;">
+<span class="account-user-avatar">
+<?php
+$user_image = $user_data['image'];
+if (!empty($user_image)) {
+// Display the user's image if available
+echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
+} else {
+// Display a default avatar image when no user image is available
+echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle">';
+}
+?>
+</span>
                                         <span class="account-user-name"><?php echo $user_data['firstName'] . ' ' . $user_data['lastName']; ?></span>
                                     </span>
                                 </a>
@@ -196,7 +201,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                     </div>
                 </div>
                 <!-- end Topbar -->
-                <?php
+ <?php
                 if (isset($_GET['query'])) {
                     $searchQuery = $_GET['query'];
 
@@ -206,37 +211,45 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                     $result = mysqli_query($conn, $sql);
 
                     if ($result) {
-                        echo '<div class="container">';
-                        echo '<div class="search-results">Search results for ' . $searchQuery . '</div>';
-                        echo '<section class="products">';
-                        echo '<div class="box-container">';
+                        if (mysqli_num_rows($result) > 0) {
+                            echo '<div class="container">';
+                            echo '<br><div class="search-results" style="display: inline; white-space: nowrap;">Search results for: ' . $searchQuery . '<br></div>';
+                            echo '<section class="products">';
+                            echo '<div class="box-container">';
 
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            $product_id = $row['product_id'];
-                            $product_name = $row['name'];
-                            $product_price = $row['price'];
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $product_id = $row['product_id'];
+                                $product_name = $row['name'];
+                                $product_price = $row['price'];
 
-                            // Display products as before (you can reuse your existing product listing code)
-                            echo '<div class="box">';
-                            echo '<a href="product_detail.php?product_id=' . $product_id . '">';
-                            echo '<img src="uploaded_img/' . $row['image'] . '" alt="' . $product_name . '">';
-                            echo '</a>';
-                            echo '<div class="details">';
-                            echo '<h3>';
-                            echo '<a href="product_detail.php?product_id=' . $product_id . '">' . $product_name . '</a>';
-                            echo '</h3>';
-                            echo '<div class="price">₱' . $product_price . '</div>';
+                                // Display products as before (you can reuse your existing product listing code)
+                                echo '<div class="box">';
+                                echo '<a href="product_detail.php?product_id=' . $product_id . '">';
+                                echo '<img src="uploaded_img/' . $row['image'] . '" alt="' . $product_name . '">';
+                                echo '</a>';
+                                echo '<div class="details">';
+                                echo '<h3>';
+                                echo '<a href="product_detail.php?product_id=' . $product_id . '">' . $product_name . '</a>';
+                                echo '</h3>';
+                                echo '<div class="price">₱' . $product_price . '</div>';
+                                echo '</div>';
+                                echo '<form action="product_detail.php" method="get">';
+                                echo '<input type="hidden" name="product_id" value="' . $product_id . '">';
+                                echo '<input type="submit" class="btn" value="View Product" name="add_to_cart" style="text-align: center;">';
+                                echo '</form>';
+                                echo '</div>';
+                            }
+
                             echo '</div>';
-                            echo '<input type="hidden" name="product_id" value="' . $product_id . '">';
-                            echo '<input type="submit" class="btn" value="View Product" name="add_to_cart" style="text-align: center;">';
+                            echo '</section>';
+                            echo '</div>';
+                        } else {
+                            echo '<div class="container">';
+                            echo 'No matching products found for: ' . $searchQuery;
                             echo '</div>';
                         }
-
-                        echo '</div>';
-                        echo '</section>';
-                        echo '</div>';
                     } else {
-                        echo 'No matching products found.';
+                        echo 'Error in the database query.';
                     }
                 }
                 ?>
@@ -363,6 +376,21 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
             }
         }
     </script>
+
+<script>
+    // Get the search query from the URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get("query");
+
+    // Set the input field's value if the query parameter is present
+    if (queryParam) {
+        const searchInput = document.getElementById("search-input");
+        const originalQuery = document.getElementById("original-query");
+
+        searchInput.value = queryParam;
+        originalQuery.value = queryParam;
+    }
+</script>
 
     <script>
         $(document).ready(function() {

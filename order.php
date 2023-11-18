@@ -28,16 +28,37 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/logoo.ico">
 
-    <!-- Datatables css -->
-    <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css" />
-    <!-- third party css end -->
+    <!-- third party css -->
+    <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
-    <link rel="stylesheet" href=" css/order.css">
+    <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script defer src="script.js"></script>
+
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/buttons.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+
+    <!-- DataTables Buttons JavaScript -->
+    <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script defer src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
 
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+
+    <link rel="stylesheet" href="css/order1.css">
 </head>
 
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
@@ -81,9 +102,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
-                                      <li>
-                                    <a href="category.php">Product Category</a>
-                                </li>
+                                    <li>
+                                        <a href="category.php">Product Category</a>
+                                    </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>
@@ -110,7 +131,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         <li>
                                             <a href="order.php">Order Details</a>
                                         </li>
-                                         <li>
+                                        <li>
                                             <a href="order_onsite.php">Order Onsites</a>
                                         </li>
                                         <li>
@@ -133,12 +154,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <span> Admins </span>
                             </a>
                         </li>
-
+                        
                         <li class="side-nav-item">
-                            <a href="forecast.php" class="side-nav-link">
-                                <i class="uil-chart"></i>
-                                <span> Forecast </span>
-                            </a>
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
+                        </a>
                         </li>
                         <!-- End Sidebar -->
 
@@ -170,29 +191,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
+                     
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
+                       
 
                             </div>
                         </li>
@@ -240,16 +242,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     <button class="button-menu-mobile open-left">
                         <i class="mdi mdi-menu"></i>
                     </button>
-                    <div class="app-search dropdown d-none d-lg-block">
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
-                        </form>
-
-                    </div>
+                
                 </div>
                 <!-- end Topbar -->
 
@@ -282,25 +275,22 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <div class="d-flex align-items-center">
                                                         <label for="status-select" class="me-2">Status</label>
                                                         <select class="form-select" id="status-select">
-                                                            <option selected="">Choose...</option>
+                                                            <option value="0">All</option>
                                                             <option value="1">Pending</option>
                                                             <option value="2">To Ship</option>
                                                             <option value="3">To Receive</option>
                                                             <option value="4">Decline</option>
+                                                            <option value="5">Complete</option>
+                                                            <option value="6">Cancelled</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="col-xl-4">
-                                            <div class="text-xl-end mt-xl-0 mt-2">
-                                                <a href="pdf.php" class="btn btn-light mb-2" target="_blank">Export</a>
-                                            </div>
-                                        </div><!-- end col-->
-                                    </div>
+                                    
 
                                     <div class="table-responsive">
-                                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                        <table id="example" class="table dt-responsive nowrap w-100">
                                             <thead>
                                                 <tr>
                                                     <th class="all">Order ID</th>
@@ -316,37 +306,42 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 $select_products = mysqli_query($conn, "SELECT o.*, u.firstName, u.lastName FROM `tb_order` AS o INNER JOIN `tb_user` AS u ON o.user_id = u.user_id");
                                                 $statusBadgeClasses = [
                                                     'Pending' => 'badge-info-lighten',
-                                                    'To Ship' => 'badge-success-lighten',
+                                                    'To Ship' => 'badge-primary-lighten',
                                                     'To Receive' => 'badge-warning-lighten',
                                                     'Declined' => 'badge-danger-lighten',
+                                                    'Complete' => 'badge-success-lighten',
+                                                    'Cancelled' => 'badge-danger-lighten',
                                                 ];
 
-                                                $groupedOrders = [];
+                                                $allOrders = [];
 
                                                 if (mysqli_num_rows($select_products) > 0) {
                                                     while ($row = mysqli_fetch_assoc($select_products)) {
                                                         $orderId = $row['order_id'];
-                                                        if (!isset($groupedOrders[$orderId])) {
-                                                            $groupedOrders[$orderId] = [
-                                                                'order_id' => $orderId,
-                                                                'total' => 0,
-                                                                'shipping' => 40, // Set the shipping cost for each order
-                                                                'order_status' => $row['order_status'],
-                                                                'discount' => $row['discount'],
-                                                                'customerName' => $row['firstName'] . ' ' . $row['lastName'],
-                                                                'proof_image' => $row['proof_image'],
-                                                            ];
+                                                        // Create a new entry for each order, including single-item orders
+                                                        $orderData = [
+                                                            'order_id' => $orderId,
+                                                            'total' => $row['subtotal'],
+                                                            'shipping' => 40, // Set the shipping cost for each order
+                                                            'order_status' => $row['order_status'],
+                                                            'discount' => $row['discount'],
+                                                            'customerName' => $row['firstName'] . ' ' . $row['lastName'],
+                                                            'proof_image' => $row['proof_image'],
+                                                        ];
+
+                                                        if (!isset($allOrders[$orderId])) {
+                                                            $allOrders[$orderId] = $orderData;
+                                                        } else {
+                                                            // If the order already exists in the array, update the total amount
+                                                            $allOrders[$orderId]['total'] += $orderData['total'];
                                                         }
-                                                        // Add the price of the current product and shipping cost to the total for this order
-                                                        $groupedOrders[$orderId]['total'] += $row['subtotal'] + $groupedOrders[$orderId]['shipping'];
                                                     }
                                                 }
 
-                                                foreach ($groupedOrders as $order) {
+                                                foreach ($allOrders as $order) {
                                                 ?>
                                                     <tr>
-                                                        <td><a href="order_info.php?order_id=<?php echo $order['order_id']; ?>" class="text-body fw-bold">Order #<?php echo $order['order_id']; ?></a>
-                                                        </td>
+                                                        <td><u><a href="order_info.php?order_id=<?php echo $order['order_id']; ?>" class="text-body fw-bold">Order #<?php echo $order['order_id']; ?></a></u></td>
                                                         <td>
                                                             <?php
                                                             $total = $order['total'];
@@ -355,11 +350,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 $finalTotal = $total - $discount;
                                                                 echo '₱' . $finalTotal;
                                                             } else {
-                                                                echo $order['total']; // Display something to indicate an issue with the values
+                                                                echo $order['total'];
                                                             }
                                                             ?>
                                                         </td>
-
                                                         <td>
                                                             <h5><span class="badge <?php echo isset($statusBadgeClasses[$order['order_status']]) ? $statusBadgeClasses[$order['order_status']] : 'badge-info-lighten'; ?>">
                                                                     <?php echo $order['order_status']; ?>
@@ -371,7 +365,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <img id="fullImage" src="" alt="">
                                                         </div>
                                                         <td class="table-action">
-                                                            <button class="btn btn-success" onclick="ToShip(<?php echo $order['order_id']; ?>)">To Ship</button>
+                                                            <button class="btn btn-primary" onclick="ToShip(<?php echo $order['order_id']; ?>)">To Ship</button>
                                                             <button class="btn btn-warning" onclick="ToReceive(<?php echo $order['order_id']; ?>)">To Receive</button>
                                                             <button class="btn btn-danger" onclick="declineOrder(<?php echo $order['order_id']; ?>)">Decline</button>
                                                         </td>
@@ -379,7 +373,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 <?php
                                                 }
                                                 ?>
-
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -426,15 +419,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
     <!-- bundle -->
     <script src="assets/js/vendor.min.js"></script>
     <script src="assets/js/app.min.js"></script>
-
-    <!-- third party js -->
-    <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
-    <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
-    <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
-    <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
-
-    <!-- Datatable Init js -->
-    <script src="assets/js/pages/demo.datatable-init.js"></script>
+    <script src="script.js"></script>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
@@ -510,22 +495,24 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             document.body.style.overflow = 'auto';
         });
     </script>
-
     <script>
         $(document).ready(function() {
             // Handle the change event of the select element
             $('#status-select').change(function() {
                 var selectedStatus = $(this).val(); // Get the selected status value
 
-                // Loop through each row in the table
-                $('#basic-datatable tbody tr').each(function() {
+                // Loop through each row in the table with the new ID "example"
+                $('#example tbody tr').each(function() {
                     var row = $(this);
 
                     // Get the status in the current row
                     var rowStatus = row.find('td:eq(2) span').text().trim();
 
                     // Show or hide the row based on the selected status
-                    if (selectedStatus === '1' && rowStatus === 'Pending') {
+                    if (selectedStatus === '0' || selectedStatus === '') {
+                        // Show all rows if "All" or no status is selected
+                        row.show();
+                    } else if (selectedStatus === '1' && rowStatus === 'Pending') {
                         row.show();
                     } else if (selectedStatus === '2' && rowStatus === 'To Ship') {
                         row.show();
@@ -533,8 +520,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         row.show();
                     } else if (selectedStatus === '4' && rowStatus === 'Declined') {
                         row.show();
-                    } else if (selectedStatus === '0' || selectedStatus === '') {
-                        // Show all rows if "Choose..." or no status is selected
+                    } else if (selectedStatus === '5' && rowStatus === 'Complete') {
+                        row.show();
+                    } else if (selectedStatus === '6' && rowStatus === 'Cancelled') {
                         row.show();
                     } else {
                         // Hide the row if it doesn't match the selected status
@@ -544,6 +532,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             });
         });
     </script>
+
 
 
 

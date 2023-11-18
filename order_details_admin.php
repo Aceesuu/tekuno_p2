@@ -143,13 +143,13 @@ if (!is_numeric($user_id)) {
                                     <span> Admins </span>
                                 </a>
                             </li>
-
-                            <li class="side-nav-item">
-                                <a href="forecast.php" class="side-nav-link">
-                                    <i class="mdi mdi-clipboard-list-outline"></i>
-                                    <span> Forecast </span>
-                                </a>
-                            </li>
+                            
+  <li class="side-nav-item">
+                        <a href="sales_report.php" class="side-nav-link">
+                            <i class="dripicons-graph-pie"></i>
+                            <span> Sales Report </span>
+                        </a>
+                    </li>
                             <!-- End Sidebar -->
 
                             <div class="clearfix"></div>

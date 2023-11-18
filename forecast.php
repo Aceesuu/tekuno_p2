@@ -250,11 +250,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
                         </form>
                     </div>
                 </div>

@@ -1,36 +1,36 @@
-<?php
-session_start(); // Start the session
-include("mysql_connect.php");
+F<?php
+    session_start(); // Start the session
+    include("mysql_connect.php");
 
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: index.php");
-    exit();
-}
+    if (!isset($_SESSION['admin_id'])) {
+        header("Location: index.php");
+        exit();
+    }
 
-$admin_id = $_SESSION['admin_id'];
-$query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'";
-$admin_result = mysqli_query($conn, $query);
+    $admin_id = $_SESSION['admin_id'];
+    $query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'";
+    $admin_result = mysqli_query($conn, $query);
 
-if ($admin_result && mysqli_num_rows($admin_result) > 0) {
-    $admin_data = mysqli_fetch_assoc($admin_result);
-} else {
-    $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
-}
+    if ($admin_result && mysqli_num_rows($admin_result) > 0) {
+        $admin_data = mysqli_fetch_assoc($admin_result);
+    } else {
+        $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
+    }
 
-$sql = "SELECT * FROM tb_admin WHERE admin_id = $admin_id";
-$result = $conn->query($sql);
+    $sql = "SELECT * FROM tb_admin WHERE admin_id = $admin_id";
+    $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $firstName = $row["firstName"];
-    $lastName = $row["lastName"];
-    $middleName = $row['middleName'];
-    $gender = $row['gender'];
-    $contact = $row['contact'];
-} else {
-    echo "No data found";
-}
-?>
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $firstName = $row["firstName"];
+        $lastName = $row["lastName"];
+        $middleName = $row['middleName'];
+        $gender = $row['gender'];
+        $contact = $row['contact'];
+    } else {
+        echo "No data found";
+    }
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -94,19 +94,44 @@ if ($result->num_rows > 0) {
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
+                                      <li>
+                                    <a href="category.php">Product Category</a>
+                                </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
-
-                        <li class="side-nav-item">
-                            <a href="order.php" class="side-nav-link">
+                        
+   <li class="side-nav-item">
+                            <a href="inventory.php" class="side-nav-link">
                                 <i class="mdi mdi-clipboard-list-outline"></i>
-                                <span> Order </span>
+                                <span> Inventory </span>
                             </a>
                         </li>
+                        <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Order </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarEcommerceOrder">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="order.php">Order Details</a>
+                                        </li>
+                                           <li>
+                                            <a href="order_onsite.php">Order Onsites</a>
+                                        </li>
+                                        <li>
+                                            <a href="order_history_admin.php">Order History</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
 
                         <li class="side-nav-item">
                             <a href="customers.php" class="side-nav-link">
@@ -118,6 +143,13 @@ if ($result->num_rows > 0) {
                             <a href="admins.php" class="side-nav-link">
                                 <i class="dripicons-user"></i>
                                 <span> Admins </span>
+                            </a>
+                        </li>
+                        
+                         <li class="side-nav-item">
+                            <a href="forecast.php" class="side-nav-link">
+                                <i class="uil-chart"></i>
+                                <span> Forecast </span>
                             </a>
                         </li>
 
@@ -146,31 +178,11 @@ if ($result->num_rows > 0) {
 
 
                         <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
+                         
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
+                         =
 
-                                <div style="max-height: 230px;" data-simplebar="">
-
-
-
-                                    <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                        View All
-                                    </a>
 
                                 </div>
                         </li>
@@ -256,12 +268,12 @@ if ($result->num_rows > 0) {
                                                 ?>
                                             </div>
                                             <h5 class="user-name"><?php echo $admin_data['firstName'] . ' ' . $admin_data['lastName']; ?></h5>
-                                            <form action="upload.php" method="POST" enctype="multipart/form-data" style="display: inline;">
+                                            <form action="update_profile_admin.php" method="POST" enctype="multipart/form-data" style="display: inline;">
                                                 <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $row['admin_id']; ?>">
                                                     <i class="mdi mdi-clipboard-edit"></i> Edit
                                                 </button>
                                                 <!-- Edit MODAL -->
-                                                <div class="modal fade" id="edit_<?php echo $row['user_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="edit_<?php echo $row['admin_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -269,8 +281,8 @@ if ($result->num_rows > 0) {
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <form method="POST" action="upload.php" enctype="multipart/form-data">
-                                                                    <input type="hidden" name="update_p_id" value="<?php echo $row['user_id']; ?>">
+                                                                <form method="POST" action="update_profile_admin.php" enctype="multipart/form-data">
+                                                                    <input type="hidden" name="update_p_id" value="<?php echo $row['admin_id']; ?>">
                                                                     <div class="mb-3 row">
                                                                         <div class="col-sm-10">
                                                                             <?php
@@ -289,123 +301,127 @@ if ($result->num_rows > 0) {
                                                                             <input type="file" class="form-control" name="update_p_image">
                                                                         </div>
                                                                     </div>
+                                                                </form>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                 <button type="submit" name="update_user" class="btn btn-primary">Update</button>
-                                            </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
+                        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <form method="post" action="update_profile_admin.php">
+                                        <div class="row gutters">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                <h6 class="mb-2" style="color: #F7931E;">Personal Details</h6>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                <input type="hidden" name="update_u_id" value="<?php echo $row['admin_id']; ?>">
+                                                <div class="form-group">
+                                                    <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
+                                                    <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="firstname" class="form-label">First Name</label>
+                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="middlename" class="form-label">Middle Name</label>
+                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>">
+                                                    <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                <label for="gender" class="form-label">Gender</label>
+                                                <select name="gender" class="form-control" required>
+                                                    <option value="" disabled>Select your gender</option>
+                                                    <option value="Female" <?php if ($gender === "Female") echo "selected"; ?>>Female</option>
+                                                    <option value="Male" <?php if ($gender === "Male") echo "selected"; ?>>Male</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="contact" class="form-label">Contact Number</label>
+                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" value="<?php echo $contact; ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row gutters">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                <div class="d-flex justify-content-end" style="margin-top: 20px;">
+                                                    <button type="submit" name="update" class="btn btn-primary" style="margin-left: 10px; background-color: #F7931E; border-color: #F7931E;">Update</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+
                     </div>
+                    <!-- container -->
+
                 </div>
+                <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                © TEKUNO
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
             </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
         </div>
+        <!-- END wrapper -->
 
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
 
-        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="row gutters">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <h6 class="mb-2" style="color: #F7931E;">Personal Details</h6>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-                                <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" required>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label for="firstname" class="form-label">First Name</label>
-                                <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label for="middlename" class="form-label">Middle Name</label>
-                                <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>">
-                                <small class="form-text text-muted">If you do not have a middle name, you can leave this
-                                    field blank.</small>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select name="gender" class="form-control" required>
-                                <option value="" disabled>Select your gender</option>
-                                <option value="Female" <?php if ($gender === "Female") echo "selected"; ?>>Female</option>
-                                <option value="Male" <?php if ($gender === "Male") echo "selected"; ?>>Male</option>
-                            </select>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label for="contact" class="form-label">Contact Number</label>
-                                <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" value="<?php echo $contact; ?>">
-                            </div>
-                        </div>
-                    </div>
+        <!-- third party js -->
+        <script src="assets/js/vendor/apexcharts.min.js"></script>
+        <script src="assets/js/vendor/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="assets/js/vendor/jquery-jvectormap-world-mill-en.js"></script>
+        <!-- third party js ends -->
 
-                    <div class="row gutters">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="d-flex justify-content-end" style="margin-top: 20px;">
-                                <button type="submit" name="update" class="btn btn-primary" style="margin-left: 10px; background-color: #F7931E; border-color: #F7931E;">Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-
-            </div>
-            <!-- container -->
-
-        </div>
-        <!-- content -->
-
-        <!-- Footer Start -->
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        © TEKUNO
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-md-end footer-links d-none d-md-block">
-                            <a href="javascript: void(0);">About</a>
-                            <a href="javascript: void(0);">Support</a>
-                            <a href="javascript: void(0);">Contact Us</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- end Footer -->
-
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- End Page content -->
-    <!-- ============================================================== -->
-
-
-    </div>
-    <!-- END wrapper -->
-
-    <!-- bundle -->
-    <script src="assets/js/vendor.min.js"></script>
-    <script src="assets/js/app.min.js"></script>
-
-    <!-- third party js -->
-    <script src="assets/js/vendor/apexcharts.min.js"></script>
-    <script src="assets/js/vendor/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="assets/js/vendor/jquery-jvectormap-world-mill-en.js"></script>
-    <!-- third party js ends -->
-
-    <!-- demo app -->
-    <script src="assets/js/pages/demo.dashboard.js"></script>
-    <!-- end demo js-->
+        <!-- demo app -->
+        <script src="assets/js/pages/demo.dashboard.js"></script>
+        <!-- end demo js-->
 </body>
 
 </html>

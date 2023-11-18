@@ -1,47 +1,45 @@
 <?php
 session_start(); // Start the session
+include("mysql_connect.php");
 
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to index.php or login page if user is not logged in
-    header("Location: index.php"); // Update with your login page URL
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: index.php");
     exit();
 }
 
-include("mysql_connect.php");
-$user_id = $_SESSION['user_id'];
-$query = "SELECT * FROM tb_user WHERE user_id = '$user_id'";
-$user_result = mysqli_query($conn, $query);
+$admin_id = $_SESSION['admin_id'];
+$query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'";
+$admin_result = mysqli_query($conn, $query);
 
-if ($user_result && mysqli_num_rows($user_result) > 0) {
-    $user_data = mysqli_fetch_assoc($user_result);
-    // Now you can use $user_data to access user information
+if ($admin_result && mysqli_num_rows($admin_result) > 0) {
+    $admin_data = mysqli_fetch_assoc($admin_result);
 } else {
-    // Handle the case where user data couldn't be retrieved
-    $error_message = "Error: Unable to retrieve user data.";
+    $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
 }
 ?>
-s
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Products</title>
+    <title>Manage Products</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/home_logo.ico">
+    <link rel="shortcut icon" href="assets/images/logoo.ico">
 
     <!-- third party css -->
-    <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
     <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
-    <!-- third party css end -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
-    <link rel="stylesheet" href="text/design.css">
-
+    <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script defer src="script.js"></script>
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
 
 </head>
 
@@ -52,12 +50,12 @@ s
         <div class="leftside-menu" style="background-color: #212A37;">
 
             <!-- LOGO -->
-            <a href="dashboard.php" class="logo text-center logo-light">
+            <a href="dashboard-inventory.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
-                    <img src="assets/images/logoo.png" alt="" height="67">
+                    <img src="assets/images/logo.png" alt="" height="100">
                 </span>
                 <span class="logo-sm" style="background-color: #212A37;">
-                    <img src="assets/images/logoo.png" alt="" height="25">
+                    <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
             <br> <br>
@@ -70,7 +68,7 @@ s
                     <li class="side-nav-title side-nav-item">Navigation</li>
                     <li class="side-nav-item">
                         <a href="dashboard-inventory.php" class="side-nav-link">
-                            <i class="uil-calender"></i>
+                            <i class="dripicons-home"></i>
                             <span> Dashboard </span>
                         </a>
                     </li>
@@ -78,7 +76,7 @@ s
                     <ul class="side-nav">
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerceProducts" aria-expanded="false" aria-controls="sidebarEcommerceProducts" class="side-nav-link">
-                                <i class="uil-store"></i>
+                                <i class="mdi mdi-clipboard-text-multiple-outline"></i>
                                 <span> Products </span>
                                 <span class="menu-arrow"></span>
                             </a>
@@ -86,6 +84,9 @@ s
                                 <ul class="side-nav-second-level">
                                     <li>
                                         <a href="role_products.php">List of Products</a>
+                                    </li>
+                                    <li>
+                                        <a href="role_category.php">Product Category</a>
                                     </li>
                                     <li>
                                         <a href="role_manage_products.php">Manage Product</a>
@@ -96,7 +97,7 @@ s
 
                         <li class="side-nav-item">
                             <a href="role_inventory.php" class="side-nav-link">
-                                <i class="uil-store"></i>
+                                <i class="mdi mdi-clipboard-list-outline"></i>
                                 <span> Inventory </span>
                             </a>
                         </li>
@@ -132,37 +133,10 @@ s
                         </li>
 
                         <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
-
-                            </div>
-                        </li>
-
-                        <li class="dropdown notification-list">
                             <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <span class="account-user-avatar">
                                     <?php
-                                    $user_image = $user_data['image'];
+                                    $user_image = $admin_data['image'];
                                     if (!empty($user_image)) {
                                         // Display the user's image if available
                                         echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
@@ -173,7 +147,7 @@ s
                                     ?>
                                 </span>
                                 <span>
-                                    <span class="account-user-name"><?php echo $user_data['firstName'] ?></span>
+                                    <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
                                     <span class="account-position">Inventory Manager</span>
                                 </span>
                             </a>
@@ -184,7 +158,7 @@ s
                                 </div>
 
                                 <!-- item-->
-                                <a href="profile_admin.php" class="dropdown-item notify-item">
+                                <a href="inventory_profile_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
                                     <span>My Account</span>
                                 </a>
@@ -201,16 +175,7 @@ s
                     <button class="button-menu-mobile open-left">
                         <i class="mdi mdi-menu"></i>
                     </button>
-                    <div class="app-search dropdown d-none d-lg-block">
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
-                        </form>
-
-                    </div>
+                    
                 </div>
                 <!-- end Topbar -->
 
@@ -228,7 +193,7 @@ s
                                         <li class="breadcrumb-item active">Manage Product</li>
                                     </ol>
                                 </div>
-                                <h4 class="page-title">Products</h4>
+                                <h4 class="page-title">Manage Products</h4>
                             </div>
                         </div>
                     </div>
@@ -244,6 +209,112 @@ s
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Manage Product
                                             </button>
                                         </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="example" class="table dt-responsive nowrap w-100" style="width:100%">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="all">Product ID</th>
+                                                    <th>Product Name</th>
+                                                    <th>Variation</th>
+                                                    <th>Supplier Price</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th style="width: 85px;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $select_products = mysqli_query($conn, "SELECT * FROM `product_variation`");
+                                                if (mysqli_num_rows($select_products) > 0) {
+                                                    while ($row = mysqli_fetch_assoc($select_products)) {
+                                                ?>
+                                                        <tr>
+                                                            <td><?php echo $row['product_id']; ?></td>
+                                                            <td><?php echo $row['name']; ?></td>
+                                                            <td><?php echo $row['variation']; ?></td>
+                                                            <td><?php echo $row['supplier_price']; ?></td>
+                                                            <td><?php echo $row['price']; ?></td>
+                                                            <td><?php echo $row['qty']; ?></td>
+                                                            <td class="table-action">
+
+                                                                <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $row['variation_id']; ?>" style="background-color: #5C5470;">
+                                                                    <i class="mdi mdi-clipboard-edit"></i> Edit
+                                                                </button>
+
+                                                                <button class="btn btn-danger btn-rounded delete-btn" data-variation-id="<?php echo $row['variation_id']; ?>"><i class="mdi mdi-delete"></i> Delete</button>
+                                                            </td>
+                                                        </tr>
+
+                                                        <!-- Edit MODAL -->
+                                                        <div class="modal fade" id="edit_<?php echo $row['variation_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="ModalLabel">Edit Product</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form method="POST" action="role_crud_manage.php">
+                                                                            <input type="hidden" name="update_p_id" value="<?php echo $row['variation_id']; ?>">
+
+                                                                            <label class="col-sm-2 col-form-label">Variation</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="update_p_variant" value="<?php echo $row['variation']; ?>">
+                                                                            </div>
+
+                                                                            <label>Supplier Price</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="update_sup" value="<?php echo $row['supplier_price']; ?>">
+                                                                            </div>
+
+                                                                            <label class="col-sm-2 col-form-label">Price</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="update_p_price" value="<?php echo $row['price']; ?>">
+                                                                            </div>
+                                                                            <label class="col-sm-2 col-form-label">Quantity</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="update_qty" value="<?php echo $row['qty']; ?>">
+                                                                            </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                        <button type="submit" name="update_product" class="btn btn-primary">Update</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                <?php
+                                                    };
+                                                }
+                                                ?>
+                                                <!-- Delete Modal -->
+                                                <div class="modal fade" id="deleteConfirmationModal" id="danger-header-modal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header modal-colored-header bg-danger">
+                                                                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete this variation?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <!-- Add a form and submit the form when the user confirms deletion -->
+                                                                <form id="deleteForm" method="POST" action="role_deleteVariation.php">
+                                                                    <input type="hidden" id="variation_id" name="variation_id" value="<?php echo $row['variation_id']; ?>">
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </tbody>
+                                        </table>
 
                                         <!-- Add Modal -->
                                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -254,7 +325,7 @@ s
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form action="crud_manage.php" method="post" class="add-product-form" enctype="multipart/form-data">
+                                                        <form action="role_crud_manage.php" method="post" class="add-product-form" enctype="multipart/form-data">
 
                                                             <div class="mb-3">
                                                                 <label for="simpleinput" class="form-label">Product Name</label>
@@ -278,9 +349,19 @@ s
                                                                     <input type="text" name="variation[]" class="form-control" placeholder="Enter a variation" required>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="variation" class="form-label">Price</label>
-                                                                    <input type="number" name="price[]" class="form-control" placeholder="Enter a price" required>
+                                                                    <label for="variation" class="form-label">Supplier Price</label>
+                                                                    <input type="number" name="supplier_price[]" class="form-control" placeholder="Enter a Supplier price" required step="0.01">
                                                                 </div>
+                                                                <div class="mb-3">
+                                                                    <label for="variation" class="form-label">Price</label>
+                                                                    <input type="number" name="price[]" class="form-control" placeholder="Enter a price" required step="0.01">
+                                                                </div>
+
+                                                                <div class="mb-3">
+                                                                    <label for="variation" class="form-label">Quantity</label>
+                                                                    <input type="number" name="qty[]" class="form-control" placeholder="Enter a quantity" required>
+                                                                </div>
+
 
                                                                 <button type="button" id="addVariation" class="btn btn-primary">Add Variation</button>
                                                             </div>
@@ -294,204 +375,107 @@ s
                                             </div>
                                         </div>
 
-                                        <div class="table-responsive">
-                                            <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th class="all" style="width: 20px;">
-                                                            <div class="form-check">
-                                                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
-                                                            </div>
-                                                        </th>
-                                                        <th class="all">Variation ID</th>
-                                                        <th>Product ID</th>
-                                                        <th>Variation</th>
-                                                        <th>Price</th>
-                                                        <th style="width: 85px;">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                    $select_products = mysqli_query($conn, "SELECT * FROM `product_variation`");
-                                                    if (mysqli_num_rows($select_products) > 0) {
-                                                        while ($row = mysqli_fetch_assoc($select_products)) {
-                                                    ?>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox" class="form-check-input" id="customCheck2">
-                                                                        <label class="form-check-label" for="customCheck2">&nbsp;</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td><?php echo $row['variation_id']; ?></td>
-                                                                <td><?php echo $row['product_id']; ?></td>
-                                                                <td><?php echo $row['variation']; ?></td>
-                                                                <td><?php echo $row['price']; ?></td>
-                                                                <td class="table-action">
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div> <!-- container -->
 
-                                                                    <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $row['variation_id']; ?>">
-                                                                        <i class="mdi mdi-clipboard-edit"></i> EDIT
-                                                                    </button>
+            </div> <!-- content -->
 
-                                                                    <button class="btn btn-danger btn-rounded delete-btn" data-variation-id="<?php echo $row['variation_id']; ?>"><i class="mdi mdi-delete"></i>DELETE</button>
-                                                                </td>
-
-                                                                <!-- Edit MODAL -->
-                                                                <div class="modal fade" id="edit_<?php echo $row['variation_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title" id="ModalLabel">Edit Product</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <form method="POST" action="crud_manage.php">
-                                                                                    <input type="hidden" name="update_p_id" value="<?php echo $row['variation_id']; ?>">
-
-                                                                                    <label class="col-sm-2 col-form-label">Variation</label>
-                                                                                    <div class="col-sm-10">
-                                                                                        <input type="text" class="form-control" name="update_p_variant" value="<?php echo $row['variation']; ?>">
-                                                                                    </div>
-
-                                                                                    <label class="col-sm-2 col-form-label">Price</label>
-                                                                                    <div class="col-sm-10">
-                                                                                        <input type="text" class="form-control" name="update_p_price" value="<?php echo $row['price']; ?>">
-                                                                                    </div>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                <button type="submit" name="update_product" class="btn btn-primary"> Update</a>
-                                                                                    </form>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                        <?php
-                                                        };
-                                                    } else {
-                                                        echo "<div class='empty'>no variation added</div>";
-                                                    };
-                                                        ?>
-                                                        <!-- Delete Modal -->
-                                                        <div class="modal fade" id="deleteConfirmationModal" id="danger-header-modal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header modal-colored-header bg-danger">
-                                                                        <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Are you sure you want to delete this variation?
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                        <!-- Add a form and submit the form when the user confirms deletion -->
-                                                                        <form id="deleteForm" method="POST" action="deleteVariation.php">
-                                                                            <input type="hidden" id="variation_id" name="variation_id" value="<?php echo $row['variation_id']; ?>">
-                                                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                            </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div> <!-- end card-body-->
-                                </div> <!-- end card-->
-                            </div> <!-- end col -->
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            © TEKUNO
                         </div>
-                        <!-- end row -->
-
-                    </div> <!-- container -->
-
-                </div> <!-- content -->
-
-                <!-- Footer Start -->
-                <footer class="footer">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-6">
-                                © TEKUNO
-                            </div>
-                            <div class="col-md-6">
-                                <div class="text-md-end footer-links d-none d-md-block">
-                                    <a href="javascript: void(0);">About</a>
-                                    <a href="javascript: void(0);">Support</a>
-                                    <a href="javascript: void(0);">Contact Us</a>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
                             </div>
                         </div>
                     </div>
-                </footer>
-                <!-- end Footer -->
-
-            </div>
-
-            <!-- ============================================================== -->
-            <!-- End Page content -->
-            <!-- ============================================================== -->
-
+                </div>
+            </footer>
+            <!-- end Footer -->
 
         </div>
-        <!-- END wrapper -->
 
-        <!-- bundle -->
-        <script src="assets/js/vendor.min.js"></script>
-        <script src="assets/js/app.min.js"></script>
-
-        <!-- third party js -->
-        <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
-        <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
-        <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
-        <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
-        <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
-
-        <!-- third party js ends -->
-
-        <!-- demo app -->
-        <script src="assets/js/pages/demo.products.js"></script>
-        <!-- end demo js-->
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
 
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
+    </div>
+    <!-- END wrapper -->
 
-        <script>
-            // JavaScript to dynamically add variation and price fields
-            document.getElementById("addVariation").addEventListener("click", function() {
-                const variationFields = document.getElementById("variationFields");
+    <!-- bundle -->
+    <script src="assets/js/vendor.min.js"></script>
+    <script src="assets/js/app.min.js"></script>
 
-                // Create variation input field
-                const variationInput = document.createElement("div");
-                variationInput.innerHTML = `
-            <div class="mb-3">
-                <label for="variation" class="form-label">Variant</label>
-                <input type="text" name="variation[]" class="form-control" placeholder="Enter a variation">
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="text" name="price[]" class="form-control" placeholder="Enter a price">
-            </div>
-        `;
-                // Append variation input fields
-                variationFields.appendChild(variationInput);
+    <!-- third party js -->
+    <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+    <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
+
+    <!-- third party js ends -->
+
+    <!-- demo app -->
+    <script src="assets/js/pages/demo.products.js"></script>
+    <!-- end demo js-->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
+
+    <script>
+        document.getElementById("addVariation").addEventListener("click", function() {
+            const variationFields = document.getElementById("variationFields");
+
+            // Create variation input fields
+            const variationInput = document.createElement("div");
+            variationInput.innerHTML = `
+    <div class="mb-3">
+        <label for="variation" class="form-label">Variant</label>
+        <input type="text" name="variation[]" class="form-control" placeholder="Enter a variation">
+    </div>
+    <div class="mb-3">
+        <label for="supplier_price" class="form-label">Supplier Price</label>
+        <input type="number" name="supplier_price[]" class="form-control" placeholder="Enter a Supplier price" step="0.01">
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" name="price[]" class="form-control" placeholder="Enter a price" step="0.01">
+    </div>
+    <div class="mb-3">
+        <label for="qty" class="form-label">Quantity</label>
+        <input type="number" name="qty[]" class="form-control" placeholder="Enter a quantity">
+    </div>
+    `;
+
+            // Append variation input fields
+            variationFields.appendChild(variationInput);
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $(".delete-btn").click(function() {
+                var variation_id = $(this).data('variation-id');
+                console.log("Delete button clicked with variation_id: " + variation_id); // Add this line
+                $("#variation_id").val(variation_id);
+                $('#deleteConfirmationModal').modal('show');
             });
-        </script>
-
-        <script>
-            $(document).ready(function() {
-                $(".delete-btn").click(function() {
-                    var variation_id = $(this).data('variation-id');
-                    console.log("Delete button clicked with variation_id: " + variation_id); // Add this line
-                    $("#variation_id").val(variation_id);
-                    $('#deleteConfirmationModal').modal('show');
-                });
-            });
-        </script>
+        });
+    </script>
 
 
 </body>

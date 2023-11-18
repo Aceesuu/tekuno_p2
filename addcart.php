@@ -17,117 +17,17 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     $error_message = "Error: Unable to retrieve user data.";
 }
 
-//ADD TO CART
-if (isset($_POST['add_to_cart'])) {
-    $user_id = $_SESSION['user_id'];
-    $product_id = $_POST['product_id'];
-    $product_name = $_POST['product_name'];
-    $product_image = $_POST['product_image'];
-    $product_price = $_POST['product_price'];
-
-    if (isset($_POST['product_quantity'])) {
-        $product_quantity = intval($_POST['product_quantity']);
-    } else {
-        $product_quantity = 1;
-    }
-
-    // subtotal each product
-    $subtotal = $product_price * $product_quantity;
-
-    $discount = 0;
-
-    if ($product_quantity >= 5) {
-        $discount = $subtotal * 0.10;
-    }
-
-    if (isset($_POST['variation'])) {
-        $selected_variation = $_POST['variation'];
-
-        // Fetch the price of the selected variation from the database
-        $variation_query = mysqli_query($conn, "SELECT price FROM `product_variation` WHERE product_id = '$product_id' AND variation = '$selected_variation'");
-
-        if ($variation_query && mysqli_num_rows($variation_query) === 1) {
-            $row = mysqli_fetch_assoc($variation_query);
-            $product_price = $row['price'];
-
-            // Calculate the subtotal for this product with variation
-            $subtotal = $product_price * $product_quantity;
-
-            // Check if the discount should be applied
-            $discount = 0; // Default to no discount
-
-            if ($product_quantity >= 5) {
-                $discount = $subtotal * 0.10; // 10% discount when quantity is 5 or more
-            }
-
-            // Check if the product is already in the cart with the same variation
-            $select_cart = mysqli_query($conn, "SELECT * FROM `tb_cart` WHERE user_id = '$user_id' AND variation = '$selected_variation'");
-
-            if (mysqli_num_rows($select_cart) > 0) {
-                // The product with the same variation is already in the cart
-                $existing_product = mysqli_fetch_assoc($select_cart);
-                $existing_quantity = $existing_product['quantity'];
-
-                // Calculate the new subtotal and discount for the updated quantity
-                $new_subtotal = $product_price * ($existing_quantity + $product_quantity);
-                $new_discount = 0;
-
-                if (($existing_quantity + $product_quantity) >= 5) {
-                    $new_discount = $new_subtotal * 0.10;
-                }
-
-                // Update the quantity, subtotal, and discount
-                $update_quantity_query = mysqli_query($conn, "UPDATE `tb_cart` SET quantity = quantity + '$product_quantity', subtotal = '$new_subtotal', discount = '$new_discount' WHERE user_id = '$user_id' AND variation = '$selected_variation'");
-
-                if ($update_quantity_query) {
-                    $message[] = 'Product quantity updated in cart';
-                } else {
-                    $message[] = 'Failed to update product quantity in cart';
-                }
-            } else {
-                // Insert the product with the selected variation into the cart
-                $insert_product = mysqli_query($conn, "INSERT INTO `tb_cart`(user_id, product_id, name, price, image, quantity, variation, subtotal, discount) VALUES('$user_id', '$product_id', '$product_name', '$product_price', '$product_image', '$product_quantity', '$selected_variation', '$subtotal', '$discount')");
-                if ($insert_product) {
-                    $message[] = 'Product added to cart successfully';
-                } else {
-                    $message[] = 'Failed to add product to cart';
-                }
-            }
-        } else {
-            $message[] = 'Selected variation is not available for this product';
-        }
-    } else {
-        $select_cart_no_variation = mysqli_query($conn, "SELECT * FROM `tb_cart` WHERE user_id = '$user_id' AND variation IS NULL AND product_id = '$product_id'");
-
-        if (mysqli_num_rows($select_cart_no_variation) > 0) {
-
-            $update_quantity_query = mysqli_query($conn, "UPDATE `tb_cart` SET quantity = quantity + '$product_quantity', subtotal = price * (quantity + '$product_quantity') WHERE user_id = '$user_id' AND variation IS NULL AND product_id = '$product_id'");
-            if ($update_quantity_query) {
-                $message[] = 'Product quantity updated in cart';
-            } else {
-                $message[] = 'Failed to update product quantity in cart';
-            }
-        } else {
-            // Insert the product without a variation into the cart
-            $insert_product = mysqli_query($conn, "INSERT INTO `tb_cart` (user_id, product_id, name, price, image, quantity, subtotal, discount) VALUES ('$user_id', '$product_id', '$product_name', '$product_price', '$product_image', '$product_quantity', '$subtotal', '$discount')");
-            if ($insert_product) {
-                $message[] = 'Product added to cart successfully';
-            } else {
-                $message[] = 'Failed to add product to cart';
-            }
-        }
-    }
-}
-
-
 if (isset($_POST['update_update_btn'])) {
     $update_value = $_POST['update_quantity'];
     $update_id = $_POST['update_quantity_id'];
     $update_quantity_query = mysqli_query($conn, "UPDATE `tb_cart` SET quantity = '$update_value' WHERE cart_id = '$update_id'");
+
     if ($update_quantity_query) {
-        header('location:addcart.php');
-    };
-};
+        $message[] = "Quantity updated successfully."; // Add success message to the array
+    } else {
+        $message[] = "Error updating quantity."; // Add error message to the array
+    }
+}
 
 if (isset($_GET['remove'])) {
     $remove_id = $_GET['remove'];
@@ -161,7 +61,7 @@ if (isset($_GET['delete_all'])) {
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link href="css/product1.css" rel="stylesheet" />
+    <link href="css/prod1.css" rel="stylesheet" />
 </head>
 
 <body class="loading" data-layout="topnav" data-layout-config='{"layoutBoxed":false,"darkMode":false,"showRightSidebarOnStart": true}'>
@@ -176,7 +76,7 @@ if (isset($_GET['delete_all'])) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-                <div class="navbar-custom topnav-navbar" style="background-color: #212A37;">
+               <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
                         <!-- LOGO -->
@@ -255,7 +155,7 @@ if (isset($_GET['delete_all'])) {
                                         $user_image = $user_data['image'];
                                         if (!empty($user_image)) {
                                             // Display the user's image if available
-                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
+                                            echo '<img src="user_profile_img/' . $user_image . '" alt="user" class="rounded-circle">';
                                         } else {
                                             // Display a default avatar image when no user image is available
                                             echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle">';
@@ -299,6 +199,18 @@ if (isset($_GET['delete_all'])) {
                     </div>
                 </div>
                 <!-- end Topbar -->
+                
+                <?php
+
+                if (isset($message)) {
+                    foreach ($message as $message) {
+                        echo '<div class="alert alert-success" role="alert"><center>
+                                ' . $message . '
+                              </center></div>';
+                    };
+                };
+
+                ?>
 
                 <div class="container-fluid">
 
@@ -336,40 +248,35 @@ if (isset($_GET['delete_all'])) {
                                                         $select_cart = mysqli_query($conn, "SELECT * FROM tb_cart WHERE user_id = '$user_id'");
 
                                                         $grand_total = 0;
-                                                        $total_discount = 0;
-                                                        $sub_total = 0;
-                                                        $discountApplied = false;
-                                                        $shipping_fee = 40;
                                                         $total = 0;
+                                                        $sub_total = 0;
+                                                        $shipping_fee = 40;
+                                                        $discounted_price = 0;
+                                                        $discount_rate = 0.03;
 
                                                         if (mysqli_num_rows($select_cart) > 0) {
                                                             while ($fetch_cart = mysqli_fetch_assoc($select_cart)) {
                                                                 $quantity = $fetch_cart['quantity'];
                                                                 $price = $fetch_cart['price'];
 
-                                                                // Calculate the discount for this item
-                                                                $discounted_price = 0; // Default price without discount
-                                                                if ($quantity >= 5) {
-                                                                    $discounted_price = $price * 0.1; // 10% discount
-                                                                    $discountApplied = true; // Set the flag to true
+                                                                // Calculate the total for this item
+                                                                $item_total = $price * $quantity;
+                                                                // Add this item's total to the overall total
+                                                                $total += $item_total;
+
+                                                                $sub_total += $item_total;
+
+                                                                if ($sub_total >= 5000) {
+                                                                    $discounted_price = $sub_total * (1 - $discount_rate); // Apply the 3% discount
+                                                                } else {
+                                                                    $discounted_price = $sub_total; // No discount
                                                                 }
-
-                                                                //per item
-                                                                $total = $price * $quantity;
-
-                                                                $total_item_price = $price * $quantity;
-                                                                $sub_total += $total_item_price; // Add the total item price to the subtotal
-
-                                                                $total_discount = ($sub_total + $shipping_fee) * 0.10;
-
-                                                                // Add the subtotal to the grand total
-                                                                $grand_total = $sub_total + $shipping_fee
                                                         ?>
                                                                 <tr>
                                                                     <td>
-                                                                        <img src="uploaded_img/<?php echo $fetch_cart['image']; ?>" height="100" alt="contact-img" title="contact-img" class="rounded me-3" height="65">
+                                                                        <img src="uploaded_img/<?php echo $fetch_cart['image']; ?>" height="100" alt="product-img" class="rounded me-3" height="65">
                                                                         <p class="m-0 d-inline-block align-middle font-16">
-                                                                            <?php echo $fetch_cart['name']; ?>
+                                                                            <a href="product_detail.php" class="text-body"><?php echo $fetch_cart['name']; ?></a>
                                                                             <br>
                                                                             <?php if (!empty($fetch_cart['variation'])) : ?>
                                                                                 <small><b>Variation:</b> <?php echo $fetch_cart['variation']; ?></small>
@@ -382,11 +289,12 @@ if (isset($_GET['delete_all'])) {
                                                                     <td>
                                                                         <form action="" method="post">
                                                                             <input type="hidden" name="update_quantity_id" value="<?php echo $fetch_cart['cart_id']; ?>">
-                                                                            <input type="number" name="update_quantity" class="form-control" style="width: 90px;" min="1" readonly value="<?php echo $fetch_cart['quantity']; ?>">
+                                                                            <input type="number" name="update_quantity" class="form-control" style="width: 90px;" min="1" value="<?php echo $fetch_cart['quantity']; ?>">
+                                                                            <input type="submit" class="form-control" style="width: 90px;" value="update" name="update_update_btn">
                                                                         </form>
                                                                     </td>
                                                                     <td>
-                                                                    <td><?php echo ($total); ?></td>
+                                                                    <td><?php echo ($item_total); ?></td>
                                                                     </td>
                                                                     <td>
                                                                         <a href="addcart.php?remove=<?php echo $fetch_cart['cart_id']; ?>" onclick="return confirm('remove item from cart?')" class="action-icon"> <i class="mdi mdi-delete"></i></a>
@@ -396,9 +304,13 @@ if (isset($_GET['delete_all'])) {
                                                             };
                                                         }
 
-                                                        // Subtract the total discount from the grand total
-                                                        $grand_total -= $total_discount;
+                                                        // Calculate tax on the discounted sub total
+                                                        $tax = $discounted_price * 0.12;
+
+                                                        // Calculate the grand total
+                                                        $grand_total = $discounted_price + $tax + $shipping_fee;
                                                         ?>
+
                                                         <tr class="table-bottom">
                                                             <td><a href="addcart.php?delete_all" onclick="return confirm('are you sure you want to delete all?');" class="delete-btn"> <i class="mdi mdi-delete"></i>Empty Cart</a></td>
                                                         </tr>
@@ -409,12 +321,12 @@ if (isset($_GET['delete_all'])) {
                                             <!-- action buttons-->
                                             <div class="row mt-4">
                                                 <div class="col-sm-6">
-                                                    <a href="dashboard-customer.php"" class=" option-btn">
+                                                    <a href="dashboard-customer.php" class=" option-btn">
                                                         <i class="mdi mdi-arrow-left"></i> Continue Shopping </a>
                                                 </div> <!-- end col -->
                                                 <div class="col-sm-6">
                                                     <div class="text-sm-end">
-                                                        <a href="checkout.php" class="btn btn-danger <?= ($grand_total > 1) ? '' : 'disabled'; ?>"" >
+                                                        <a href="checkout.php" class="btn btn-danger <?= ($grand_total > 1) ? '' : 'disabled'; ?>">
                                                             <i class=" mdi mdi-cart-plus me-1"></i> Checkout </a>
                                                     </div>
                                                 </div> <!-- end col -->
@@ -433,23 +345,28 @@ if (isset($_GET['delete_all'])) {
                                                                 <td>Subtotal:</td>
                                                                 <td>₱<?= number_format($sub_total, 2) ?></td>
                                                             </tr>
+                                                            <?php if ($sub_total >= 5000) { ?>
+                                                                <tr>
+                                                                    <td>Discounted Rate :</td>
+                                                                    <td>3%</td>
+                                                                </tr>
+                                                            <tr>
+                                                                <td>Discounted Price : </td>
+                                                                <td> ₱<?= number_format($discounted_price, 2) ?></td>
+                                                            </tr>
+                                                            <?php } ?>
+
+                                                            <tr>
+                                                                <td>Sales Tax:</td>
+                                                                <td> ₱<?= number_format($tax, 2) ?></td>
+                                                            </tr>
                                                             <tr>
                                                                 <td>
                                                                     Shipping Fee:
                                                                 </td>
                                                                 <td>
-                                                                    ₱ <?= number_format($shipping_fee, 2) ?>
+                                                                    ₱<?= number_format($shipping_fee, 2) ?>
                                                                 </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Discount : </td>
-                                                                <td> <?php
-                                                                        if ($discountApplied) {
-                                                                            echo '₱-' . number_format($total_discount, 2) . '</td>';
-                                                                        } else {
-                                                                            echo '₱0.00</td>';
-                                                                        }
-                                                                        ?></td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Grand Total :</th>
@@ -462,7 +379,7 @@ if (isset($_GET['delete_all'])) {
                                             </div>
 
                                             <div class="alert alert-warning mt-3" role="alert">
-                                                Add <strong>5 or more product</strong> and get 10% discount !
+                                                <strong>Worth ₱5000</strong> and get 3% discount !
                                             </div>
 
                                         </div> <!-- end col -->
