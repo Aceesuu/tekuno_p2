@@ -69,16 +69,20 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
         $product = mysqli_fetch_assoc($result);
 
         if ($product['qty'] > 0) {
-            if (isset($_POST['add_to_cart'])) {
-                $user_id = $_SESSION['user_id'];
-                $product_id = $_POST['product_id'];
-                $product_name = $_POST['product_name'];
-                $product_image = $_POST['product_image'];
-                $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1;
-                $selected_variation = isset($_POST['variation']) ? $_POST['variation'] : null;
-
-                addProductToCart($conn, $user_id, $product_id, $product_name, $product_image, $product_quantity, $selected_variation);
-                $message[] = 'Product added to cart successfully';
+            if ($product['new_qty'] > 0) {
+                if (isset($_POST['add_to_cart'])) {
+                    $user_id = $_SESSION['user_id'];
+                    $product_id = $_POST['product_id'];
+                    $product_name = $_POST['product_name'];
+                    $product_image = $_POST['product_image'];
+                    $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1;
+                    $selected_variation = isset($_POST['variation']) ? $_POST['variation'] : null;
+    
+                    addProductToCart($conn, $user_id, $product_id, $product_name, $product_image, $product_quantity, $selected_variation);
+                    $message[] = 'Product added to cart successfully';
+                }
+            } else {
+                $message1[] = 'This product is currently out of stock.';
             }
         } else {
             $message1[] = 'This product is currently out of stock.';
@@ -339,7 +343,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                 <p class="font-16">
                                                 <h4>
                                                      <span class="badge <?php echo ($product['qty'] > 0) ? 'badge-success-lighten' : 'badge-danger-lighten'; ?>">
-                                                        <?php echo ($product['qty'] > 0) ? 'Instock' : 'Out of Stock'; ?>
+                                                        <!-- <?php echo ($product['qty'] > 0) ? 'Instock' : 'Out of Stock'; ?> -->
                                                         <?php 
                                                             if ($product['qty'] > 0) {
                                                                 echo 'Instock';
