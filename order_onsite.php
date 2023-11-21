@@ -481,7 +481,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         var price = parseFloat($('#price').val()) || 0;
                         var qty = parseInt($('#p_qty').val()) || 0;
                         var discount = parseFloat($('#discount').val()) || 0;
-                        var varPrice = parseFloat(variationPrice) || 0;
+                        var varPrice = parseFloat($('#variation_price').val()) || 0; // Retrieve variationPrice from the input
 
                         var total_price = (price * qty) + varPrice;
 
@@ -489,9 +489,8 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             total_price = total_price - (total_price * (discount / 100));
                         }
 
-
                         $('#total_price').val(total_price.toFixed(2));
-                        }
+                    }
 
                         $(document).ready(function() {
                             $('#p_name').on('change', function() {
@@ -557,6 +556,20 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         console.error('Error fetching data: ', error);
                                     }
                                 });
+                            });
+
+                            $('#variation').on('change', function() {
+                                var selectedOption = $(this).find('option:selected');
+
+                                if (selectedOption) {
+                                    var variationPrice = selectedOption.data('variation_price');
+                                    $('#variation_price').val(variationPrice);
+                                    console.log(variationPrice);
+                                } else {
+                                    $('#variation_price').val(''); // Clear variationPrice if no option is selected
+                                }
+
+                                updateTotalPrice();
                             });
 
                             $('#p_qty, #discount').on('input', function() {
