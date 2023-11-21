@@ -93,6 +93,162 @@ if ($result->num_rows > 0) {
     $completeCount = 0;
 }
 
+//DATE FILTERING
+$startDate = date('Y-m-d'); // Set your desired start date
+$endDate = date('Y-m-d');   // Set your desired end date
+
+// Function to create the date filter SQL condition
+function getDateFilterCondition($column, $startDate, $endDate) {
+    return "$column BETWEEN '$startDate' AND '$endDate'";
+}
+
+if (isset($_POST['filter'])) {
+    // Retrieve the selected dates from the form
+    $startDate = $_POST['from_date'];
+    $endDate = $_POST['to_date'];
+
+    function fetchDailySales($conn, $startDate, $endDate) {
+        try {
+            $sqlquery = "SELECT product_id, subtotal, order_date, 'Complete' AS order_status
+                            FROM tb_order
+                            WHERE order_status = 'Complete' AND " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                            UNION
+                            SELECT product_id, subtotal, order_date, 'Onsite' AS order_status
+                            FROM order_onsite
+                            WHERE " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                            ORDER BY order_date ASC";
+    
+            $data = $conn->query($sqlquery);
+
+            return $data;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
+    function fetchWeeklySales($conn, $startDate, $endDate) {
+        try {
+            $sqlquery = "SELECT
+                            week_number,
+                            SUM(subtotal) AS weekly_sales
+                        FROM (
+                            SELECT
+                                WEEK(order_date) AS week_number,
+                                subtotal
+                            FROM tb_order
+                            WHERE order_status = 'Complete'
+                            AND " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                            UNION ALL
+                            SELECT
+                                WEEK(order_date) AS week_number,
+                                subtotal
+                            FROM order_onsite
+                            WHERE " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                        ) AS combined_data
+                        GROUP BY week_number
+                        ORDER BY week_number";
+    
+            $data = $conn->query($sqlquery);
+
+            return $data;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
+    function fetchMonthlySales($conn, $startDate, $endDate) {
+        try {
+            $sqlquery = "SELECT
+                            YEAR(order_date) AS year,
+                            MONTHNAME(order_date) AS month,
+                            SUM(price) AS monthly_sales
+                        FROM (
+                            SELECT order_date, price
+                            FROM tb_order
+                            WHERE order_status = 'Complete' AND " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                            UNION ALL
+                            SELECT order_date, price
+                            FROM order_onsite
+                            WHERE " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                        ) AS combined_data
+                        GROUP BY year, month
+                        ORDER BY year, month";
+    
+            $data = $conn->query($sqlquery);
+
+            return $data;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    function fetchDailyProfit($conn, $startDate, $endDate) {
+        try {
+            $sqlquery = "SELECT o.product_id, 
+                                o.price AS sale_price, 
+                                p.supplier_price, 
+                                (o.price - p.supplier_price) * o.qty AS profit, 
+                                o.order_date
+                        FROM tb_order AS o
+                        INNER JOIN tb_product AS p ON o.product_id = p.product_id
+                        WHERE o.order_status = 'Complete' AND " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                        ORDER BY o.order_date ASC";
+    
+            $result = $conn->query($sqlquery);
+
+            return $result;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
+    function fetchWeeklyProfit($conn, $startDate, $endDate) {
+        try {
+            $sqlquery = "SELECT YEARWEEK(o.order_date) AS week,
+                                SUM(o.price - p.supplier_price) * SUM(o.qty) AS weekly_profit
+                        FROM tb_order AS o
+                        INNER JOIN tb_product AS p ON o.product_id = p.product_id
+                        WHERE o.order_status = 'Complete' AND " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                        GROUP BY week
+                        ORDER BY week ASC";
+    
+            $result = $conn->query($sqlquery);
+
+            return $result;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
+    function fetchMonthlyProfit($conn, $startDate, $endDate) {
+        try {
+            $sqlquery = "SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS month,
+                                SUM(o.price - p.supplier_price) * SUM(o.qty) AS monthly_profit
+                        FROM tb_order AS o
+                        INNER JOIN tb_product AS p ON o.product_id = p.product_id
+                        WHERE o.order_status = 'Complete' AND " . getDateFilterCondition('order_date', $startDate, $endDate) . "
+                        GROUP BY month
+                        ORDER BY month ASC";
+    
+            $result = $conn->query($sqlquery);
+
+            return $result;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    // Call the function to fetch data with date filter
+    $filteredDailySales = fetchDailySales($conn, $startDate, $endDate);
+    $filteredWeeklySales = fetchWeeklySales($conn, $startDate, $endDate);
+    $filteredMonthlySales = fetchMonthlySales($conn, $startDate, $endDate);
+
+    $filteredDailyProfit = fetchDailyProfit($conn, $startDate, $endDate);
+    $filteredWeeklyProfit = fetchWeeklyProfit($conn, $startDate, $endDate);
+    $filteredMonthlyProfit = fetchMonthlyProfit($conn, $startDate, $endDate);
+
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -470,6 +626,28 @@ if ($result->num_rows > 0) {
                     </div> <!-- end col-->
                 </center>
 
+                <form method="POST">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="dateRangePicker">From:</label>
+                            <div class="input-daterange input-group" id="dateRangePicker">
+                                <input type="date" id="startDate" class="form-control" name="from_date" placeholder="From">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="dateRangePicker">To:</label>
+                            <div class="input-daterange input-group" id="dateRangePicker">
+                                <input type="date" id="endDate" class="form-control" name="to_date" placeholder="From">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <button type="submit" name="filter" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="row">
                     <div class="col-xl-4 col-lg-6">
                         <div class="card">
@@ -486,7 +664,7 @@ if ($result->num_rows > 0) {
                                                 FROM order_onsite
                                                 ORDER BY order_date ASC";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                $results = isset($filteredDailySales) ? $filteredDailySales : mysqli_query($conn, $sqlquery);
 
                                 if (mysqli_num_rows($results) > 0) {
 
@@ -562,7 +740,7 @@ if ($result->num_rows > 0) {
                                                 GROUP BY week_number
                                                 ORDER BY week_number";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                $results = isset($filteredWeeklySales) ? $filteredWeeklySales : mysqli_query($conn, $sqlquery);
 
                                 if (mysqli_num_rows($results) > 0) {
 
@@ -633,7 +811,7 @@ if ($result->num_rows > 0) {
                                                 GROUP BY year, month
                                                 ORDER BY year, month";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                $results = isset($filteredMonthlySales) ? $filteredMonthlySales : mysqli_query($conn, $sqlquery); 
 
                                 if (mysqli_num_rows($results) > 0) {
 
@@ -703,7 +881,7 @@ if ($result->num_rows > 0) {
                                                 WHERE o.order_status = 'Complete'
                                                 ORDER BY o.order_date ASC";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                $results = isset($filteredDailyProfit) ? $filteredDailyProfit : mysqli_query($conn, $sqlquery);
 
                                 if (mysqli_num_rows($results) > 0) {
 
@@ -768,7 +946,7 @@ if ($result->num_rows > 0) {
                                                     GROUP BY week
                                                     ORDER BY week ASC";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                $results = isset($filteredWeeklyProfit) ? $filteredWeeklyProfit : mysqli_query($conn, $sqlquery);
 
                                 if (mysqli_num_rows($results) > 0) {
 
@@ -833,7 +1011,7 @@ if ($result->num_rows > 0) {
                                                     GROUP BY month
                                                     ORDER BY month ASC";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                $results = isset($filteredMonthlyProfit) ? $filteredMonthlyProfit : mysqli_query($conn, $sqlquery);
 
                                 if (mysqli_num_rows($results) > 0) {
 
@@ -887,99 +1065,108 @@ if ($result->num_rows > 0) {
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="header-title">Forecasting (Moving Average)</h4>
+                                <h4 class="header-title">Moving Average</h4>
 
                                 <?php
-                                include("mysql_connect.php");
+                                    include("mysql_connect.php");
 
-                                $sqlquery = "WITH MonthlySales AS (
-                                            SELECT
-                                                YEAR(order_date) AS year,
-                                                MONTHNAME(order_date) AS month,
-                                                SUM(price) AS monthly_sales
-                                            FROM (
-                                                SELECT order_date, price
-                                                FROM tb_order
-                                                WHERE order_status = 'Complete'
-                                                UNION ALL
-                                                SELECT order_date, price
-                                                FROM order_onsite
-                                            ) AS combined_data
-                                            GROUP BY year, month
-                                        )
-                                        
-                                        SELECT
-                                            year,
-                                            month,
-                                            monthly_sales,
-                                            -- Calculate 3-month Simple Moving Average
-                                            ROUND(AVG(monthly_sales) OVER (ORDER BY year, month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS moving_average,
-                                            -- Data for the next month
-                                            LEAD(monthly_sales) OVER (ORDER BY year, month) AS next_month_sales,
-                                            -- Data for the next next month
-                                            LEAD(monthly_sales, 2) OVER (ORDER BY year, month) AS next_next_month_sales
-                                        FROM MonthlySales
-                                        ORDER BY year ASC, month DESC;";
+                                    $sqlquery = "SELECT * FROM moving_average_tbl";
 
-                                $results = mysqli_query($conn, $sqlquery);
+                                    $results = mysqli_query($conn, $sqlquery);
 
-                                if (mysqli_num_rows($results) > 0) {
-                                    $data = array();
-                                    // Add a new array for moving average data
-                                    $data[] = array('Date', 'Sales', 'Moving Average');
+                                    if (mysqli_num_rows($results) > 0) {
+                                        $data = array();
+                                        // Add a new array for moving average data
+                                        $data[] = array('Month', 'Sales', 'Moving Average');
 
-                                    while ($row = mysqli_fetch_assoc($results)) {
-                                        $data[] = array($row["month"], (float) $row["monthly_sales"], (float) $row["moving_average"]);
+                                        while ($row = mysqli_fetch_assoc($results)) {
+                                            $data[] = array($row["month"], (float) $row["monthly_sales"], (float) $row["moving_average"]);
+                                        }
+
+                                        // Encode data for both bar and line charts
+                                        $json_data = json_encode($data);
+
+                                        // Add options for both charts
+                                        $options = array(
+                                            'legend' => 'top',
+                                            'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                            'hAxis' => array('title' => 'Date'),
+                                            'vAxis' => array('title' => 'Sales'),
+                                            'orientation' => 'horizontal',
+                                            'series' => array(
+                                                0 => array('type' => 'bars'), // Bar chart settings
+                                                1 => array('type' => 'line', 'targetAxisIndex' => 1) // Line chart settings
+                                            ),
+                                            'axes' => array(
+                                                1 => array('title' => 'Moving Average')
+                                            )
+                                        );
+
+                                        // Draw both bar and line charts
+                                        $chart_html = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                        <script type="text/javascript">
+                                            google.charts.load("current", {"packages":["bar", "corechart"]});
+                                            google.charts.setOnLoadCallback(drawChart);
+
+                                            function drawChart() {
+                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                var options = ' . json_encode($options) . ';
+
+                                                var chart = new google.visualization.ComboChart(document.getElementById("moving-average"));
+                                                chart.draw(data, options);
+                                            }
+                                        </script>';
+
+                                        // Echo combined chart HTML and JavaScript
+                                        echo '<div id="moving-average"></div>';
+                                        echo $chart_html;
+
+                                    } else {
+                                        echo "0 results";
                                     }
 
-                                    // Encode data for both bar and line charts
-                                    $json_data = json_encode($data);
-
-                                    // Add options for both charts
-                                    $options = array(
-                                        'legend' => 'top',
-                                        'chartArea' => array('width' => '70%', 'height' => '60%'),
-                                        'hAxis' => array('title' => 'Date'),
-                                        'vAxis' => array('title' => 'Sales'),
-                                        'orientation' => 'horizontal',
-                                        'series' => array(
-                                            0 => array('type' => 'bars'), // Bar chart settings
-                                            1 => array('type' => 'line', 'targetAxisIndex' => 1) // Line chart settings
-                                        ),
-                                        'axes' => array(
-                                            1 => array('title' => 'Moving Average')
-                                        )
-                                    );
-
-                                    // Draw both bar and line charts
-                                    $chart_html = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-                                            <script type="text/javascript">
-                                                google.charts.load("current", {"packages":["bar", "corechart"]});
-                                                google.charts.setOnLoadCallback(drawChart);
-
-                                                function drawChart() {
-                                                    var data = new google.visualization.arrayToDataTable(' . $json_data . ');
-
-                                                    var options = ' . json_encode($options) . ';
-
-                                                    var chart = new google.visualization.ComboChart(document.getElementById("moving-average"));
-                                                    chart.draw(data, options);
-                                                }
-                                            </script>';
-
-                                    // Echo combined chart HTML and JavaScript
-                                    echo '<div id="moving-average"></div>';
-                                    echo $chart_html;
-                                } else {
-                                    echo "0 results";
-                                }
-
-                                mysqli_close($conn);
+                                    mysqli_close($conn);
                                 ?>
                             </div>
                         </div>
                     </div>
                 </div>
+                <script>
+                        // JavaScript code to create a line chart using Chart.js
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: <?php echo json_encode($labels); ?>,
+                                datasets: [{
+                                    label: 'Data',
+                                    data: <?php echo json_encode($data); ?>,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 2,
+                                    fill: false,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    x: {
+                                        type: 'category',
+                                        title: {
+                                            display: true,
+                                            text: 'Date'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Sales Average'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    </script>
 
                 <!-- Footer Start -->
                 <footer class="footer">
@@ -1025,6 +1212,26 @@ if ($result->num_rows > 0) {
         <!-- demo app -->
         <script src="assets/js/pages/demo.dashboard.js"></script>
         <!-- end demo js-->
+
+        <script>
+            $(document).ready(function(){
+                // Initialize datepicker
+                $('#datePicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true
+                });
+
+                // Listen for changes in the datepicker value
+                $('#datePicker').on('changeDate', function(){
+                    // Update the global variables with selected dates
+                    <?php echo "startDate = $('#datePicker').val();"; ?>
+                    <?php echo "endDate = $('#datePicker').val();"; ?>
+
+                    // Reload or update your charts with the new date range
+                    // ...
+                });
+            });
+        </script>
 </body>
 
 </html>
