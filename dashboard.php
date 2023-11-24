@@ -249,6 +249,26 @@ if (isset($_POST['filter'])) {
 
 }
 
+if (isset($_POST['filterMovingAverage'])) {
+    function filter ($conn)
+    {
+        try {
+            $selectedMonth = $_POST['selected_month'];
+            $selectedYear = $_POST['selected_year'];
+
+            $sqlquery = "SELECT * FROM moving_average_tbl WHERE MONTH(date_column) = $selectedMonth AND YEAR(date_column) = $selectedYear";
+    
+            $result = $conn->query($sqlquery);
+
+            return $result;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
+    $filteredMovingAverage = filter($conn);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -1061,6 +1081,38 @@ if (isset($_POST['filter'])) {
                     </div>
                 </div>
 
+                <form action="" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="monthPicker" class="form-label">Select Month:</label>
+                        <select id="monthPicker" class="form-select" name="selected_month" required>
+                        <option value="" disabled selected>Select Month</option>
+                        <?php
+                            for ($i = 1; $i <= 12; $i++) {
+                            $month = date('F', mktime(0, 0, 0, $i, 1));
+                            echo "<option value='$i'>$month</option>";
+                            }
+                        ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="yearPicker" class="form-label">Select Year:</label>
+                        <select id="yearPicker" class="form-select" name="selected_year" required>
+                        <option value="" disabled selected>Select Year</option>
+                        <?php
+                            $currentYear = date('Y');
+                            for ($year = $currentYear; $year >= $currentYear - 10; $year--) {
+                            echo "<option value='$year'>$year</option>";
+                            }
+                        ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary" name="filterMovingAverage">Apply Filter</button>
+                </div>
+            </form>
+
                 <div class="row">
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
@@ -1072,7 +1124,7 @@ if (isset($_POST['filter'])) {
 
                                     $sqlquery = "SELECT * FROM moving_average_tbl";
 
-                                    $results = mysqli_query($conn, $sqlquery);
+                                    $results = isset($filteredMovingAverage) ? $filteredMovingAverage : mysqli_query($conn, $sqlquery);
 
                                     if (mysqli_num_rows($results) > 0) {
                                         $data = array();
