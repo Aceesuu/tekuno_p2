@@ -69,6 +69,18 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
         $product = mysqli_fetch_assoc($result);
 
         if ($product['qty'] > 0) {
+            if (isset($_POST['add_to_cart'])) {
+                $user_id = $_SESSION['user_id'];
+                $product_id = $_POST['product_id'];
+                $product_name = $_POST['product_name'];
+                $product_image = $_POST['product_image'];
+                $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1;
+                $selected_variation = isset($_POST['variation']) ? $_POST['variation'] : null;
+
+                addProductToCart($conn, $user_id, $product_id, $product_name, $product_image, $product_quantity, $selected_variation);
+                $message[] = 'Product added to cart successfully';
+            }
+        } else {
             if ($product['new_qty'] > 0) {
                 if (isset($_POST['add_to_cart'])) {
                     $user_id = $_SESSION['user_id'];
@@ -84,8 +96,6 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
             } else {
                 $message1[] = 'This product is currently out of stock.';
             }
-        } else {
-            $message1[] = 'This product is currently out of stock.';
         }
     } else {
         echo "Product not found.";
@@ -409,6 +419,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             // Product is in stock, so the button is active
                                                             echo '<button type="submit" class="btn btn-danger ms-2" name="add_to_cart"><i class="mdi mdi-cart me-1"></i> Add to cart</button>';
                                                         } else {
+                                                            if ($product['new_qty'] > 0) {
+                                                                echo '<button type="submit" class="btn btn-danger ms-2" name="add_to_cart"><i class="mdi mdi-cart me-1"></i> Add to cart</button>';
+                                                            } 
+                                                            
                                                             // Product is out of stock, so the button is disabled
                                                             echo '<button type="submit" class="btn btn-danger ms-2" name="add_to_cart" disabled><i class="mdi mdi-cart me-1"></i> Add to cart</button>';
                                                         }
