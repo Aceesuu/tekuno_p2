@@ -249,24 +249,25 @@ if (isset($_POST['filter'])) {
 
 }
 
-if (isset($_POST['filterMovingAverage'])) {
-    function filter ($conn)
-    {
-        try {
-            $selectedMonth = $_POST['selected_month'];
-            $selectedYear = $_POST['selected_year'];
+function filter($conn)
+{
+    try {
+        $selectedMonth = $_POST['selected_month'];
+        $selectedYear = $_POST['selected_year'];
 
-            $sqlquery = "SELECT * FROM moving_average_tbl WHERE MONTH(date_column) = $selectedMonth AND YEAR(date_column) = $selectedYear";
-    
-            $result = $conn->query($sqlquery);
+        $sqlquery = "SELECT * FROM moving_average_tbl WHERE MONTH(date_column) = $selectedMonth AND YEAR(date_column) = $selectedYear";
 
+        $result = $conn->query($sqlquery);
+
+        if ($result->num_rows > 0) {
             return $result;
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+        } else {
+            return false; // or you can return an empty result set depending on your needs
         }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+        return false;
     }
-    
-    $filteredMovingAverage = filter($conn);
 }
 
 ?>
@@ -1081,7 +1082,7 @@ if (isset($_POST['filterMovingAverage'])) {
                     </div>
                 </div>
 
-                <form action="" method="post">
+            <form action="" method="post">
                 <div class="row">
                     <div class="col-md-6">
                         <label for="monthPicker" class="form-label">Select Month:</label>
