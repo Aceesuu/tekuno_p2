@@ -631,13 +631,13 @@ if (isset($_POST['filter'])) {
                         <div class="col-md-3">
                             <label for="dateRangePicker">From:</label>
                             <div class="input-daterange input-group" id="dateRangePicker">
-                                <input type="date" id="startDate" class="form-control" name="from_date" placeholder="From">
+                                <input type="date" id="startDate" class="form-control" name="from_date" placeholder="From" value="<?php echo isset($_POST['from_date']) ? $_POST['from_date'] : ''; ?>">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label for="dateRangePicker">To:</label>
                             <div class="input-daterange input-group" id="dateRangePicker">
-                                <input type="date" id="endDate" class="form-control" name="to_date" placeholder="From">
+                                <input type="date" id="endDate" class="form-control" name="to_date" placeholder="From" value="<?php echo isset($_POST['to_date']) ? $_POST['to_date'] : ''; ?>">
                             </div>
                         </div>
                     </div>
