@@ -252,12 +252,25 @@ if (isset($_POST['filter'])) {
 function filter($conn)
 {
     try {
-        $selectedMonth = $_POST['selected_month'];
-        $selectedYear = $_POST['selected_year'];
+        $fromSelectedMonth = filter_input(INPUT_POST, 'from_selected_month', FILTER_VALIDATE_INT);
+        $fromSelectedYear = filter_input(INPUT_POST, 'from_selected_year', FILTER_VALIDATE_INT);
+        $toSelectedMonth = filter_input(INPUT_POST, 'to_selected_month', FILTER_VALIDATE_INT);
+        $toSelectedYear = filter_input(INPUT_POST, 'to_selected_year', FILTER_VALIDATE_INT);
 
-        $sqlquery = "SELECT * FROM moving_average_tbl WHERE MONTH(date_column) = $selectedMonth AND YEAR(date_column) = $selectedYear";
+        if (
+            $fromSelectedMonth === false || $fromSelectedYear === false ||
+            $toSelectedMonth === false || $toSelectedYear === false
+        ) {
+            // Handle invalid input
+            return false;
+        }
 
-        $result = $conn->query($sqlquery);
+        // Use prepared statement to prevent SQL injection
+        $sqlquery = "SELECT * FROM moving_average_tbl WHERE MONTH(date_column) BETWEEN ? AND ? AND YEAR(date_column) BETWEEN ? AND ?";
+        $stmt = $conn->prepare($sqlquery);
+        $stmt->bind_param("iiii", $fromSelectedMonth, $toSelectedMonth, $fromSelectedYear, $toSelectedYear);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             return $result;
@@ -1084,26 +1097,58 @@ function filter($conn)
 
             <form action="" method="post">
                 <div class="row">
+                    <label for="monthPicker" class="form-label">FROM</label>
                     <div class="col-md-6">
                         <label for="monthPicker" class="form-label">Select Month:</label>
-                        <select id="monthPicker" class="form-select" name="selected_month" required>
+                        <select id="monthPicker" class="form-select" name="from_selected_month" required>
                         <option value="" disabled selected>Select Month</option>
                         <?php
                             for ($i = 1; $i <= 12; $i++) {
-                            $month = date('F', mktime(0, 0, 0, $i, 1));
-                            echo "<option value='$i'>$month</option>";
+                                $month = date('F', mktime(0, 0, 0, $i, 1));
+                                $selected = isset($_POST['from_selected_month']) && $_POST['from_selected_month'] == $i ? 'selected' : '';
+                                echo "<option value='$i'>$month</option>";
                             }
                         ?>
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label for="yearPicker" class="form-label">Select Year:</label>
-                        <select id="yearPicker" class="form-select" name="selected_year" required>
+                        <select id="yearPicker" class="form-select" name="from_selected_year" required>
                         <option value="" disabled selected>Select Year</option>
                         <?php
                             $currentYear = date('Y');
-                            for ($year = $currentYear; $year >= $currentYear - 10; $year--) {
-                            echo "<option value='$year'>$year</option>";
+                            $selected = isset($_POST['from_selected_year']) && $_POST['from_selected_year'] == $year ? 'selected' : '';
+                            for ($year = $currentYear + 1; $year >= $currentYear - 10; $year--) {
+                                echo "<option value='$year'>$year</option>";
+                            }
+                        ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <label for="monthPicker" class="form-label">TO</label>
+                    <div class="col-md-6">
+                        <label for="monthPicker" class="form-label">Select Month:</label>
+                        <select id="monthPicker" class="form-select" name="to_selected_month" required>
+                        <option value="" disabled selected>Select Month</option>
+                        <?php
+                            for ($i = 1; $i <= 12; $i++) {
+                                $month = date('F', mktime(0, 0, 0, $i, 1));
+                                $selected = isset($_POST['to_selected_year']) && $_POST['to_selected_year'] == $year ? 'selected' : '';
+                                echo "<option value='$i'>$month</option>";
+                            }
+                        ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="yearPicker" class="form-label">Select Year:</label>
+                        <select id="yearPicker" class="form-select" name="to_selected_year" required>
+                        <option value="" disabled selected>Select Year</option>
+                        <?php
+                            $currentYear = date('Y');
+                            for ($year = $currentYear + 1; $year >= $currentYear - 10; $year--) {
+                                $selected = isset($_POST['to_selected_month']) && $_POST['to_selected_month'] == $i ? 'selected' : '';
+                                echo "<option value='$year'>$year</option>";
                             }
                         ?>
                         </select>
