@@ -31,6 +31,6 @@ if (isset($_GET['order_id'])) {
 // Close the database connection
 mysqli_close($conn);
 
-header("Location: proof_customer.php");
+header("Location: order_customer.php");
 exit(0);
 ?>

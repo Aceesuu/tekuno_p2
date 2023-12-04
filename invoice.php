@@ -251,7 +251,24 @@ if (isset($_GET['order_id'])) {
                                             <div class="mt-3 float-sm-end">
                                                 <p class="font-13"><strong>Order Date: </strong> &nbsp;&nbsp;&nbsp; <?php echo $order_data['order_date']; ?></p>
                                                 <p class="font-13"><strong>Order ID: </strong> &nbsp;&nbsp;&nbsp; #<?php echo $order_data['order_id']; ?></p>
-                                                <p class="font-13"><strong>Order Status: </strong> <span class="badge bg-success float-end"><?php echo $order_data['order_status']; ?></span></p>
+                                                <?php
+                                                $statusBadgeClasses = [
+                                                    'Pending' => 'badge-info-lighten',
+                                                    'To Ship' => 'badge-primary-lighten',
+                                                    'To Receive' => 'badge-warning-lighten',
+                                                    'Declined' => 'badge-danger-lighten',
+                                                    'Complete' => 'badge-success-lighten',
+                                                    'Accept' => 'badge-success-lighten',
+                                                    'Cancelled' => 'badge-danger-lighten',
+                                                    'Decline' => 'badge-danger-lighten',
+                                                ];
+                                                ?>
+                                                <p class="font-13">
+                                                    <strong>Order Status: </strong>
+                                                    <span class="badge <?php echo isset($statusBadgeClasses[$order_data['order_status']]) ? $statusBadgeClasses[$order_data['order_status']] : 'badge-info-lighten'; ?>">
+                                                        <?php echo $order_data['order_status']; ?>
+                                                    </span>
+                                                </p>
                                             </div>
                                         </div><!-- end col -->
                                     </div>

@@ -47,7 +47,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link href="css/dashcc.css" rel="stylesheet"/>
+    <link href="css/dashccc.css" rel="stylesheet"/>
 </head>
 
 <body class="loading" data-layout="topnav" data-layout-config='{"layoutBoxed":false,"darkMode":false,"showRightSidebarOnStart": true}'>
@@ -121,35 +121,76 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     </li>
 
 
-    <li class="dropdown notification-list">
-        <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
-        <i class="dripicons-bell noti-icon"style="display: flex; justify-content: center; align-items: flex-end; margin-top: 8px;"></i>
+  <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon" style="display: flex; justify-content: center; align-items: flex-end; margin-top: 8px;"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+
+                                            </span>Notification
+
+                                        </h5>
+                                    </div>
 
 
-            <span class="noti-icon-badge"></span>
-        </a>
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
 
-        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop">
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
 
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
 
-            <!-- item-->
-            <div class="dropdown-item noti-title">
-                <h5 class="m-0">
-                    <span class="float-end">
-                        <a href="javascript: void(0);" class="text-dark">
-                            <small>Clear All</small>
-                        </a>
-                    </span>Notification
-                </h5>
-            </div>
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
 
-            <!-- All-->
-            <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                View All
-            </a>
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
 
-        </div>
-    </li>
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
+
+                                    <!-- All-->
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+
+                            </li>
+
 
     <li class="dropdown notification-list">
 <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="position: relative; top: -10px;">
@@ -178,6 +219,11 @@ echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-c
                                     <a href="user_profile.php" class="dropdown-item notify-item">
                                         <i class="mdi mdi-account-circle me-1"></i>
                                         <span>My Account</span>
+                                    </a>
+                                    
+                                       <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
                                     </a>
 
                                     <!-- item-->
@@ -245,7 +291,7 @@ echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-c
                             echo '</div>';
                         } else {
                             echo '<div class="container">';
-                            echo 'No matching products found for: ' . $searchQuery;
+                                echo '<br><div class="search-results" style="display: inline; white-space: nowrap;">No result products found: ' . $searchQuery . '<br></div>';
                             echo '</div>';
                         }
                     } else {

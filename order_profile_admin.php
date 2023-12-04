@@ -1,36 +1,36 @@
 <?php
-    session_start(); // Start the session
-    include("mysql_connect.php");
+session_start(); // Start the session
+include("mysql_connect.php");
 
-    if (!isset($_SESSION['admin_id'])) {
-        header("Location: index.php");
-        exit();
-    }
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: index.php");
+    exit();
+}
 
-    $admin_id = $_SESSION['admin_id'];
-    $query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'";
-    $admin_result = mysqli_query($conn, $query);
+$admin_id = $_SESSION['admin_id'];
+$query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'";
+$admin_result = mysqli_query($conn, $query);
 
-    if ($admin_result && mysqli_num_rows($admin_result) > 0) {
-        $admin_data = mysqli_fetch_assoc($admin_result);
-    } else {
-        $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
-    }
+if ($admin_result && mysqli_num_rows($admin_result) > 0) {
+    $admin_data = mysqli_fetch_assoc($admin_result);
+} else {
+    $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
+}
 
-    $sql = "SELECT * FROM tb_admin WHERE admin_id = $admin_id";
-    $result = $conn->query($sql);
+$sql = "SELECT * FROM tb_admin WHERE admin_id = $admin_id";
+$result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $firstName = $row["firstName"];
-        $lastName = $row["lastName"];
-        $middleName = $row['middleName'];
-        $gender = $row['gender'];
-        $contact = $row['contact'];
-    } else {
-        echo "No data found";
-    }
-    ?>
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $firstName = $row["firstName"];
+    $lastName = $row["lastName"];
+    $middleName = $row['middleName'];
+    $gender = $row['gender'];
+    $contact = $row['contact'];
+} else {
+    echo "No data found";
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -59,12 +59,12 @@
         <!-- ========== Left Sidebar Start ========== -->
         <div class="leftside-menu" style="background-color: #212A37;">
 
-            <!-- LOGO -->
+           <!-- LOGO -->
             <a href="dashboard-order.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
                     <img src="assets/images/logo.png" alt="" height="100">
                 </span>
-                <span class="logo-sm">
+                <span class="logo-sm" style="background-color: #212A37;">
                     <img src="assets/images/logo.png" alt="" height="47">
                 </span>
             </a>
@@ -81,31 +81,35 @@
                             <span> Dashboard </span>
                         </a>
                     </li>
-                        
-                        <ul class="side-nav">
-                            <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
-                                    <i class=" uil-shopping-cart-alt"></i>
-                                    <span> Order </span>
-                                    <span class="menu-arrow"></span>
-                                </a>
-                                <div class="collapse" id="sidebarEcommerceOrder">
-                                    <ul class="side-nav-second-level">
-                                        <li>
-                                            <a href="role_order.php">Order Details</a>
-                                        </li>
-                                           <li>
-                                            <a href="role_order_onsite.php">Order Onsites</a>
-                                        </li>
-                                        <li>
-                                            <a href="role_order_history.php">Order History</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
 
-                        <div class="clearfix"></div>
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
+                                <i class="uil-shopping-cart-alt"></i>
+                                <span> Order </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse show" id="sidebarEcommerceOrder">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="role_order.php">Order Details</a>
+                                    </li>
+                                    <li>
+                                        <a href="role_order_onsite.php">Order Onsites</a>
+                                    </li>
+                                    <li>
+                                        <a href="role_order_history.php">Order History</a>
+                                    </li>
+                                    <li>
+                                        <a href="role_refund_admin.php">Request Refund</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                    <div class="clearfix"></div>
 
             </div>
             <!-- Sidebar -left -->
@@ -130,13 +134,13 @@
 
 
                         <li class="dropdown notification-list">
-                         
+
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                         =
+                                =
 
 
-                                </div>
+                            </div>
                         </li>
 
                         <li class="dropdown notification-list">
@@ -155,6 +159,7 @@
                                 </span>
                                 <span>
                                     <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
+                                    <span class="account-position">Order Manager</span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -233,7 +238,7 @@
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <form method="POST" action="update_profile_admin.php" enctype="multipart/form-data">
+                                                                <form method="POST" action="order_update_profile.php" enctype="multipart/form-data">
                                                                     <input type="hidden" name="update_p_id" value="<?php echo $row['admin_id']; ?>">
                                                                     <div class="mb-3 row">
                                                                         <div class="col-sm-10">
@@ -272,7 +277,7 @@
                         <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <form method="post" action="update_profile_admin.php">
+                                    <form method="post" action="order_update_profile.php">
                                         <div class="row gutters">
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                                 <h6 class="mb-2" style="color: #F7931E;">Personal Details</h6>
@@ -281,19 +286,22 @@
                                                 <input type="hidden" name="update_u_id" value="<?php echo $row['admin_id']; ?>">
                                                 <div class="form-group">
                                                     <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-                                                    <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" required>
+                                                  <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" oninput="restrictToLetters(this)" value="<?php echo $lastName; ?>" required>
+                                                    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="firstname" class="form-label">First Name</label>
-                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" oninput="restrictToLetters(this)" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                        <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="middlename" class="form-label">Middle Name</label>
-                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>">
+                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" oninput="restrictToLetters(this)" value="<?php echo $middleName; ?>">
+                                                    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                     <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
                                                 </div>
                                             </div>
@@ -306,9 +314,10 @@
                                                 </select>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                                <div class="form-group">
+                                               <div class="form-group">
                                                     <label for="contact" class="form-label">Contact Number</label>
-                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" value="<?php echo $contact; ?>">
+                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11" value="<?php echo $contact; ?>">
+                                                      <span class="note" style="display: none; color: red; font-size: 13px;">Please enter a valid 11-digit number without symbols or letters.</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -375,5 +384,42 @@
         <script src="assets/js/pages/demo.dashboard.js"></script>
         <!-- end demo js-->
 </body>
+<script>
+        function restrictToLetters(input) {
+            var lastNameNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+
+            // Replace multiple spaces with a single space
+            inputValue = inputValue.replace(/  +/g, ' ');
+
+            // Remove any non-letter characters except spaces
+            var lettersOnly = inputValue.replace(/[^A-Za-z ]/g, '');
+
+            if (inputValue !== lettersOnly && inputValue.trim() !== '') {
+                lastNameNote.style.display = 'block';
+            } else {
+                lastNameNote.style.display = 'none';
+            }
+
+            input.value = lettersOnly;
+        }
+    </script>
+
+        <script>
+        function restrictToNumbers(input) {
+            var phoneNumberNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+            var numbersOnly = inputValue.replace(/[^0-9]/g, '').slice(0, 11);
+
+            if (inputValue !== numbersOnly || inputValue.length !== 11) {
+                phoneNumberNote.style.display = 'block';
+            } else {
+                phoneNumberNote.style.display = 'none';
+            }
+
+            input.value = numbersOnly;
+        }
+    </script>
+
 
 </html>

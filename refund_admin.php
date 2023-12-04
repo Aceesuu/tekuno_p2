@@ -143,26 +143,96 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </div>
                             </li>
                         </ul>
-
+                        
+                          <ul class="side-nav">
                         <li class="side-nav-item">
-                            <a href="customers.php" class="side-nav-link">
-                                <i class="uil-users-alt"></i>
-                                <span> Customers </span>
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                         <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
                         <li class="side-nav-item">
                             <a href="admins.php" class="side-nav-link">
                                 <i class="uil-user-check"></i>
                                 <span> Admins </span>
                             </a>
                         </li>
+                        
+                      <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
 
-                        <li class="side-nav-item">
-                            <a href="forecast.php" class="side-nav-link">
-                                <i class="uil-chart"></i>
-                                <span> Forecast </span>
-                            </a>
-                        </li>
+                      
                         <!-- End Sidebar -->
 
                         <div class="clearfix"></div>
@@ -215,7 +285,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </a>
 
                                 <!-- item-->
-                                <a href="logout.php" class="dropdown-item notify-item">
+                               <a href="logout_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
                                     <span>Logout</span>
                                 </a>
@@ -252,28 +322,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row mb-2">
-                                        <div class="col-xl-8">
-                                            <form class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                                <div class="col-auto">
-                                                    <div class="d-flex align-items-center">
-                                                        <label for="status-select" class="me-2">Status</label>
-                                                        <select class="form-select" id="status-select">
-                                                            <option selected="">Choose...</option>
-                                                            <option value="0">All</option>
-                                                            <option value="1">Pending</option>
-                                                            <option value="2">To Ship</option>
-                                                            <option value="3">To Receive</option>
-                                                            <option value="4">Decline</option>
-                                                            <option value="5">Complete</option>
-                                                            <option value="6">Cancelled</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
+                                    
                                     <div class="table-responsive">
                                         <table id="example" class="table dt-responsive nowrap w-100">
                                             <thead>

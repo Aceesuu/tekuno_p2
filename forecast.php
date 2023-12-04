@@ -250,6 +250,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                <span class="mdi mdi-magnify search-icon"></span>
+                                <button class="input-group-text btn-primary" type="submit">Search</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -278,59 +283,85 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         </a>
                                     </form>
                                 </div>
-                                <h4 class="page-title">Forecasting</h4>
+                                <h4 class="page-title">Moving Average</h4>
                             </div>
                         </div>
                     </div>
-                    <div style="width: 70%; margin: auto;">
-                        <canvas id="myChart"></canvas>
-                    </div>
                     <!-- end page title -->
-                    <?php
-                    // Read the CSV file into an array
-                    $csvFile = 'MOCK_DATA.csv';
-                    $rows = array_map('str_getcsv', file($csvFile));
-                    $labels = array_column($rows, 0); // Assuming the X values are in the first column
-                    $data = array_column($rows, 1);   // Assuming the Y values are in the second column
-                    ?>
+                    
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Moving Average</h4>
 
-                    <script>
-                        // JavaScript code to create a line chart using Chart.js
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: <?php echo json_encode($labels); ?>,
-                                datasets: [{
-                                    label: 'Data',
-                                    data: <?php echo json_encode($data); ?>,
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    borderWidth: 2,
-                                    fill: false,
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                scales: {
-                                    x: {
-                                        type: 'category',
-                                        title: {
-                                            display: true,
-                                            text: 'Date'
+                                    <?php
+                                        include("mysql_connect.php");
+
+                                        $sqlquery = "SELECT * FROM moving_average_tbl";
+
+                                        $results = mysqli_query($conn, $sqlquery);
+
+                                        if (mysqli_num_rows($results) > 0) {
+                                            $data = array();
+                                            // Add a new array for moving average data
+                                            $data[] = array('Month', 'Sales', 'Moving Average');
+
+                                            while ($row = mysqli_fetch_assoc($results)) {
+                                                $data[] = array($row["month"], (float) $row["monthly_sales"], (float) $row["moving_average"]);
+                                            }
+
+                                            // Encode data for both bar and line charts
+                                            $json_data = json_encode($data);
+
+                                            // Add options for both charts
+                                            $options = array(
+                                                'legend' => 'top',
+                                                'chartArea' => array('width' => '70%', 'height' => '60%'),
+                                                'hAxis' => array('title' => 'Date'),
+                                                'vAxis' => array('title' => 'Sales'),
+                                                'orientation' => 'horizontal',
+                                                'series' => array(
+                                                    0 => array('type' => 'bars'), // Bar chart settings
+                                                    1 => array('type' => 'line', 'targetAxisIndex' => 1) // Line chart settings
+                                                ),
+                                                'axes' => array(
+                                                    1 => array('title' => 'Moving Average')
+                                                )
+                                            );
+
+                                            // Draw both bar and line charts
+                                            $chart_html = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                            <script type="text/javascript">
+                                                google.charts.load("current", {"packages":["bar", "corechart"]});
+                                                google.charts.setOnLoadCallback(drawChart);
+
+                                                function drawChart() {
+                                                    var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+
+                                                    var options = ' . json_encode($options) . ';
+
+                                                    var chart = new google.visualization.ComboChart(document.getElementById("moving-average"));
+                                                    chart.draw(data, options);
+                                                }
+                                            </script>';
+
+                                            // Echo combined chart HTML and JavaScript
+                                            echo '<div id="moving-average"></div>';
+                                            echo $chart_html;
+
+                                        } else {
+                                            echo "0 results";
                                         }
-                                    },
-                                    y: {
-                                        title: {
-                                            display: true,
-                                            text: 'Sales Average'
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    </script>
 
+                                        mysqli_close($conn);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                   
 
                     <!-- container -->
 

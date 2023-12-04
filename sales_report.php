@@ -92,7 +92,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <li>
                                     <a href="products.php">List of Products</a>
                                 </li>
-                                 <li>
+                                <li>
                                     <a href="category.php">Product Category</a>
                                 </li>
                                 <li>
@@ -121,23 +121,82 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <li>
                                         <a href="order.php">Order Details</a>
                                     </li>
-                                     <li>
-                                            <a href="order_onsite.php">Order Onsites</a>
-                                        </li>
+                                    <li>
+                                        <a href="order_onsite.php">Order Onsites</a>
+                                    </li>
                                     <li>
                                         <a href="order_history_admin.php">Order History</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="refund_admin.php">Request Refund</a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
                     </ul>
 
-                    <li class="side-nav-item">
-                        <a href="customers.php" class="side-nav-link">
-                            <i class="uil-users-alt"></i>
-                            <span> Customers </span>
-                        </a>
-                    </li>
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-shopping-cart-alt"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                <i class=" uil-shopping-cart-alt"></i>
+                                <span> Customer </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarCustomer">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="customers.php">List of Customers</a>
+                                    </li>
+                                    <li>
+                                        <a href="feedback.php">Customer Concerns</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
                     <li class="side-nav-item">
                         <a href="admins.php" class="side-nav-link">
                             <i class="uil-user-check"></i>
@@ -145,12 +204,25 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </a>
                     </li>
 
-                    <li class="side-nav-item">
-                        <a href="sales_report.php" class="side-nav-link">
-                            <i class="dripicons-graph-pie"></i>
-                            <span> Sales Report </span>
-                        </a>
-                    </li>
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                <i class=" uil-shopping-cart-alt"></i>
+                                <span> Audit Trail </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarAudit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="admin_logs.php">Admin Logs</a>
+                                    </li>
+                                    <li>
+                                        <a href="user_logs.php">User Logs</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
 
                     <div class="clearfix"></div>
                 </ul>
@@ -180,14 +252,14 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </div>
                     </li>
 
-                    
-                            <span class="noti-icon-badge"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                       
+                    <span class="noti-icon-badge"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                        </div>
+
+
+                    </div>
                     </li>
 
                     <li class="dropdown notification-list">
@@ -206,7 +278,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </span>
                             <span>
                                 <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
-                         <span class="account-position">Admin/Cashier</span>
+                                <span class="account-position">Admin/Cashier</span>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -222,7 +294,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </a>
 
                             <!-- item-->
-                            <a href="logout.php" class="dropdown-item notify-item">
+                            <a href="logout_admin.php" class="dropdown-item notify-item">
                                 <i class="mdi mdi-logout me-1"></i>
                                 <span>Logout</span>
                             </a>
@@ -233,158 +305,158 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                 <button class="button-menu-mobile open-left">
                     <i class="mdi mdi-menu"></i>
                 </button>
-               
+
             </div>
             <!-- end Topbar -->
 
-             <!-- Start Content-->
-                    <div class="container-fluid">
-                        
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box">
-                                    <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Sales Reports</a></li>
-                                            <li class="breadcrumb-item active">Reports</li>
-                                        </ol>
-                                    </div>
-                                    <h4 class="page-title">Sales Reports</h4>
-                                </div>
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Sales Reports</a></li>
+                                    <li class="breadcrumb-item active">Reports</li>
+                                </ol>
                             </div>
-                        </div>     
-                        <!-- end page title --> 
+                            <h4 class="page-title">Sales Reports</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
 
-                            <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                     
-                                    <center>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <center>
                                     <form id="searchForm">
-                                    <label for="startDate"><b>Start Date:</b></label>
-                                    <input type="date" id="startDate" name="startDate" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label for="startDate"><b>Start Date:</b></label>
+                                        <input type="date" id="startDate" name="startDate" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                                    <label for="endDate"><b>End Date:</b></label>
-                                    <input type="date" id="endDate" name="endDate" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label for="endDate"><b>End Date:</b></label>
+                                        <input type="date" id="endDate" name="endDate" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                                    <button type="button" class="btn btn-primary" onclick="searchOrders()">Search</button>
-                                    <a href="javascript:window.print()" class="btn btn-primary"><i class="mdi mdi-printer"></i>PDF</a>
+                                        <button type="button" class="btn btn-primary" onclick="searchOrders()">Search</button>
+                                        <a href="javascript:window.print()" class="btn btn-primary"><i class="mdi mdi-printer"></i>PDF</a>
                                     </form>
-                                    </center>
-                                    <br>
+                                </center>
+                                <br>
 
                                 <div id="resultContainer"></div>
 
-                                        
+
                             </div> <!-- end col -->
                         </div>
-                        <!-- end row -->        
+                        <!-- end row -->
                     </div> <!-- container -->
                 </div>
 
 
-        <!-- Footer Start -->
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        © TEKUNO
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-md-end footer-links d-none d-md-block">
-                            <a href="javascript: void(0);">About</a>
-                            <a href="javascript: void(0);">Support</a>
-                            <a href="javascript: void(0);">Contact Us</a>
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                © TEKUNO
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </footer>
+                <!-- end Footer -->
+
             </div>
-        </footer>
-        <!-- end Footer -->
 
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- End Page content -->
-    <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
 
 
-    </div>
-    <!-- END wrapper -->
+        </div>
+        <!-- END wrapper -->
 
-    <script>
-        function searchOrders() {
-            var startDate = document.getElementById("startDate").value;
-            var endDate = document.getElementById("endDate").value;
+        <script>
+            function searchOrders() {
+                var startDate = document.getElementById("startDate").value;
+                var endDate = document.getElementById("endDate").value;
 
-            // Assuming you're using AJAX to send the data to the server
-            // You can replace the following lines with your preferred AJAX method
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("resultContainer").innerHTML = this.responseText;
-                }
-            };
-            xhttp.open("GET", "search1.php?startDate=" + startDate + "&endDate=" + endDate, true);
-            xhttp.send();
-        }
-    </script>
-
-    <!-- bundle -->
-    <script src="assets/js/vendor.min.js"></script>
-    <script src="assets/js/app.min.js"></script>
-
-    <!-- third party js -->
-    <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
-    <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
-    <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
-    <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
-    <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
-
-    <!-- Datatable Init js -->
-    <script src="assets/js/pages/demo.datatable-init.js"></script>
-
-    <!-- third party js ends -->
-    <!-- end demo js-->
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
-
-    <script>
-        // JavaScript/jQuery code to set the product_id value and show the confirmation modal
-        $(document).ready(function() {
-            $(".delete-btn").click(function() {
-                var product_id = $(this).data('product-id');
-                $("#product_id").val(product_id);
-                $('#deleteConfirmationModal').modal('show');
-            });
-        });
-    </script>
-
-    <script>
-        const fileInput = document.getElementById('example-fileinput');
-        const imagePreview = document.getElementById('preview-image');
-
-        fileInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-
-                reader.addEventListener('load', function() {
-                    imagePreview.src = reader.result;
-                });
-
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.src = '';
+                // Assuming you're using AJAX to send the data to the server
+                // You can replace the following lines with your preferred AJAX method
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("resultContainer").innerHTML = this.responseText;
+                    }
+                };
+                xhttp.open("GET", "search1.php?startDate=" + startDate + "&endDate=" + endDate, true);
+                xhttp.send();
             }
-        });
-    </script>
+        </script>
+
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- third party js -->
+        <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+        <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+        <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+        <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+        <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
+
+        <!-- Datatable Init js -->
+        <script src="assets/js/pages/demo.datatable-init.js"></script>
+
+        <!-- third party js ends -->
+        <!-- end demo js-->
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
+
+        <script>
+            // JavaScript/jQuery code to set the product_id value and show the confirmation modal
+            $(document).ready(function() {
+                $(".delete-btn").click(function() {
+                    var product_id = $(this).data('product-id');
+                    $("#product_id").val(product_id);
+                    $('#deleteConfirmationModal').modal('show');
+                });
+            });
+        </script>
+
+        <script>
+            const fileInput = document.getElementById('example-fileinput');
+            const imagePreview = document.getElementById('preview-image');
+
+            fileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.addEventListener('load', function() {
+                        imagePreview.src = reader.result;
+                    });
+
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.src = '';
+                }
+            });
+        </script>
 
 </body>
 

@@ -107,7 +107,7 @@ if (isset($_POST['register'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/regis8.css"> <!-- Your custom CSS -->
+    <link rel="stylesheet" href="css/regis10.css"> <!-- Your custom CSS -->
      <link rel="shortcut icon" href="assets/images/logoo.ico">
 
 </head>
@@ -302,6 +302,15 @@ if (isset($_POST['register'])) {
                         </div>
                     </div>
 
+              <div>
+    <div class="row justify-content-center">
+        <label class="form-check-label text-white text-center">
+           <br><input class="form-check-input" type="checkbox" value="" id="policyCheckbox" required>
+           I agree to the terms and conditions of the <a href="policy.php" class="text-orange" style="color: orange;">Policy</a>
+        </label>
+    </div>
+</div>
+
                 </div>
                 <div class="button-container">
                     <button type="submit" name="register" class="btn btn-primary"><i class="fas fa-user-plus"></i> Register</button>
@@ -309,7 +318,7 @@ if (isset($_POST['register'])) {
 
                 <div class="row mt-3">
                     <div class="col-12 text-center">
-                    <p class="" style="color: white;">Already have an account? <a href="index.php" class="" style="color: white;"><b>Log In</b></a></p>
+                    <p class="" style="color: white;">Already have an account? <a href="index.php" class="text-orange" style="color: orange;">Login</a>
                     </div> <!-- end col-->
                 </div>
 

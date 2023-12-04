@@ -95,12 +95,12 @@ if (isset($_GET['order_id'])) {
                         
                         <ul class="side-nav">
                             <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
+                                <a  href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
                                     <i class=" uil-shopping-cart-alt"></i>
                                     <span> Order </span>
                                     <span class="menu-arrow"></span>
                                 </a>
-                                <div class="collapse" id="sidebarEcommerceOrder">
+                                <div class="collapse show" id="sidebarEcommerceOrder">
                                     <ul class="side-nav-second-level">
                                         <li>
                                             <a href="role_order.php">Order Details</a>
@@ -110,6 +110,9 @@ if (isset($_GET['order_id'])) {
                                         </li>
                                         <li>
                                             <a href="role_order_history.php">Order History</a>
+                                        </li>
+                                        <li>
+                                            <a href="role_refund_admin.php">Request Refund</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -172,7 +175,7 @@ if (isset($_GET['order_id'])) {
                                 </div>
 
                                 <!-- item-->
-                                <a href="profile_admin.php" class="dropdown-item notify-item">
+                                <a href="order_profile_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
                                     <span>My Account</span>
                                 </a>

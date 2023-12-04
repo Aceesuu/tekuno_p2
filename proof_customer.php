@@ -2,6 +2,14 @@
 session_start(); // Start the session
 include "mysql_connect.php";
 
+// Function to log actions to the audit trail
+function logAction($conn, $user_id, $user_data, $action)
+{
+    $action = mysqli_real_escape_string($conn, $action);
+    $query = "INSERT INTO audit_user (user_id, action) VALUES ('$user_id', '$action')";
+    mysqli_query($conn, $query);
+}
+
 if (!isset($_SESSION['user_id'])) {
     // Redirect to index.php or login page if user is not logged in
     header("Location: index.php"); // Update with your login page URL
@@ -14,9 +22,7 @@ $user_result = mysqli_query($conn, $query);
 
 if ($user_result && mysqli_num_rows($user_result) > 0) {
     $user_data = mysqli_fetch_assoc($user_result);
-    // Now you can use $user_data to access user information
 } else {
-    // Handle the case where user data couldn't be retrieved
     $error_message = "Error: Unable to retrieve user data.";
 }
 
@@ -47,6 +53,36 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/check.css">
 
+    <style>
+        /* Style for the modal */
+        #imageModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Style for the image within the modal */
+        #modalImage {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        /* Style for the close button */
+        #closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+        }
+    </style>
 
 </head>
 
@@ -116,20 +152,64 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
+
                                             </span>Notification
+
                                         </h5>
                                     </div>
 
+
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
+
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
+
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
+
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
+
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
+
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
+
                                     <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
                                         View All
                                     </a>
 
                                 </div>
+
                             </li>
+
 
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -159,6 +239,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                         <span>My Account</span>
                                     </a>
                                     <!-- item-->
+                                    <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
+                                    </a>
                                     <a href="logout.php" class="dropdown-item notify-item">
                                         <i class="mdi mdi-logout me-1"></i>
                                         <span>Logout</span>
@@ -214,107 +298,27 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <th>Order ID</th>
                                                             <th>Image</th>
                                                             <th>Uploaded Date</th>
-                                                            <th>Invoice</th>
-                                                            <th>Order Status</th>
-                                                            <th>Refund Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
                                                             <td>Order #<?php echo $row['order_id']; ?></td>
                                                             <td>
-                                                                <img src="proof/<?php echo $row['proof_image']; ?>" height="450" alt="proof-img" title="contact-img" class="rounded me-2">
-                                                            </td>
-                                                            <td><?php echo $row['order_date']; ?></td>
-                                                            <td> <a href="invoice.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a> <br><br>
-                                                                <?php
-                                                                // Check if the order status is "To Ship" to allow cancellation
-                                                                if ($row['order_status'] == "Pending") {
-                                                                ?>
-                                                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<?php echo $row['order_id']; ?>">Cancel Order</button>
-                                                                <?php
-                                                                }
-                                                                ?>
-
-                                                                <?php
-                                                                // Check if the order status is "To Ship" to allow cancellation
-                                                                if ($row['order_status'] == "To Receive") {
-                                                                ?>
-                                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#markReceivedModal_<?php echo $row['order_id']; ?>">Order Received</button>
-                                                                <?php
-                                                                }
-                                                                ?>
-
-                                                                <?php
-                                                                // Display "Request Refund" button only if status is "Declined" or "Cancelled"
-                                                                if ($row['order_status'] == 'Declined' || $row['order_status'] == 'Cancelled') {
-                                                                ?>
-                                                                    <a href="refund.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">Request Refund</a>
-                                                                <?php
-                                                                }
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <h5><span class="badge <?php echo isset($statusBadgeClasses[$row['order_status']]) ? $statusBadgeClasses[$row['order_status']] : 'badge-info-lighten'; ?>">
-                                                                        <?php echo $row['order_status']; ?>
-                                                                    </span></h5>
-                                                            </td>
-                                                            <td>
-                                                                <h5>
-                                                                    <?php if (!empty($row['status'])) : ?>
-                                                                        <span class="badge <?php echo isset($statusBadgeClasses[$row['status']]) ? $statusBadgeClasses[$row['status']] : 'badge-info-lighten'; ?>">
-                                                                            <?php echo $row['status']; ?>
-                                                                        </span>
-                                                                        <?php if ($row['status'] === 'Decline') : ?>
-                                                                            <p><?php echo "Message: " . $row['message']; ?></p>
-                                                                        <?php endif; ?>
-                                                                    <?php endif; ?>
-                                                                </h5>
+                                                                <a href="javascript:void(0);" onclick="openImageModal('<?php echo $row['proof_image']; ?>')">
+                                                                    <img src="proof/<?php echo $row['proof_image']; ?>" height="200" alt="proof-img" title="contact-img" class="rounded me-2">
+                                                                </a>
                                                             </td>
 
+                                                            <div id="imageModal">
+                                                                <img id="modalImage" src="" alt="modal-image">
+                                                                <span onclick="closeImageModal()" style="position: absolute; top: 10px; right: 10px; cursor: pointer; color: #fff; font-size: 20px;">&times;</span>
+                                                            </div>
+
+                                                            <td><?php echo date('F j, Y g:i a', strtotime($row['order_date'])); ?></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-
-
-                                            <!-- Pending modal -->
-                                            <div class="modal fade" id="cancelOrderModal_<?php echo $row['order_id']; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title" id="standard-modalLabel">Cancel Order Confirmation</h4>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Are you sure you want to cancel this order?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                            <a href="cancel_order.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-primary">Yes, Cancel Order</a>
-                                                        </div>
-                                                    </div><!-- /.modal-content -->
-                                                </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
-
-                                            <!-- To Receive modal -->
-                                            <div class="modal fade" id="markReceivedModal_<?php echo $row['order_id']; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title" id="standard-modalLabel">Mark Order as Received</h4>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Are you sure you want to mark this order as received?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                            <a href="mark_received.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-primary">Yes, Mark as Received</a>
-                                                        </div>
-                                                    </div><!-- /.modal-content -->
-                                                </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
                                     <?php
                                         }
                                     } else {
@@ -341,9 +345,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script> © TEKUNO
+                    © TEKUNO
                 </div>
                 <div class="col-md-6">
                     <div class="text-md-end footer-links d-none d-md-block">
@@ -385,39 +387,31 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
     <script src="js/script.js"></script>
 
     <script>
-        const proofFileInput = document.getElementById('proofFile');
-        const filePreviewContainer = document.getElementById('filePreview');
-
-        proofFileInput.addEventListener('change', function() {
-            while (filePreviewContainer.firstChild) {
-                filePreviewContainer.removeChild(filePreviewContainer.firstChild);
-            }
-
-            const files = this.files;
-            for (const file of files) {
-                const fileType = file.type.split('/')[0]; // Get the type of the file (image or pdf)
-
-                if (fileType === 'image') {
-                    const imagePreview = document.createElement('img');
-                    imagePreview.src = URL.createObjectURL(file);
-                    imagePreview.style.maxWidth = '100%';
-                    imagePreview.style.height = 'auto';
-                    filePreviewContainer.appendChild(imagePreview);
-                } else if (fileType === 'application' && file.type === 'application/pdf') {
-                    const pdfPreview = document.createElement('iframe');
-                    pdfPreview.src = URL.createObjectURL(file);
-                    pdfPreview.style.width = '100%';
-                    pdfPreview.style.height = '300px'; // Adjust the height as needed
-                    filePreviewContainer.appendChild(pdfPreview);
-                }
-            }
+        document.addEventListener("DOMContentLoaded", function() {
+            // Your existing JavaScript code for handling other functionalities here.
         });
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Your existing JavaScript code for handling other functionalities here.
-        });
+        function openImageModal(imageSrc) {
+            // Set the image source in the modal
+            document.getElementById("modalImage").src = "proof/" + imageSrc;
+
+            // Display the modal
+            document.getElementById("imageModal").style.display = "flex";
+
+            // Add event listener to close modal when clicking outside the image
+            window.addEventListener('click', function(event) {
+                if (event.target == document.getElementById("imageModal")) {
+                    closeImageModal();
+                }
+            });
+        }
+
+        function closeImageModal() {
+            // Hide the modal
+            document.getElementById("imageModal").style.display = "none";
+        }
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

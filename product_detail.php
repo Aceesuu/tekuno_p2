@@ -77,11 +77,16 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
                 $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1;
                 $selected_variation = isset($_POST['variation']) ? $_POST['variation'] : null;
 
-                addProductToCart($conn, $user_id, $product_id, $product_name, $product_image, $product_quantity, $selected_variation);
-                $message[] = 'Product added to cart successfully';
+                // Check if the requested quantity exceeds the available stock
+                if ($product_quantity > $product['qty']) {
+                    $message[] = 'Requested quantity exceeds available stock.';
+                } else {
+                    addProductToCart($conn, $user_id, $product_id, $product_name, $product_image, $product_quantity, $selected_variation);
+                    $message1[] = 'Product added to cart successfully';
+                }
             }
         } else {
-            $message1[] = 'This product is currently out of stock.';
+            $message2[] = 'This product is currently out of stock.';
         }
     } else {
         echo "Product not found.";
@@ -160,10 +165,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
-                                <img src="assets/images/logoo.png" alt="" height="67">
+                                <img src="assets/images/logo.png" alt="" height="67">
                             </span>
                             <span class="topnav-logo-sm">
-                                <img src="assets/images/logoo.png" alt="" height="70">
+                                <img src="assets/images/logo.png" alt="" height="70">
                             </span>
                         </a>
 
@@ -198,7 +203,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 </a>
                             </li>
 
-                            <li class="dropdown notification-list">
+              <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
                                     <i class="dripicons-bell noti-icon"></i>
                                     <span class="noti-icon-badge"></span>
@@ -209,33 +214,73 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
+
                                             </span>Notification
+
                                         </h5>
                                     </div>
 
-                                    <div style="max-height: 230px;" data-simplebar="">
 
-                                    </div>
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
+
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
+
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
+
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
+
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
+
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
 
                                     <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
                                         View All
                                     </a>
 
                                 </div>
+
                             </li>
 
+
                             <li class="dropdown notification-list">
-                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="position: relative; top: -1px;">
                                     <span class="account-user-avatar">
                                         <?php
                                         $user_image = $user_data['image'];
                                         if (!empty($user_image)) {
                                             // Display the user's image if available
-                                            echo '<img src="user_profile_img/' . $user_image . '" alt="user" class="rounded-circle">';
+                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle">';
                                         } else {
                                             // Display a default avatar image when no user image is available
                                             echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle">';
@@ -257,6 +302,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                         <i class="mdi mdi-account-circle me-1"></i>
                                         <span>My Account</span>
                                     </a>
+                                       <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
+                                    </a>
 
                                     <!-- item-->
                                     <a href="logout.php" class="dropdown-item notify-item">
@@ -276,9 +325,8 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                 if (isset($message)) {
                     foreach ($message as $message) {
-                        echo '<div class="alert alert-success" role="alert"><center>
-                                ' . $message . '
-                              </center></div>';
+                        echo '<div class="alert alert-danger" role="alert"><center> Requested quantity exceeds available stock.</center>
+                                </div>';
                     };
                 };
 
@@ -288,6 +336,18 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                 if (isset($message1)) {
                     foreach ($message1 as $message1) {
+                        echo '<div class="alert alert-success" role="alert"><center>
+                                ' . $message1 . '
+                              </center></div>';
+                    };
+                };
+
+                ?>
+
+                <?php
+
+                if (isset($message2)) {
+                    foreach ($message2 as $message2) {
                         echo '<div class="alert alert-danger" role="alert"><center> This product is currently out of stock! </center>
                                 </div>';
                     };
@@ -324,7 +384,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-5">
-                                            <a href="javascript:history.back()"><i class="dripicons-chevron-left"></i>Back</a>
+                                            <a href="dashboard-customer.php"><i class="dripicons-chevron-left"></i>Back</a>
                                             <!-- Product image -->
                                             <a href="#" class="text-center d-block mb-4">
                                                 <img src="uploaded_img/<?php echo $product['image']; ?>" alt="Product-img" class="img-fluid" style="max-width: 280px;">

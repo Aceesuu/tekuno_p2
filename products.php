@@ -2,6 +2,15 @@
 session_start();
 include("mysql_connect.php");
 
+// Function to log actions to the audit trail
+function logAction($conn, $admin_id, $role, $action)
+{
+    $action = mysqli_real_escape_string($conn, $action);
+    $role = mysqli_real_escape_string($conn, $role);
+    $query = "INSERT INTO audit_trail (admin_id, role, action) VALUES ('$admin_id', '$role', '$action')";
+    mysqli_query($conn, $query);
+}
+
 if (!isset($_SESSION['admin_id'])) {
     header("Location: index.php");
     exit();
@@ -13,16 +22,20 @@ $admin_result = mysqli_query($conn, $query);
 
 if ($admin_result && mysqli_num_rows($admin_result) > 0) {
     $admin_data = mysqli_fetch_assoc($admin_result);
+
+    // Log the action to the audit trail
+    $action = "Access to List of Products";
+    logAction($conn, $admin_id, $admin_data['role'], $action);
 } else {
     $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
 }
 
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-    require './PHPMailer/src/Exception.php';
-    require './PHPMailer/src/PHPMailer.php';
-    require './PHPMailer/src/SMTP.php';
+require './PHPMailer/src/Exception.php';
+require './PHPMailer/src/PHPMailer.php';
+require './PHPMailer/src/SMTP.php';
 ?>
 
 <!DOCTYPE html>
@@ -138,22 +151,78 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <li>
                                     <a href="order.php">Order Details</a>
                                 </li>
-                                 <li>
-                                            <a href="order_onsite.php">Order Onsites</a>
-                                        </li>
+                                <li>
+                                    <a href="order_onsite.php">Order Onsites</a>
+                                </li>
                                 <li>
                                     <a href="order_history_admin.php">Order History</a>
                                 </li>
+                                 <li>
+                                            <a href="refund_admin.php">Request Refund</a>
+                                        </li>
                             </ul>
                         </div>
                     </li>
+                    
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        
+                         <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
 
-                    <li class="side-nav-item">
-                        <a href="customers.php" class="side-nav-link">
-                            <i class="uil-users-alt"></i>
-                            <span> Customers </span>
-                        </a>
-                    </li>
+                    <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                    </ul>
+                    
                     <li class="side-nav-item">
                         <a href="admins.php" class="side-nav-link">
                             <i class="uil-user-check"></i>
@@ -161,12 +230,25 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </a>
                     </li>
                     
-                    <li class="side-nav-item">
-                        <a href="sales_report.php" class="side-nav-link">
-                            <i class="dripicons-graph-pie"></i>
-                            <span> Sales Report </span>
-                        </a>
-                    </li>
+                    <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
                     <!-- End Sidebar -->
 
                     <div class="clearfix"></div>
@@ -186,22 +268,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                 <!-- Topbar Start -->
                 <div class="navbar-custom">
                     <ul class="list-unstyled topbar-menu float-end mb-0">
-                        <li class="dropdown notification-list d-lg-none">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-search noti-icon"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
-                                <form class="p-3">
-                                    <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
-                                </form>
-                            </div>
-                        </li>
-
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                            </div>
-                        </li>
-
                         <li class="dropdown notification-list">
                             <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <span class="account-user-avatar">
@@ -234,7 +300,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </a>
 
                                 <!-- item-->
-                                <a href="logout.php" class="dropdown-item notify-item">
+                               <a href="logout_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
                                     <span>Logout</span>
                                 </a>
@@ -254,6 +320,17 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                 <!-- Start Content-->
                 <div class="container-fluid">
+
+                    <?php
+                    if (isset($_GET['message']) && isset($_GET['class'])) {
+                        $alert_message = $_GET['message'];
+                        $alert_class = $_GET['class'];
+                        echo '<div class="alert ' . $alert_class . ' alert-dismissible fade show" role="alert">
+            <i class="dripicons-checkmark me-2"></i>' . $alert_message . '
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>';
+                    }
+                    ?>
 
                     <!-- start page title -->
                     <div class="row">
@@ -309,7 +386,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 if (mysqli_num_rows($select_products) > 0) {
                                                     $total_quantity = 0;
                                                     while ($row = mysqli_fetch_assoc($select_products)) {
-                                                        
+                                                        if ($row['qty'] == 0 && $row['new_qty'] > 0) {
+                                                            $row['qty'] = $row['new_qty'];
+                                                            $row['new_qty'] = 0;
+                                                        }
+
                                                         $stock_status = ($row['qty'] <= 0) ? 'Out of Stock' : 'Instock';
                                                         $badge_class = ($stock_status == 'Instock') ? 'badge-success-lighten' : 'badge-danger-lighten';
 
@@ -326,7 +407,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             $mail->setFrom('ksnjsmn@gmail.com', 'Admin');
                                                             $mail->addAddress('estrera.evalyngrace@gmail.com');
                                                             $mail->Subject = ('Product Quantity Notification');
-                                                            $mail->Body = ('Good Day. The product ID ' . $row['product_id'] . ' - ' . $row['name'] . ' has only have ' . $row['qty'] . '. Please replenish the quantity immediately. Thank you' );
+                                                            $mail->Body = ('Good Day. The product ID ' . $row['product_id'] . ' - ' . $row['name'] . ' has only have ' . $row['qty'] . '. Please replenish the quantity immediately. Thank you');
                                                             $mail->send();
                                                         }
                                                 ?>
@@ -338,7 +419,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td>₱<?php echo $row['supplier_price']; ?></td>
                                                             <td>₱<?php echo $row['price']; ?></td>
                                                             <td><?php echo $row['qty']; ?></td>
-                                                        
+
                                                             <td>
                                                                 <h4><span class="badge <?php echo $badge_class; ?>"><?php echo $stock_status; ?></span></h4>
                                                             </td>
@@ -515,7 +596,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <div class="col-md-6">
                                                                     <div class="mb-3">
                                                                         <label for="simpleinput" class="form-label">Supplier Price</label>
-                                                                        <input type="number" min="1" value="" name="supplier_price" class="form-control" placeholder="Enter the supplier price" style="width: 90px;" required>
+                                                                        <input type="number" min="1" value="" name="supplier_price" class="form-control" style="width: 90px;" required>
                                                                     </div>
                                                                 </div>
 
@@ -529,7 +610,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                                                             <div class="mb-3">
                                                                 <label for="simpleinput" class="form-label">Quantity</label>
-                                                                <input type="number" min="1" name="p_qty" class="form-control" required>
+                                                                <input type="number" min="1" max="10000" name="p_qty" class="form-control" required>
                                                             </div>
 
                                                             <div class="mb-3">
@@ -537,7 +618,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <input type="file" id="example-fileinput" name="p_image" accept="image/png, image/jpg, image/jpeg" class="form-control" required>
                                                             </div>
                                                             <div id="image-preview">
-                                                                <img id="preview-image" src="#" alt="Image Preview">
+                                                                <img id="preview-image" src="assets/images/empty.png" height="200" alt="Image Preview">
                                                             </div>
                                                     </div>
                                                     <div class="modal-footer">

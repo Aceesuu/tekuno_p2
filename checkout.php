@@ -101,14 +101,8 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                 </a>
                             </li>
 
-                            <li class="dropdown notification-list">
-                                <!-- Add to proof link -->
-                                <a class="nav-link" href="order_customer.php" style="display: flex; align-items: center;">
-                                    <i class="mdi mdi-inbox-multiple" style="font-size: 25px; margin-top: 15px;"></i>
-                                </a>
-                            </li>
 
-                            <li class="dropdown notification-list">
+                     <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
                                     <i class="dripicons-bell noti-icon"></i>
                                     <span class="noti-icon-badge"></span>
@@ -119,20 +113,64 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
+
                                             </span>Notification
+
                                         </h5>
                                     </div>
 
+
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
+
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
+
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
+
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
+
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
+
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
+
                                     <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
                                         View All
                                     </a>
 
                                 </div>
+
                             </li>
+
 
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -163,7 +201,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                         <i class="mdi mdi-account-circle me-1"></i>
                                         <span>My Account</span>
                                     </a>
-
+   <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
+                                    </a>
                                     <!-- item-->
                                     <a href="logout.php" class="dropdown-item notify-item">
                                         <i class="mdi mdi-logout me-1"></i>
@@ -222,8 +263,8 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                         send you the order's invoice.</p>
 
                                                     <div class="row">
-                                                   <div class="col-md-6 w-70">
-                                                   <div class="border p-3 rounded mb-3 mb-md-0"> 
+                                                        <div class="col-md-6 w-70">
+                                                            <div class="border p-3 rounded mb-3 mb-md-0">
                                                                 <?php
                                                                 $select_query = mysqli_query($conn, "SELECT * FROM `tb_user` WHERE user_id = '$user_id'");
                                                                 if (mysqli_num_rows($select_query) > 0) {
@@ -347,16 +388,16 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         <td>Subtotal:</td>
                                                                         <td>₱<?= number_format($subtotal, 2) ?></td>
                                                                     </tr>
-                                                                    <?php if ($subtotal >= 5000) { ?>
+                                                                    <?php if ($sub_total >= 5000) { ?>
                                                                         <tr>
                                                                             <td>Discounted Rate :</td>
                                                                             <td>3%</td>
                                                                         </tr>
+                                                                        <tr>
+                                                                            <td>Discounted Price : </td>
+                                                                            <td> ₱<?= number_format($discounted_price, 2) ?></td>
+                                                                        </tr>
                                                                     <?php } ?>
-                                                                    <tr>
-                                                                        <td>Discounted Price : </td>
-                                                                        <td> ₱<?= number_format($discounted_price, 2) ?></td>
-                                                                    </tr>
                                                                     <tr>
                                                                         <td>Sales Tax:</td>
                                                                         <td> ₱<?= number_format($tax, 2) ?></td>
@@ -393,7 +434,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                                 <div class="col-lg-8">
 
-                                                  <!-- Pay with Gcash box-->
+                                                    <!-- Pay with Gcash box-->
                                                     <div class="border p-3 mb-3 rounded">
                                                         <div class="row">
                                                             <div class="col-sm-8 text-center">
@@ -409,7 +450,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                             <div class="col-sm-8">
                                                                 <p class="mb-0 ps-3 pt-1">Upload your proof payment</p> <br>
                                                                 <form action="place_order.php" method="post" enctype="multipart/form-data">
-                                                                    <input type="file" name="proof_image" id="proofFile" accept=".jpg, .jpeg, .png" required>
+                                                                    <input type="file" name="proof_image" class="form-control" id="proofFile" accept=".jpg, .jpeg, .png" required>
                                                                     <div id="filePreview"></div> <!-- Container for the file preview -->
 
 
@@ -498,16 +539,16 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                         <td>Subtotal:</td>
                                                                         <td>₱<?= number_format($subtotal, 2) ?></td>
                                                                     </tr>
-                                                                    <?php if ($subtotal >= 5000) { ?>
+                                                                    <?php if ($sub_total >= 5000) { ?>
                                                                         <tr>
                                                                             <td>Discounted Rate :</td>
                                                                             <td>3%</td>
                                                                         </tr>
+                                                                        <tr>
+                                                                            <td>Discounted Price : </td>
+                                                                            <td> ₱<?= number_format($discounted_price, 2) ?></td>
+                                                                        </tr>
                                                                     <?php } ?>
-                                                                    <tr>
-                                                                        <td>Discounted Price : </td>
-                                                                        <td> ₱<?= number_format($discounted_price, 2) ?></td>
-                                                                    </tr>
                                                                     <tr>
                                                                         <td>Sales Tax:</td>
                                                                         <td> ₱<?= number_format($tax, 2) ?></td>
@@ -520,7 +561,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                                             ₱ <?= number_format($shipping_fee, 2) ?>
                                                                         </td>
                                                                     </tr>
-                                                                    
+
                                                                     <tr class="text-end">
                                                                         <td>
                                                                             <h5 class="m-2"> Grand Total:</h5>
@@ -582,7 +623,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                         <h4 class="header-title mb-3">Order Summary</h4>
 
                                                         <div class="table-responsive">
-                                                            
+
                                                             <table class="table table-centered mb-0">
                                                                 <thead>
                                                                     <th>Product</th>

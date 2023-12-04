@@ -2,6 +2,14 @@
 session_start(); // Start the session
 include "mysql_connect.php";
 
+// Function to log actions to the audit trail
+function logAction($conn, $user_id, $user_data, $action)
+{
+    $action = mysqli_real_escape_string($conn, $action);
+    $query = "INSERT INTO audit_user (user_id, action) VALUES ('$user_id', '$action')";
+    mysqli_query($conn, $query);
+}
+
 if (!isset($_SESSION['user_id'])) {
     // Redirect to index.php or login page if user is not logged in
     header("Location: index.php"); // Update with your login page URL
@@ -14,9 +22,7 @@ $user_result = mysqli_query($conn, $query);
 
 if ($user_result && mysqli_num_rows($user_result) > 0) {
     $user_data = mysqli_fetch_assoc($user_result);
-    // Now you can use $user_data to access user information
 } else {
-    // Handle the case where user data couldn't be retrieved
     $error_message = "Error: Unable to retrieve user data.";
 }
 
@@ -59,6 +65,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($conn->query($sql) === TRUE) {
         $message[] = 'Record added successfully';
+        // Log the action to the audit trail
+        $action = "User {$user_data['user_id']} request for refund";
+        logAction($conn, $user_data['user_id'], $user_data, $action);
+
     } else {
         $message[] = "Error: " . $sql . "<br>" . $conn->error;
     }
@@ -252,7 +262,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                             <div class="modal-footer">
                                 <!-- Add an "OK" button to close the modal and redirect to proof_customer.php -->
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.location.href='proof_customer.php'">OK</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.location.href='order_customer.php'">OK</button>
                             </div>
                         </div>
                     </div>
@@ -477,17 +487,84 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                                 <!-- Form for Gcash Name, Gcash Number, Transaction Amount, Reason for Refund -->
                                                                 <form method="POST" action="">
                                                                     <div class="mb-3">
+                                                                    <div class="mb-3">
                                                                         <label for="gcashName" class="form-label">Gcash Name</label>
                                                                         <input type="text" class="form-control" id="gcashName" name="gcashName" required>
+                                                                        <small id="gcashNameNote" class="form-text text-muted">
+                                                                            Please enter your Gcash Name using only letters (A-Z, a-z).
+                                                                        </small>
                                                                     </div>
-                                                                    <div class="mb-3">
-                                                                        <label for="gcashNumber" class="form-label">Gcash Number</label>
-                                                                        <input type="text" class="form-control" maxlength="11" id="gcashNumber" name="gcashNumber" required>
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <label for="transactionAmount" class="form-label">Transaction Amount</label>
-                                                                        <input type="text" class="form-control" id="transactionAmount" name="transactionAmount" required>
-                                                                    </div>
+
+                                                                    <script>
+                                                                        const gcashNameInput = document.getElementById('gcashName');
+                                                                        const gcashNameNote = document.getElementById('gcashNameNote');
+                                                                        const pattern = /^[A-Za-z ]*$/; // Pattern to allow letters and a single space
+
+                                                                        gcashNameInput.addEventListener('input', function() {
+                                                                            let inputValue = this.value;
+
+                                                                            if (!pattern.test(inputValue)) {
+                                                                                gcashNameNote.style.display = 'block'; // Show the note if the pattern doesn't match
+                                                                                this.value = inputValue.replace(/[^A-Za-z ]/g, ''); // Remove non-letter and non-space characters
+                                                                            } else {
+                                                                                gcashNameNote.style.display = 'none'; // Hide the note if the pattern matches
+                                                                            }
+                                                                        });
+                                                                    </script>
+
+
+
+                                                    <div class="mb-3">
+                                                        <label for="gcashNumber" class="form-label">Gcash Number</label>
+                                                        <input type="text" class="form-control" maxlength="11" id="gcashNumber" name="gcashNumber" required>
+                                                        <small id="gcashNumberNote" class="form-text text-muted">
+                                                        Please enter your Gcash Number using only numbers (0-9).
+                                                        </small>
+                                                    </div>
+
+                                                    <script>
+                                                        const gcashNumberInput = document.getElementById('gcashNumber');
+                                                        const gcashNumberNote = document.getElementById('gcashNumberNote');
+                                                        const gcashNumberPattern = /^\d+$/; // Regular expression allowing only numeric digits
+
+                                                        gcashNumberInput.addEventListener('input', function() {
+                                                            let inputValue = this.value;
+
+                                                            if (!gcashNumberPattern.test(inputValue)) {
+                                                                gcashNumberNote.style.display = 'block'; // Show note if the pattern doesn't match
+                                                                this.value = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                                            } else {
+                                                                gcashNumberNote.style.display = 'none'; // Hide note if the pattern matches
+                                                            }
+                                                        });
+                                                    </script>
+
+                                                    <div class="mb-3">
+                                                        <label for="transactionAmount" class="form-label">Transaction Amount</label>
+                                                        <input type="text" class="form-control" id="transactionAmount" name="transactionAmount" required>
+                                                        <small id="transactionAmountNote" class="form-text text-muted">
+                                                            Please enter the Transaction Amount using only numerical values.
+                                                        </small>
+                                                    </div>
+
+                                                    <script>
+                                                        const transactionAmountInput = document.getElementById('transactionAmount');
+                                                        const transactionAmountNote = document.getElementById('transactionAmountNote');
+                                                        const transactionAmountPattern = /^[0-9]+$/; // Regular expression allowing only numerical digits
+
+                                                        transactionAmountInput.addEventListener('input', function() {
+                                                            let inputValue = this.value;
+
+                                                            if (!transactionAmountPattern.test(inputValue)) {
+                                                                transactionAmountNote.style.display = 'block'; // Show note if the pattern doesn't match
+                                                                this.value = inputValue.replace(/\D/g, ''); // Remove non-numeric characters
+                                                            } else {
+                                                                transactionAmountNote.style.display = 'none'; // Hide note if the pattern matches
+                                                            }
+                                                        });
+                                                    </script>
+
+
                                                                     <div class="mb-3">
                                                                         <label for="reasonForRefund" class="form-label">Reason for Refund</label>
                                                                         <textarea class="form-control" id="reasonForRefund" name="reasonForRefund" rows="3" required></textarea>

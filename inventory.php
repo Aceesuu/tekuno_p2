@@ -137,16 +137,73 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <li>
                                     <a href="order_history_admin.php">Order History</a>
                                 </li>
+                                <li>
+                                    <a href="refund_admin.php">Request Refund</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
 
-                    <li class="side-nav-item">
-                        <a href="customers.php" class="side-nav-link">
-                            <i class="uil-users-alt"></i>
-                            <span> Customers </span>
-                        </a>
-                    </li>
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                  <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class="uil-users-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
                     <li class="side-nav-item">
                         <a href="admins.php" class="side-nav-link">
                             <i class="uil-user-check"></i>
@@ -154,12 +211,26 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </a>
                     </li>
 
-                    <li class="side-nav-item">
-                        <a href="sales_report.php" class="side-nav-link">
-                            <i class="dripicons-graph-pie"></i>
-                            <span> Sales Report </span>
-                        </a>
-                    </li>
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                <i class=" uil-shopping-cart-alt"></i>
+                                <span> Audit Trail </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarAudit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="admin_logs.php">Admin Logs</a>
+                                    </li>
+                                    <li>
+                                        <a href="user_logs.php">User Logs</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
                     <!-- End Sidebar -->
 
                     <div class="clearfix"></div>
@@ -227,7 +298,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </a>
 
                                 <!-- item-->
-                                <a href="logout.php" class="dropdown-item notify-item">
+                                <a href="logout_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
                                     <span>Logout</span>
                                 </a>
@@ -289,9 +360,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <th>Starting Quantity</th>
                                                     <th>New Quantity</th>
                                                     <th>Total Quantity</th>
-                                                     <th>Stocks</th>
+                                                    <th>Stocks</th>
+                                                    <th>Old Price</th>
+                                                    <th>New Price</th>
                                                     <th>Date Added</th>
-                                                    
+
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -300,14 +373,18 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 if (mysqli_num_rows($select_products) > 0) {
                                                     $total_quantity = 0;
                                                     while ($row = mysqli_fetch_assoc($select_products)) {
+                                                        if ($row['qty'] == 0 && $row['new_qty'] > 0) {
+                                                            $row['qty'] = $row['new_qty'];
+                                                            $row['new_qty'] = 0;
+                                                        }
                                                         $stock_status = ($row['qty'] <= 0) ? 'Out of Stock' : 'Instock';
                                                         $badge_class = ($stock_status == 'Instock') ? 'badge-success-lighten' : 'badge-danger-lighten';
                                                 ?>
                                                         <tr>
-
                                                             <td><?php echo $row['product_id']; ?></td>
                                                             <td><?php echo $row['name']; ?></td>
                                                             <td><?php echo $row['qty']; ?></td>
+
                                                             <td>
                                                                 <?php
                                                                 if ($row['new_qty'] > 0) {
@@ -317,6 +394,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 }
                                                                 ?>
                                                             </td>
+
                                                             <td>
                                                                 <?php
                                                                 $total_qty = $row['qty'] + $row['new_qty'];
@@ -327,7 +405,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             <td>
                                                                 <h4><span class="badge <?php echo $badge_class; ?>"><?php echo $stock_status; ?></span></h4>
                                                             </td>
-                                                            <td><?php echo $row['purchase_date']; ?></td>
+                                                            <td><?php echo $row['price']; ?></td>
+                                                            <td><?php echo $row['new_price']; ?></td>
+                                                            <td><?php echo date('F j, Y, g:i a', strtotime($row['purchase_date'])); ?></td>
                                                     <?php
                                                     }
                                                 }
@@ -362,10 +442,19 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 </select>
                                                             </div>
 
-                                                            <div class="col-md-6">
-                                                                <div class="mb-3">
-                                                                    <label for="simpleinput" class="form-label">Quantity</label>
-                                                                    <input type="number" min="1" value="1" name="p_qty" class="form-control" required style="width: 90px;">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="mb-3">
+                                                                        <label for="simpleinput" class="form-label">Quantity</label>
+                                                                        <input type="number" min="1" name="p_qty" class="form-control" required>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <div class="mb-3">
+                                                                        <label for="simpleinput" class="form-label">Price</label>
+                                                                        <input type="number" name="p_price" class="form-control" required>
+                                                                    </div>
                                                                 </div>
                                                             </div>
 

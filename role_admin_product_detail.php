@@ -94,12 +94,12 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                        <a  href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
                             <i class="uil-store"></i>
                             <span> Products </span>
                             <span class="menu-arrow"></span>
                         </a>
-                        <div class="collapse" id="sidebarEcommerce">
+                        <div class="collapse show" id="sidebarEcommerce">
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="role_products.php">List of Products</a>
@@ -153,30 +153,18 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
 
                         <li class="dropdown notification-list">
                             <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
+                                <i class=""></i>
                                 <span class="noti-icon-badge"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
+                              
 
                                 <div style="max-height: 230px;" data-simplebar="">
 
 
 
-                                    <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                        View All
-                                    </a>
+                                  
 
                                 </div>
                         </li>
@@ -212,11 +200,7 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
                                     <span>My Account</span>
                                 </a>
 
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <i class="mdi mdi-account-edit me-1"></i>
-                                    <span>Settings</span>
-                                </a>
+                          
 
                                 <!-- item-->
                                 <a href="logout.php" class="dropdown-item notify-item">
@@ -231,13 +215,7 @@ if (isset($_GET['product_id']) && is_numeric($_GET['product_id'])) {
                         <i class="mdi mdi-menu"></i>
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
-                        </form>
+                       
                     </div>
                 </div>
                 <!-- end Topbar -->
