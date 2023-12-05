@@ -100,12 +100,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerceProducts" aria-expanded="false" aria-controls="sidebarEcommerceProducts" class="side-nav-link">
+                        <a  href="#sidebarEcommerceProducts" aria-expanded="false" aria-controls="sidebarEcommerceProducts" class="side-nav-link">
                             <i class="mdi mdi-clipboard-text-multiple-outline"></i>
                             <span> Products </span>
                             <span class="menu-arrow"></span>
                         </a>
-                        <div class="collapse" id="sidebarEcommerceProducts">
+                        <div class="collapse show" id="sidebarEcommerceProducts">
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="role_products.php">List of Products</a>
@@ -303,7 +303,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 <h4><span class="badge <?php echo $badge_class; ?>"><?php echo $stock_status; ?></span></h4>
                                                             </td>
                                                             <td class="table-action">
-                                                                <a href="admin_product_detail.php?product_id=<?php echo $row['product_id']; ?>" class="btn btn-info rounded style=" background-color: #3085C3; color: white;">
+                                                                <a href="role_admin_product_detail.php?product_id=<?php echo $row['product_id']; ?>" class="btn btn-info rounded style=" background-color: #3085C3; color: white;">
                                                                     <i class="mdi mdi-eye"></i>
                                                                 </a>
                                                                 <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $row['product_id']; ?>" style="background-color: #5C5470;">

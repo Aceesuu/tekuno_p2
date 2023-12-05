@@ -113,12 +113,12 @@ if (isset($_GET['order_id'])) {
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
+                        <a  href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
                             <i class=" uil-shopping-cart-alt"></i>
                             <span> Order </span>
                             <span class="menu-arrow"></span>
                         </a>
-                        <div class="collapse" id="sidebarEcommerceOrder">
+                        <div class="collapse show" id="sidebarEcommerceOrder">
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="role_order.php">Order Details</a>
@@ -129,6 +129,9 @@ if (isset($_GET['order_id'])) {
                                 <li>
                                     <a href="role_order_history.php">Order History</a>
                                 </li>
+                                  <li>
+                                            <a href="role_refund_admin.php">Request Refund</a>
+                                        </li>
                             </ul>
                         </div>
                     </li>  

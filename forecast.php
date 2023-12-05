@@ -250,6 +250,11 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </button>
                     <div class="app-search dropdown d-none d-lg-block">
                         <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                <span class="mdi mdi-magnify search-icon"></span>
+                                <button class="input-group-text btn-primary" type="submit">Search</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -278,23 +283,13 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         </a>
                                     </form>
                                 </div>
-                                <h4 class="page-title">Forecasting</h4>
+                                <h4 class="page-title">Moving Average</h4>
                             </div>
                         </div>
                     </div>
-                    <div style="width: 70%; margin: auto;">
-                        <canvas id="myChart"></canvas>
-                    </div>
                     <!-- end page title -->
-                    <?php
-                    // Read the CSV file into an array
-                    $csvFile = 'MOCK_DATA.csv';
-                    $rows = array_map('str_getcsv', file($csvFile));
-                    $labels = array_column($rows, 0); // Assuming the X values are in the first column
-                    $data = array_column($rows, 1);   // Assuming the Y values are in the second column
-                    ?>
-
-<div class="row">
+                    
+                    <div class="row">
                         <div class="col-xl-12 col-lg-12">
                             <div class="card">
                                 <div class="card-body">
@@ -366,43 +361,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </div>
                     </div>
 
-                    <script>
-                        // JavaScript code to create a line chart using Chart.js
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: <?php echo json_encode($labels); ?>,
-                                datasets: [{
-                                    label: 'Data',
-                                    data: <?php echo json_encode($data); ?>,
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    borderWidth: 2,
-                                    fill: false,
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                scales: {
-                                    x: {
-                                        type: 'category',
-                                        title: {
-                                            display: true,
-                                            text: 'Date'
-                                        }
-                                    },
-                                    y: {
-                                        title: {
-                                            display: true,
-                                            text: 'Sales Average'
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    </script>
-
-
+                   
 
                     <!-- container -->
 

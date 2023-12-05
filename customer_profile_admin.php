@@ -77,20 +77,47 @@
                     <li class="side-nav-title side-nav-item">Navigation</li>
                     <li class="side-nav-item">
                         <a href="dashboard-role-customer.php" class="side-nav-link">
-                            <i class="uil-calender"></i>
+                            <i class="dripicons-home"></i>
                             <span> Dashboard </span>
                         </a>
                     </li>
 
-                        <li class="side-nav-item">
-                            <a href="role_customers.php" class="side-nav-link">
-                                <i class="dripicons-user-group"></i>
-                                <span> Customers </span>
-                            </a>
-                        </li>
+                    <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class=" uil-users-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse show" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="role_customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="role_feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
 
-                        <div class="clearfix"></div>
-
+                    <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a  href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" mdi mdi-file-document-edit-outline"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse show" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="userlogs_role.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
             </div>
             <!-- Sidebar -left -->
 
@@ -139,6 +166,7 @@
                                 </span>
                                 <span>
                                     <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
+                                    <span class="account-position">Customer Management</span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -217,7 +245,7 @@
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <form method="POST" action="update_profile_admin.php" enctype="multipart/form-data">
+                                                                <form method="POST" action="customer_update_profile.php" enctype="multipart/form-data">
                                                                     <input type="hidden" name="update_p_id" value="<?php echo $row['admin_id']; ?>">
                                                                     <div class="mb-3 row">
                                                                         <div class="col-sm-10">
@@ -256,7 +284,7 @@
                         <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <form method="post" action="update_profile_admin.php">
+                                    <form method="post" action="customer_update_profile.php">
                                         <div class="row gutters">
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                                 <h6 class="mb-2" style="color: #F7931E;">Personal Details</h6>
@@ -265,19 +293,22 @@
                                                 <input type="hidden" name="update_u_id" value="<?php echo $row['admin_id']; ?>">
                                                 <div class="form-group">
                                                     <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-                                                    <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" required>
+                                                    <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" oninput="restrictToLetters(this)" value="<?php echo $lastName; ?>" required>
+                                                    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="firstname" class="form-label">First Name</label>
-                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" oninput="restrictToLetters(this)" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                        <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="middlename" class="form-label">Middle Name</label>
-                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>">
+                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" oninput="restrictToLetters(this)" value="<?php echo $middleName; ?>">
+                                                    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                     <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
                                                 </div>
                                             </div>
@@ -292,7 +323,8 @@
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="contact" class="form-label">Contact Number</label>
-                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" value="<?php echo $contact; ?>">
+                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11" value="<?php echo $contact; ?>">
+                                                      <span class="note" style="display: none; color: red; font-size: 13px;">Please enter a valid 11-digit number without symbols or letters.</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -359,5 +391,42 @@
         <script src="assets/js/pages/demo.dashboard.js"></script>
         <!-- end demo js-->
 </body>
+
+        <script>
+        function restrictToLetters(input) {
+            var lastNameNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+
+            // Replace multiple spaces with a single space
+            inputValue = inputValue.replace(/  +/g, ' ');
+
+            // Remove any non-letter characters except spaces
+            var lettersOnly = inputValue.replace(/[^A-Za-z ]/g, '');
+
+            if (inputValue !== lettersOnly && inputValue.trim() !== '') {
+                lastNameNote.style.display = 'block';
+            } else {
+                lastNameNote.style.display = 'none';
+            }
+
+            input.value = lettersOnly;
+        }
+    </script>
+
+        <script>
+        function restrictToNumbers(input) {
+            var phoneNumberNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+            var numbersOnly = inputValue.replace(/[^0-9]/g, '').slice(0, 11);
+
+            if (inputValue !== numbersOnly || inputValue.length !== 11) {
+                phoneNumberNote.style.display = 'block';
+            } else {
+                phoneNumberNote.style.display = 'none';
+            }
+
+            input.value = numbersOnly;
+        }
+    </script>
 
 </html>

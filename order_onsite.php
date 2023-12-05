@@ -1,6 +1,6 @@
 <?php
-session_start();
-include("mysql_connect.php");
+session_start(); //session
+include("mysql_connect.php"); //connection
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: index.php");
@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 $admin_id = $_SESSION['admin_id'];
-$query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'";
+$query = "SELECT * FROM tb_admin WHERE admin_id = '$admin_id'"; //session from admin
 $admin_result = mysqli_query($conn, $query);
 
 if ($admin_result && mysqli_num_rows($admin_result) > 0) {
@@ -23,7 +23,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
 <head>
     <meta charset="utf-8">
-    <title>Order Onsite</title>
+    <title>Order Onsite</title> <!-- title ng tab -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/logoo.ico">
@@ -131,49 +131,116 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <li>
                                     <a href="order.php">Order Details</a>
                                 </li>
-                                 <li>
-                                            <a href="order_onsite.php">Order Onsites</a>
-                                        </li>
+                                <li>
+                                    <a href="order_onsite.php">Order Onsites</a>
+                                </li>
                                 <li>
                                     <a href="order_history_admin.php">Order History</a>
                                 </li>
+                                 <li>
+                                            <a href="refund_admin.php">Request Refund</a>
+                                        </li>
                             </ul>
                         </div>
                     </li>
 
-                    <li class="side-nav-item">
-                        <a href="customers.php" class="side-nav-link">
-                            <i class="uil-users-alt"></i>
-                            <span> Customers </span>
-                        </a>
-                    </li>
+  <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                        
+                    <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
                     <li class="side-nav-item">
                         <a href="admins.php" class="side-nav-link">
                             <i class="uil-user-check"></i>
                             <span> Admins </span>
                         </a>
                     </li>
-
-                    <li class="side-nav-item">
-                        <a href="forecast.php" class="side-nav-link">
-                            <i class="uil-chart"></i>
-                            <span> Forecast </span>
-                        </a>
-                    </li>
+                    
+                      <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
                     <!-- End Sidebar -->
 
                     <div class="clearfix"></div>
-
             </div>
             <!-- Sidebar -left -->
-
         </div>
 
         <!-- ============================================================== -->
-        <!-- Start Page Content here -->
+        <!-- TOP NAVBAR -->
         <!-- ============================================================== -->
 
-        <?php include('message.php'); ?>
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
@@ -183,39 +250,9 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <i class="dripicons-search noti-icon"></i>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
-                                <form class="p-3">
-                                    <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
-                                </form>
-                            </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Clear All</small>
-                                            </a>
-                                        </span>Notification
-                                    </h5>
-                                </div>
-
-                                <!-- All-->
-                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    View All
-                                </a>
-
-                            </div>
-                        </li>
-
+                        <!-- PROFILE -->
                         <li class="dropdown notification-list">
                             <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <span class="account-user-avatar">
@@ -235,6 +272,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                     <span class="account-position">Admin</span>
                                 </span>
                             </a>
+
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
                                 <!-- item-->
                                 <div class=" dropdown-header noti-title">
@@ -242,34 +280,29 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </div>
 
                                 <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <a href="profile_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
                                     <span>My Account</span>
                                 </a>
 
                                 <!-- item-->
-                                <a href="logout.php" class="dropdown-item notify-item">
+                                <a href="logout_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
                                     <span>Logout</span>
                                 </a>
                             </div>
                         </li>
-
                     </ul>
+
                     <button class="button-menu-mobile open-left">
                         <i class="mdi mdi-menu"></i>
                     </button>
-                    <div class="app-search dropdown d-none d-lg-block">
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                <span class="mdi mdi-magnify search-icon"></span>
-                                <button class="input-group-text btn-primary" type="submit">Search</button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
                 <!-- end Topbar -->
+
+                <!-- ============================================================== -->
+                <!-- Start Page Content here -->
+                <!-- ============================================================== -->
 
                 <!-- Start Content-->
                 <div class="container-fluid">
@@ -290,6 +323,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                         </div>
                     </div>
                     <!-- end page title -->
+
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -302,7 +336,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                             <div class="mt-2">
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="mdi mdi-basket me-1"></i>Add New Order</button>
-
                                             </div>
                                         </div><!-- end col-->
                                     </div>
@@ -315,15 +348,19 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                     <th>Order Date</th>
                                                     <th>Product Name</th>
                                                     <th>Quantity</th>
-                                                    <th>Price</th>
                                                     <th>Subtotal</th>
-                                                    <th>Discount</th>
                                                     <th>Grand Total</th>
+                                                    <th>Invoice</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 $select_products = mysqli_query($conn, "SELECT * FROM `order_onsite` ORDER BY order_date DESC");
+                                                $grand_total = 0;
+                                                $total = 0;
+                                                $sub_total = 0;
+                                                $discounted_price = 0;
+                                                $discount_rate = 0.03;
                                                 if (mysqli_num_rows($select_products) > 0) {
                                                     while ($row = mysqli_fetch_assoc($select_products)) {
                                                         // Convert the order_date timestamp to a DateTime object
@@ -331,16 +368,27 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                         // Format the date in the desired format
                                                         $formattedDate = $orderDateTime->format('F d Y');
                                                         $formattedTime = $orderDateTime->format('h:i A');
+
+                                                        $subtotal = $row['subtotal'];
+                                                        $discounted_price = ($subtotal >= 5000) ? $subtotal * (1 - $discount_rate) : $subtotal;
+
+                                                        $tax_rate = 0.12;
+                                                        $tax = $discounted_price * $tax_rate;
+
+                                                        // Calculate the grand total without shipping fee
+                                                        $grand_total = $discounted_price + $tax;
+
+                                                        // Calculate the discount
+                                                        $discount = ($subtotal >= 5000) ? $subtotal - $discounted_price : 0;
                                                 ?>
                                                         <tr>
                                                             <td><b>Order #<?php echo $row['order_id']; ?></b></td>
                                                             <td><?php echo $formattedDate; ?> <small class="text-muted"><?php echo $formattedTime; ?></small></td>
                                                             <td><?php echo $row['name']; ?></td>
                                                             <td><?php echo $row['qty']; ?></td>
-                                                            <td><?php echo $row['price']; ?></td>
-                                                            <td><?php echo $row['subtotal']; ?></td>
-                                                            <td><?php echo $row['discount']; ?></td>
-                                                            <td><?php echo $row['total_price']; ?></td>
+                                                            <td><?php echo $subtotal; ?></td>
+                                                            <td><?php echo number_format($grand_total, 2); ?></td>
+                                                            <td> <a href="invoice_onsite.php?order_id=<?php echo $row['order_id']; ?>" class="btn btn-sm btn-primary">View Invoice</a>
                                                         </tr>
                                                 <?php
                                                     }
@@ -377,8 +425,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                             </div>
 
                                                             <div class="mb-3">
-                                                                <label for="price" class="form-label">Price</label>
-                                                                <input type="text" name="price" id="price" class="form-control" readonly>
+                                                                <input type="hidden" name="price" id="price" class="form-control" readonly>
                                                             </div>
 
                                                             <label for="avail_quan" class="form-label">Available Quantity</label>
@@ -386,11 +433,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                                                             <label for="p_qty" class="form-label">Quantity</label>
                                                             <input type="number" name="p_qty" id="p_qty" class="form-control" required>
-
-                                                            <div class="mb-3">
-                                                                <label for="discount" class="form-label">Discount (%)</label>
-                                                                <input type="number" name="discount" id="discount" class="form-control" min="0" step="0.01">
-                                                            </div>
 
                                                             <div class="mb-3">
                                                                 <label for="simpleinput" class="form-label">Variation</label>
@@ -402,11 +444,10 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
 
                                                             <label for="total_price" class="form-label">Total Price</label>
                                                             <input type="text" id="total_price" class="form-control" readonly>
-
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" name="add_product" class="btn btn-primary">Save changes</button>
+                                                        <button type="submit" id="submit" name="add_product" class="btn btn-primary">Add Order</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -446,6 +487,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                 <script src="assets/js/app.min.js"></script>
 
                 <script>
+                    //FROM DATATABLE LIBRARY
                     $(document).ready(function() {
                         var table = $('#example').DataTable({
                             dom: 'Bfrtip', // Specify the layout of the DataTable with buttons
@@ -476,107 +518,134 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                 </script>
 
                 <script>
+                    // MAG UPDATE YUNG TOTAL PRICE
                     function updateTotalPrice(variationPrice) {
-                        var product_id = parseFloat($('#product_id').val()) || 0;
-                        var price = parseFloat($('#price').val()) || 0;
-                        var qty = parseInt($('#p_qty').val()) || 0;
-                        var discount = parseFloat($('#discount').val()) || 0;
+                        var price = parseFloat($('#price').val()) || 0; // retrieve the price
+                        var qty = parseInt($('#p_qty').val()) || 0; // retrieve the qty
                         var varPrice = parseFloat($('#variation_price').val()) || 0; // Retrieve variationPrice from the input
 
-                        var total_price = (price * qty) + varPrice;
-
-                        if (discount > 0) {
-                            total_price = total_price - (total_price * (discount / 100));
-                        }
-
-                        $('#total_price').val(total_price.toFixed(2));
+                        var total_price = (price * qty) + varPrice; // compute total price (price product + qty (add varPrice if meron))
+                        $('#total_price').val(total_price.toFixed(2)); // display total price into decimal
                     }
 
-                        $(document).ready(function() {
-                            $('#p_name').on('change', function() {
-                                var selectedOption = $(this).find('option:selected');
-                                if (selectedOption) {
-                                    var price = selectedOption.data('price');
-                                    var qty = selectedOption.data('qty');
-                                    var product_id = selectedOption.val(); // Get the product ID
-                                    $('#price').val(price);
-                                    $('#avail_quan').val(qty);
-                                    $('#product_id').val(product_id);
-                                    updateTotalPrice();
+                    $(document).ready(function() {
+                    function checkAvailabilityAndEnableButton() {
+                        var qty = parseInt($('#avail_quan').val()) || 0;
+                        var requestedQty = parseInt($('#p_qty').val()) || 0;
+
+                        if (qty <= 0) {
+                            $('#submit').prop('disabled', true);
+                            alert('Selected product is out of stock.');
+                        } else if (requestedQty > qty) {
+                            $('#submit').prop('disabled', true);
+                            alert('Requested quantity exceeds available stock.');
+                        } else {
+                            $('#submit').prop('disabled', false);
+                        }
+                    }
+
+                        $('#p_name').on('change', function() { // if change of product name
+                            var selectedOption = $(this).find('option:selected'); // kung anong product
+                            if (selectedOption) {
+                                var price = selectedOption.data('price'); // retrieve the price
+                                var qty = selectedOption.data('qty'); // retrieve the qty
+                                var product_id = selectedOption.val(); // Get the product ID
+
+                                if (qty > 0) {
+                                    $('#price').val(price); // display price but hidden
+                                    $('#avail_quan').val(qty); // display qty
+                                    $('#product_id').val(product_id); // display product but hidden
+                                    updateTotalPrice(); // call function of updateTotalPrice
                                 } else {
-                                    $('#price').val('');
+                                    alert('Selected product is out of stock.'); // Show an alert if the available quantity is 0
+                                    $('#price').val(''); // clear
                                     $('#avail_quan').val('');
                                     $('#total_price').val('');
                                     $('#product_id').val('');
                                 }
+                            } else {
+                                $('#price').val(''); // clear
+                                $('#avail_quan').val('');
+                                $('#total_price').val('');
+                                $('#product_id').val('');
+                            }
 
-                                //ID
-                                var productId = selectedOption.data('id');
+                            checkAvailabilityAndEnableButton(); // check and enable/disable the button
 
-                                $.ajax({
-                                    type: 'GET',
-                                    url: 'product_variation.php',
-                                    data: { 
-                                        product_id: productId 
-                                    },
-                                    success: function(response) {
-                                        // Assuming the response is in JSON format
-                                        var variations = JSON.parse(response);
-                                        console.log(variations)
-                                        // Assuming you have a select element with id "variation"
-                                        var selectElement = $('#variation');
-
-                                        // Clear existing options
-                                        selectElement.empty();
-
-                                        // Add the default option
-                                        var defaultOption = '<option disabled selected>Select Variation</option>';
-                                        selectElement.append(defaultOption);
-
-                                        // Build and append new options to the select element
-                                        variations.forEach(function(row) {
-                                            var option = '<option value="' + row.variation_id + '" data-variation_price="' + row.price + '" data-supplier="' + row.supplier_price + '">' + row.variation + '</option>';
-                                            selectElement.append(option);
-                                        });
-
-                                        $('#variation').on('change', function() {
-                                            var selectedOption = $(this).find('option:selected');
-
-                                            if (selectedOption) {
-                                                var variationPrice = selectedOption.data('variation_price');
-                                                $('#variation_price').val(variationPrice);
-                                                console.log(variationPrice)
-                                                updateTotalPrice(variationPrice);
-                                            } else {
-                                                var variationPrice = '';
-                                            }
-                                        });
-                                    },
-                                    error: function(error) {
-                                        console.error('Error fetching data: ', error);
-                                    }
-                                });
+                            $('#p_qty').on('input', function() {
+                                updateTotalPrice();
+                                checkAvailabilityAndEnableButton(); // check and enable/disable the button
                             });
 
-                            $('#variation').on('change', function() {
-                                var selectedOption = $(this).find('option:selected');
+                            // ID
+                            var productId = selectedOption.data('id'); // retrieve product_id
 
-                                if (selectedOption) {
-                                    var variationPrice = selectedOption.data('variation_price');
-                                    $('#variation_price').val(variationPrice);
-                                    console.log(variationPrice);
-                                } else {
-                                    $('#variation_price').val(''); // Clear variationPrice if no option is selected
+                            $.ajax({
+                                type: 'GET', // ACTION
+                                url: 'product_variation.php', // retrieve this page it includes the database
+                                data: {
+                                    product_id: productId
+                                },
+                                success: function(response) {
+                                    // Assuming the response is in JSON format
+                                    var variations = JSON.parse(response);
+                                    console.log(variations)
+                                    // Assuming you have a select element with id "variation"
+                                    var selectElement = $('#variation');
+
+                                    // Clear existing options
+                                    selectElement.empty();
+
+                                    // Add the default option
+                                    var defaultOption = '<option disabled selected>Select Variation</option>';
+                                    selectElement.append(defaultOption);
+
+                                    // Build and append new options to the select element
+                                    variations.forEach(function(row) {
+                                        var option = '<option value="' + row.variation_id + '" data-variation_price="' + row.price + '" data-supplier="' + row.supplier_price + '">' + row.variation + '</option>';
+                                        selectElement.append(option);
+                                    });
+
+                                    $('#variation').on('change', function() {
+                                        var selectedOption = $(this).find('option:selected'); // selected variation
+
+                                        if (selectedOption) {
+                                            var variationPrice = selectedOption.data('variation_price'); // retrieve variation price
+                                            $('#variation_price').val(variationPrice); // output
+                                            console.log(variationPrice)
+                                            updateTotalPrice(variationPrice); // function with variation price
+                                        } else {
+                                            var variationPrice = ''; // clear
+                                        }
+                                    });
+                                },
+                                error: function(error) {
+                                    console.error('Error fetching data: ', error); // display error
                                 }
-
-                                updateTotalPrice();
-                            });
-
-                            $('#p_qty, #discount').on('input', function() {
-                                updateTotalPrice();
                             });
                         });
+
+                        $('#variation').on('change', function() {
+                            var selectedOption = $(this).find('option:selected');
+
+                            if (selectedOption) {
+                                var variationPrice = selectedOption.data('variation_price');
+                                $('#variation_price').val(variationPrice);
+                                console.log(variationPrice);
+                            } else {
+                                $('#variation_price').val(''); // Clear variationPrice if no option is selected
+                            }
+
+                            updateTotalPrice();
+                        });
+
+                        $('#p_qty').on('input', function() {
+                            updateTotalPrice();
+                        });
+                    });
                 </script>
+
+
 
 </body>
 

@@ -57,7 +57,7 @@ if ($result->num_rows > 0) {
     <!-- App css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
-    <link rel="stylesheet" href="css/prof1.css">
+    <link rel="stylesheet" href="css/custom1.css">
 
 </head>
 
@@ -69,13 +69,14 @@ if ($result->num_rows > 0) {
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
+     
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-             <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
+              <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
-                          <!-- LOGO -->
+                         <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
                                 <img src="assets/images/logo.png" alt="" height="69">
@@ -90,7 +91,7 @@ if ($result->num_rows > 0) {
                             <li class="dropdown notification-list">
                                 <!-- Add to Home link -->
                                 <a class="nav-link" href="dashboard-customer.php" style="display: flex; align-items: center;">
-                                    <i class="dripicons-home" style="font-size: 25px; margin-top: 15px;"></i>
+                                    <i class="dripicons-home" style="font-size: 23px; margin-top: 15px;"></i>
                                 </a>
                             </li>
 
@@ -117,7 +118,7 @@ if ($result->num_rows > 0) {
                             </li>
 
 
-                            <li class="dropdown notification-list">
+                   <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
                                     <i class="dripicons-bell noti-icon"></i>
                                     <span class="noti-icon-badge"></span>
@@ -128,21 +129,64 @@ if ($result->num_rows > 0) {
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
+
                                             </span>Notification
+
                                         </h5>
                                     </div>
 
 
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
+
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
+
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
+
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
+
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
+
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
+
                                     <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
                                         View All
                                     </a>
 
                                 </div>
+
                             </li>
+
 
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle nav-user arrow-none me-0 custom-bg-color" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -151,7 +195,7 @@ if ($result->num_rows > 0) {
                                         $user_image = $user_data['image'];
                                         if (!empty($user_image)) {
                                             // Display the user's image if available
-                                            echo '<img src="uploaded_img/' . $user_image . '" alt="user" class="rounded-circle" style="height: auto;">';
+                                            echo '<img src="user_profile_img/' . $user_image . '" alt="user" class="rounded-circle" style="height: auto;">';
                                         } else {
                                             // Display a default avatar image when no user image is available
                                             echo '<img src="assets/images/profile.jpg" alt="Default Avatar" class="rounded-circle" style="height: auto;">';
@@ -171,6 +215,10 @@ if ($result->num_rows > 0) {
                                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                                         <i class="mdi mdi-account-circle me-1"></i>
                                         <span>My Account</span>
+                                    </a>
+                                       <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
                                     </a>
 
                                     <!-- item-->
@@ -211,7 +259,7 @@ if ($result->num_rows > 0) {
 
                                                     if (!empty($user_image)) {
                                                         // Display the user's image if available
-                                                        echo '<img src="uploaded_img/' . $user_image . '" alt="user">';
+                                                        echo '<img src="user_profile_img/' . $user_image . '" alt="user">';
                                                     } else {
                                                         // Display a default avatar image when no user image is available
                                                         echo '<img src="assets/images/profile.jpg" alt="Default Avatar">';
@@ -239,7 +287,7 @@ if ($result->num_rows > 0) {
                                                                                 <?php
                                                                                 $existing_image = $row['image'];
                                                                                 if (!empty($existing_image)) {
-                                                                                    echo '<img src="uploaded_img/' . $existing_image . '" alt="Existing Image">';
+                                                                                    echo '<img src="user_profile_img/' . $existing_image . '" alt="Existing Image">';
                                                                                 } else {
                                                                                     // Display a default avatar image when no user image is available
                                                                                     echo '<img src="assets/images/profile.jpg" alt="Default Avatar" style="max-width: 100px;">';
@@ -280,21 +328,23 @@ if ($result->num_rows > 0) {
                                     <input type="hidden" name="update_u_id" value="<?php echo $row['user_id']; ?>">
                                     <div class="form-group">
                                         <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-                                        <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" required>
+                                        <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" oninput="restrictToLettersWithSingleSpace(this)" required>
+                                         <span class="note" style="display: none; color: red; font-size: 12px;">Please enter letters only.</span>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="firstname" class="form-label">First Name</label>
-                                        <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                        <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" oninput="restrictToLettersWithSingleSpace(this)" required>
+                                          <span class="note" style="display: none; color: red; font-size: 12px;">Please enter letters only.</span>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="middlename" class="form-label">Middle Name</label>
-                                        <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>">
-                                        <small class="form-text text-muted">If you do not have a middle name, you can leave this
-                                            field blank.</small>
+                                        <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>" oninput="restrictToLettersWithSingleSpace(this)">
+                                        <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
+                                        <span class="note" style="display: none; color: red; font-size: 12px;">Please enter letters only.</span>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -315,6 +365,7 @@ if ($result->num_rows > 0) {
                                     <div class="form-group">
                                         <label for="contact" class="form-label">Contact Number</label>
                                         <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" value="<?php echo $contact; ?>">
+                                         <span class="note" style="display: none; color: red; font-size: 12px;">Please enter a valid 11-digit numbers.</span>
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +377,9 @@ if ($result->num_rows > 0) {
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="houseNo" class="form-label">House/Building No.</label>
-                                        <input class="form-control" type="text" name="houseNo" placeholder="Enter House/Building No." required value="<?php echo $houseNo; ?>">
+                                           <input class="form-control" type="text" name="houseNo" placeholder="Enter House/Building No."  oninput="restrictToNumr(this)" required value="<?php echo $houseNo; ?>">
+                                             <span class="note" style="display: none; color: red; font-size: 12px;">Please enter a numbers only.</span>
+
                                     </div>
                                 </div>
 
@@ -393,7 +446,7 @@ if ($result->num_rows > 0) {
                                     <div class="form-group">
                                         <label for="postal" class="form-label">Postal Code</label>
                                         <input class="form-control" type="text" name="postal" id="postalInput" placeholder="Enter your Postal Code" oninput="restrictToNum(this)" required value="<?php echo $postal; ?>">
-                                        <span class="note" style="display: none; color: red;">Please enter a valid 4-digit
+                                        <span class="note" style="display: none; color: red; font-size: 12px">Please enter a valid 4-digit
                                             postal code without symbols or letters.</span>
                                     </div>
                                 </div>
@@ -481,6 +534,76 @@ if ($result->num_rows > 0) {
         // Call the updateCartCount function to initialize the cart count
         updateCartCount();
     </script>
+    
+        <script>
+        function restrictToLettersWithSingleSpace(input) {
+            var lastNameNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+
+            // Replace multiple spaces with a single space
+            inputValue = inputValue.replace(/  +/g, ' ');
+
+            // Remove any non-letter characters except spaces
+            var lettersOnly = inputValue.replace(/[^A-Za-z ]/g, '');
+
+            if (inputValue !== lettersOnly && inputValue.trim() !== '') {
+                lastNameNote.style.display = 'block';
+            } else {
+                lastNameNote.style.display = 'none';
+            }
+
+            input.value = lettersOnly;
+        }
+    </script>
+    
+        <script>
+        function restrictToNumbers(input) {
+            var phoneNumberNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+            var numbersOnly = inputValue.replace(/[^0-9]/g, '').slice(0, 11);
+
+            if (inputValue !== numbersOnly || inputValue.length !== 11) {
+                phoneNumberNote.style.display = 'block';
+            } else {
+                phoneNumberNote.style.display = 'none';
+            }
+
+            input.value = numbersOnly;
+        }
+    </script>
+    
+        <script>
+        function restrictToNum(input) {
+            var postalNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+            var numbersOnly = inputValue.replace(/[^0-9]/g, '').slice(0, 4);
+
+            if (inputValue !== numbersOnly || inputValue.length !== 4) {
+                postalNote.style.display = 'block';
+            } else {
+                postalNote.style.display = 'none';
+            }
+
+            input.value = numbersOnly;
+        }
+    </script>
+    
+ <script>
+    function restrictToNumr(input) {
+        var postalNote = input.parentNode.querySelector('.note');
+        var inputValue = input.value;
+        var numbersOnly = inputValue.replace(/\D/g, ''); // Allow only numeric digits
+
+        if (inputValue !== numbersOnly) {
+            postalNote.style.display = 'block';
+        } else {
+            postalNote.style.display = 'none';
+        }
+
+        input.value = numbersOnly;
+    }
+</script>
+
 </body>
 
 </html>

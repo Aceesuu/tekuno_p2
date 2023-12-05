@@ -19,10 +19,10 @@ $insert_user->bind_param("ssssssss", $lastName, $firstName, $middleName, $gender
 // Execute the prepared statement
 if ($insert_user->execute()) {
 $message[] = 'User added successfully';
-header('location: customers.php');
+header('location: role_customers.php');
 } else {
 $message[] = 'Could not add the user';
-header('location: customers.php');
+header('location: role_customers.php');
 }
 
 // Close the prepared statement

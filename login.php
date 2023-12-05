@@ -2,6 +2,24 @@
 session_start();
 include("mysql_connect.php");
 
+// Function to log actions to the audit trail
+function logAction($conn, $admin_id, $role, $action)
+{
+  $action = mysqli_real_escape_string($conn, $action);
+  $role = mysqli_real_escape_string($conn, $role);
+  $query = "INSERT INTO audit_trail (admin_id, role, action) VALUES ('$admin_id', '$role', '$action')";
+  mysqli_query($conn, $query);
+}
+
+// Function to log actions to the audit trail
+function logAction1($conn, $user_id, $action)
+{
+    $action = mysqli_real_escape_string($conn, $action);
+    $query = "INSERT INTO audit_user (user_id, action) VALUES ('$user_id', '$action')";
+    mysqli_query($conn, $query);
+}
+
+
 if (isset($_POST['submit'])) {
   $em = $_POST['email'];
   $ps = $_POST['password'];
@@ -30,6 +48,9 @@ if (isset($_POST['submit'])) {
     } else {
       // Account is verified
       $_SESSION['user_id'] = $user['user_id'];
+      // Log the login action to the audit trail
+      $action = "User {$user['user_id']} logged in";
+      logAction1($conn, $user['user_id'], $action); // Use logAction1 for user actions
       // Redirect after successful login
       header("Location: dashboard-customer.php");
       exit();
@@ -37,20 +58,22 @@ if (isset($_POST['submit'])) {
   } elseif (mysqli_num_rows($admin_result)) {
     $admin = mysqli_fetch_assoc($admin_result);
     $role = $admin['role'];
+    
+     // Log the login action to the audit trail
+    $action = "Logged in";
+    logAction($conn, $admin['admin_id'], $role, $action);
+    // Set the session ID once
+    $_SESSION['admin_id'] = $admin['admin_id'];
 
     // Redirect based on admin's role
     if ($role == "Admin") {
-      $_SESSION['admin_id'] = $admin['admin_id'];
       header("Location: dashboard.php");
     } elseif ($role == "Inventory Manager") {
-      $_SESSION['admin_id'] = $admin['admin_id'];
-     header("Location: dashboard-inventory.php");
+      header("Location: dashboard-inventory.php");
     } elseif ($role == "Order Manager") {
-      $_SESSION['admin_id'] = $admin['admin_id'];
-       header("Location: dashboard-order.php");
+      header("Location: dashboard-order.php");
     } elseif ($role == "Customer Management") {
-      $_SESSION['admin_id'] = $admin['admin_id'];
-    header("Location: dashboard-role-customer.php");
+      header("Location: dashboard-role-customer.php");
     }
     exit();
   } else {

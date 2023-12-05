@@ -52,7 +52,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
         <div class="leftside-menu" style="background-color: #212A37;">
 
             <!-- LOGO -->
-            <a href="dashboard-role-customer.php" class="logo text-center logo-light">
+            <a href="dashboard.php" class="logo text-center logo-light">
                 <span class="logo-lg" style="background-color: #212A37;">
                     <img src="assets/images/logo.png" alt="" height="100">
                 </span>
@@ -63,7 +63,6 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
             <br> <br>
 
             <div class="h-100" id="leftside-menu-container" data-simplebar="">
-
                 <!--- Sidemenu -->
                 <ul class="side-nav">
 
@@ -76,17 +75,41 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </li>
 
                     <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class=" uil-users-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse show" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="role_customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="role_feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
 
-                        <li class="side-nav-item">
-                            <a href="role_customers.php" class="side-nav-link">
-                                <i class="uil-users-alt"></i>
-                                <span> Customers </span>
-                            </a>
-                        </li>
-                        <!-- End Sidebar -->
-
-                        <div class="clearfix"></div>
-
+                    <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a  href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" mdi mdi-file-document-edit-outline"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse show" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="userlogs_role.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
             </div>
             <!-- Sidebar -left -->
 
@@ -110,6 +133,14 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 <form class="p-3">
                                     <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
                                 </form>
+                            </div>
+                        </li>
+
+               
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                               
+
                             </div>
                         </li>
 
@@ -145,7 +176,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                 </a>
 
                                 <!-- item-->
-                                <a href="logout.php" class="dropdown-item notify-item">
+                                <a href="logout_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
                                     <span>Logout</span>
                                 </a>
@@ -156,7 +187,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     <button class="button-menu-mobile open-left">
                         <i class="mdi mdi-menu"></i>
                     </button>
-                    
+                    <div class="app-search dropdown d-none d-lg-block">
+                        <form>
+                           
+                        </form>
+
+                    </div>
                 </div>
                 <!-- end Topbar -->
 
@@ -213,7 +249,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                 }
                                                                 ?>
                                                             </td>
-                                                            <td><?php echo $row['firstName'] . ' ' . $row['lastName']; ?></td>
+                                                            <td><?php echo $row['firstName'] . ' ' . $row['middleName'] . ' ' . $row['lastName']; ?></td>
                                                             <td><?php echo $row['email']; ?></td>
                                                             <td><?php echo $row['houseNo'] . ' ' . $row['street'] . ' ' . $row['barangay']; ?></td>
                                                             <td class="table-action">
@@ -279,43 +315,43 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                                             <input type="hidden" name="update_user_id" value="<?php echo $row['user_id']; ?>">
 
                                                                             <div class="mb-3">
-                                                                                <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-                                                                                <input class="form-control" type="text" name="update_lastName" id="lastNameInput" placeholder="Enter your Last Name" oninput="restrictToLetters(this)" value="<?php echo $row['lastName']; ?>" required>
-                                                                                <span class="note" style="display: none; color: red;">Please enter letters only</span>
-                                                                            </div>
+                                                                        <label for="lastname" class="form-label"><i class="fas fa-user"></i> Last Name</label>
+    <input class="form-control" type="text" name="update_lastName" id="lastNameInput" placeholder="Enter your Last Name" oninput="restrictToLetters(this)" value="<?php echo $row['lastName']; ?>" required>
+    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
+</div>
 
-                                                                            <div class="mb-3">
-                                                                                <label for="firstname" class="form-label">First Name</label>
-                                                                                <input class="form-control" type="text" name="update_firstName" id="firstNameInput" placeholder="Enter your First Name" oninput="restrictToLetters(this)" value="<?php echo $row['firstName']; ?>" required>
-                                                                                <span class="note" style="display: none; color: red;">Please enter letters only.</span>
-                                                                            </div>
+<div class="mb-3">
+    <label for="firstname" class="form-label"><i class="fas fa-user"></i> First Name</label>
+    <input class="form-control" type="text" name="update_firstName" id="firstNameInput" placeholder="Enter your First Name" oninput="restrictToLetters(this)" value="<?php echo $row['firstName']; ?>" required>
+    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
+</div>
 
-                                                                            <div class="mb-3">
-                                                                                <label for="middlename" class="form-label">Middle Name</label>
-                                                                                <input class="form-control" type="text" name="update_middleName" id="middleNameInput" placeholder="Enter your Middle Name" oninput="restrictToLetters(this)" value="<?php echo $row['middleName']; ?>">
-                                                                                <span class=" note" style="display: none; color: red;">Please enter letters only.</span>
-                                                                                <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
-                                                                            </div>
+<div class="mb-3">
+    <label for="middlename" class="form-label"><i class="fas fa-user"></i> Middle Name</label>
+    <input class="form-control" type="text" name="update_middleName" id="middleNameInput" placeholder="Enter your Middle Name" oninput="restrictToLetters(this)" value="<?php echo $row['middleName']; ?>">
+    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
+    <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
+</div>
 
-                                                                            <div class="mb-3">
-                                                                                <label for="gender" class="form-label">Gender</label>
-                                                                                <select name="update_gender" class="form-control" required>
-                                                                                    <option value="" disabled>Select your gender</option>
-                                                                                    <option value="Female" <?php if ($row['gender'] === 'Female') echo 'selected'; ?>>Female</option>
-                                                                                    <option value="Male" <?php if ($row['gender'] === 'Male') echo 'selected'; ?>>Male</option>
-                                                                                </select>
-                                                                            </div>
+<div class="mb-3">
+    <label for="gender" class="form-label"><i class="fa-solid fa-venus-mars"></i> Gender</label>
+    <select name="update_gender" class="form-control" required>
+        <option value="" disabled>Select your gender</option>
+        <option value="Female" <?php if ($row['gender'] === 'Female') echo 'selected'; ?>>Female</option>
+        <option value="Male" <?php if ($row['gender'] === 'Male') echo 'selected'; ?>>Male</option>
+    </select>
+</div>
 
-                                                                            <div class="mb-3">
-                                                                                <label for="contact" class="form-label">Contact Number</label>
-                                                                                <input class="form-control" type="text" name="update_contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11" value="<?php echo $row['contact']; ?>">
-                                                                                <span class="note" style="display: none; color: red;">Please enter a valid 11-digit number without symbols or letters.</span>
-                                                                            </div>
+<div class="mb-3">
+    <label for="contact" class="form-label"><i class="fa-solid fa-phone"></i> Contact Number</label>
+    <input class="form-control" type="text" name="update_contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11" value="<?php echo $row['contact']; ?>">
+    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter a valid 11-digit number without symbols or letters.</span>
+</div>
 
-                                                                            <div class="mb-3">
-                                                                                <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
-                                                                                <input type="email" class="form-control" name="update_email" placeholder="Enter your email" required value="<?php echo $row['email']; ?>">
-                                                                            </div>
+<div class="mb-3">
+    <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
+    <input type="email" class="form-control" name="update_email" placeholder="Enter your email" required value="<?php echo $row['email']; ?>">
+</div>
 
                                                                     </div>
                                                                     <div class="modal-footer">
@@ -437,6 +473,42 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
         });
     </script>
 
+        <script>
+        function restrictToLetters(input) {
+            var lastNameNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+
+            // Replace multiple spaces with a single space
+            inputValue = inputValue.replace(/  +/g, ' ');
+
+            // Remove any non-letter characters except spaces
+            var lettersOnly = inputValue.replace(/[^A-Za-z ]/g, '');
+
+            if (inputValue !== lettersOnly && inputValue.trim() !== '') {
+                lastNameNote.style.display = 'block';
+            } else {
+                lastNameNote.style.display = 'none';
+            }
+
+            input.value = lettersOnly;
+        }
+    </script>
+
+        <script>
+        function restrictToNumbers(input) {
+            var phoneNumberNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+            var numbersOnly = inputValue.replace(/[^0-9]/g, '').slice(0, 11);
+
+            if (inputValue !== numbersOnly || inputValue.length !== 11) {
+                phoneNumberNote.style.display = 'block';
+            } else {
+                phoneNumberNote.style.display = 'none';
+            }
+
+            input.value = numbersOnly;
+        }
+    </script>
 </body>
 
 </html>

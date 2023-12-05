@@ -74,10 +74,10 @@ F<?php
                 <!--- Sidemenu -->
                 <ul class="side-nav">
 
-                    <li class="side-nav-title side-nav-item">Navigation</li>
+                   <li class="side-nav-title side-nav-item">Navigation</li>
                     <li class="side-nav-item">
                         <a href="dashboard.php" class="side-nav-link">
-                            <i class="uil-calender"></i>
+                            <i class="dripicons-home"></i>
                             <span> Dashboard </span>
                         </a>
                     </li>
@@ -85,7 +85,7 @@ F<?php
                     <ul class="side-nav">
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerceProducts" aria-expanded="false" aria-controls="sidebarEcommerceProducts" class="side-nav-link">
-                                <i class="uil-store"></i>
+                                <i class="mdi mdi-clipboard-text-multiple-outline"></i>
                                 <span> Products </span>
                                 <span class="menu-arrow"></span>
                             </a>
@@ -94,22 +94,23 @@ F<?php
                                     <li>
                                         <a href="products.php">List of Products</a>
                                     </li>
-                                      <li>
-                                    <a href="category.php">Product Category</a>
-                                </li>
+                                    <li>
+                                        <a href="category.php">Product Category</a>
+                                    </li>
                                     <li>
                                         <a href="manage_product.php">Manage Product</a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
-                        
-   <li class="side-nav-item">
+
+                        <li class="side-nav-item">
                             <a href="inventory.php" class="side-nav-link">
                                 <i class="mdi mdi-clipboard-list-outline"></i>
                                 <span> Inventory </span>
                             </a>
                         </li>
+
                         <ul class="side-nav">
                             <li class="side-nav-item">
                                 <a data-bs-toggle="collapse" href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
@@ -122,38 +123,106 @@ F<?php
                                         <li>
                                             <a href="order.php">Order Details</a>
                                         </li>
-                                           <li>
+                                        <li>
                                             <a href="order_onsite.php">Order Onsites</a>
                                         </li>
                                         <li>
                                             <a href="order_history_admin.php">Order History</a>
                                         </li>
+                                        <li>
+                                            <a href="refund_admin.php">Request Refund</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
                         </ul>
-
+                        
+                                <ul class="side-nav">
                         <li class="side-nav-item">
-                            <a href="customers.php" class="side-nav-link">
-                                <i class="dripicons-user-group"></i>
-                                <span> Customers </span>
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                       <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class="uil-users-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
                         <li class="side-nav-item">
                             <a href="admins.php" class="side-nav-link">
-                                <i class="dripicons-user"></i>
+                                <i class="uil-user-check"></i>
                                 <span> Admins </span>
                             </a>
                         </li>
-                        
-                         <li class="side-nav-item">
-                            <a href="forecast.php" class="side-nav-link">
-                                <i class="uil-chart"></i>
-                                <span> Forecast </span>
-                            </a>
-                        </li>
 
-                        <div class="clearfix"></div>
+                        <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" mdi mdi-file-document-edit-outline"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
 
             </div>
             <!-- Sidebar -left -->
@@ -203,6 +272,8 @@ F<?php
                                 </span>
                                 <span>
                                     <span class="account-user-name"><?php echo $admin_data['firstName'] ?></span>
+                                    <span class="account-position">Admin/Cashier</span>
+
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -329,19 +400,22 @@ F<?php
                                                 <input type="hidden" name="update_u_id" value="<?php echo $row['admin_id']; ?>">
                                                 <div class="form-group">
                                                     <label for="lastname" class="form-label"><i class="fas fa-user"></i>Last Name</label>
-                                                    <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" value="<?php echo $lastName; ?>" required>
+                                                    <input class="form-control" type="text" name="lastName" id="lastNameInput" placeholder="Enter your Last Name" oninput="restrictToLetters(this)" value="<?php echo $lastName; ?>" required>
+                                                    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="firstname" class="form-label">First Name</label>
-                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                    <input class="form-control" type="text" name="firstName" id="firstNameInput" oninput="restrictToLetters(this)" value="<?php echo $firstName; ?>" placeholder="Enter your First Name" required>
+                                                        <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="middlename" class="form-label">Middle Name</label>
-                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" value="<?php echo $middleName; ?>">
+                                                    <input class="form-control" type="text" name="middleName" id="middleNameInput" placeholder="Enter your Middle Name" oninput="restrictToLetters(this)" value="<?php echo $middleName; ?>">
+                                                    <span class="note" style="display: none; color: red; font-size: 13px;">Please enter letters only.</span>
                                                     <small class="form-text text-muted">If you do not have a middle name, you can leave this field blank.</small>
                                                 </div>
                                             </div>
@@ -356,7 +430,8 @@ F<?php
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="form-group">
                                                     <label for="contact" class="form-label">Contact Number</label>
-                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" value="<?php echo $contact; ?>">
+                                                    <input class="form-control" type="text" name="contact" id="phoneNumberInput" placeholder="Enter your Contact Number" required oninput="restrictToNumbers(this)" maxlength="11" value="<?php echo $contact; ?>">
+                                                      <span class="note" style="display: none; color: red; font-size: 13px;">Please enter a valid 11-digit number without symbols or letters.</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -423,5 +498,43 @@ F<?php
         <script src="assets/js/pages/demo.dashboard.js"></script>
         <!-- end demo js-->
 </body>
+
+        
+        <script>
+        function restrictToLetters(input) {
+            var lastNameNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+
+            // Replace multiple spaces with a single space
+            inputValue = inputValue.replace(/  +/g, ' ');
+
+            // Remove any non-letter characters except spaces
+            var lettersOnly = inputValue.replace(/[^A-Za-z ]/g, '');
+
+            if (inputValue !== lettersOnly && inputValue.trim() !== '') {
+                lastNameNote.style.display = 'block';
+            } else {
+                lastNameNote.style.display = 'none';
+            }
+
+            input.value = lettersOnly;
+        }
+    </script>
+
+        <script>
+        function restrictToNumbers(input) {
+            var phoneNumberNote = input.parentNode.querySelector('.note');
+            var inputValue = input.value;
+            var numbersOnly = inputValue.replace(/[^0-9]/g, '').slice(0, 11);
+
+            if (inputValue !== numbersOnly || inputValue.length !== 11) {
+                phoneNumberNote.style.display = 'block';
+            } else {
+                phoneNumberNote.style.display = 'none';
+            }
+
+            input.value = numbersOnly;
+        }
+    </script>
 
 </html>

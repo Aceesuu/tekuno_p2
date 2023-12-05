@@ -93,12 +93,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerceProducts" aria-expanded="false" aria-controls="sidebarEcommerceProducts" class="side-nav-link">
+                        <a  href="#sidebarEcommerceProducts" aria-expanded="false" aria-controls="sidebarEcommerceProducts" class="side-nav-link">
                             <i class="mdi mdi-clipboard-text-multiple-outline"></i>
                             <span> Products </span>
                             <span class="menu-arrow"></span>
                         </a>
-                        <div class="collapse" id="sidebarEcommerceProducts">
+                        <div class="collapse show" id="sidebarEcommerceProducts">
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="role_products.php">List of Products</a>

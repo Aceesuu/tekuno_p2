@@ -5,15 +5,13 @@ if (isset($_POST['add_product'])) {
     $p_name = $_POST['p_name'];
     $p_qty = $_POST['p_qty'];
     $p_price = $_POST['price'];
-    $subtotal = $p_qty * $p_price;
-    $discount = isset($_POST['discount']) ? floatval($_POST['discount']) : 0;
+    $var_price = $_POST['variation_price'];
 
-    if ($discount > 0) {
-        // Calculate the total price with the discount taken into account
-        $total_price = $p_qty * $p_price * (1 - ($discount / 100));
+    if (is_numeric($var_price)) {
+        $subtotal = ($p_qty * $p_price) + $var_price;
     } else {
-        // If there's no discount, the total price is the same as the price
-        $total_price = $subtotal;
+        // Handle the case where $var_price is not a numeric value (e.g., set $subtotal to a default value)
+        $subtotal = $p_qty * $p_price;
     }
 
     $order_id = mt_rand(100, 999);
@@ -37,12 +35,12 @@ if (isset($_POST['add_product'])) {
                 mysqli_stmt_bind_param($update_qty_stmt, "ii", $remaining_qty, $product_id);
                 if (mysqli_stmt_execute($update_qty_stmt)) {
                     // Insert the order into the "order_onsite" table
-                    $insert_order_query = "INSERT INTO order_onsite (order_id, order_date, product_id, name, price, qty, subtotal, discount, total_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?)";
+                    $insert_order_query = "INSERT INTO order_onsite (order_id, order_date, product_id, name, price, qty, subtotal) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
                     // Prepare the statement
                     if ($stmt = mysqli_prepare($conn, $insert_order_query)) {
                         // Bind parameters
-                        mysqli_stmt_bind_param($stmt, "iissiddd", $order_id, $product_id, $p_name, $p_price, $p_qty, $subtotal, $discount, $total_price);
+                        mysqli_stmt_bind_param($stmt, "iissid", $order_id, $product_id, $p_name, $p_price, $p_qty, $subtotal);
 
                         // Execute the statement
                         if (mysqli_stmt_execute($stmt)) {

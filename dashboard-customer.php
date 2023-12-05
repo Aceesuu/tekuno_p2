@@ -120,7 +120,7 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false">
                                     <i class="dripicons-bell noti-icon" style="display: flex; justify-content: center; align-items: flex-end; margin-top: 8px;"></i>
-
+                                    <span class="noti-icon-badge"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop">
@@ -134,8 +134,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
 
                                         </h5>
                                     </div>
+
+
                                     <?php
-                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id`, `order_date` DESC");
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
 
                                     if (mysqli_num_rows($sql) > 0) {
                                         $orders = array();
@@ -161,7 +163,8 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                                     <div class="notify-icon bg-primary">
                                                         <i class="mdi mdi-comment-account-outline"></i>
                                                     </div>
-                                                    <p class="notify-details">Order # <?php echo $order['order_id']; ?> has status of <?php echo $order['status']; ?></p>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
                                                     <small class="text-muted"><?php echo $order['order_date']; ?></small>
                                                     </p>
                                                 </a>
@@ -174,6 +177,11 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                         echo '</a>';
                                     }
                                     ?>
+
+                                    <!-- All-->
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
 
                                 </div>
 
@@ -207,6 +215,11 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     <a href="user_profile.php" class="dropdown-item notify-item">
                                         <i class="mdi mdi-account-circle me-1"></i>
                                         <span>My Account</span>
+                                    </a>
+
+                                    <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
                                     </a>
 
                                     <!-- item-->

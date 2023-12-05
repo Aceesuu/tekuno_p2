@@ -60,10 +60,10 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
         <div class="content-page">
             <div class="content">
                 <!-- Topbar Start -->
-              <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
+                <div class="navbar-custom topnav-navbar" style="background-color: #212A37; height: 85px;">
                     <div class="container-fluid">
 
-                         <!-- LOGO -->
+                        <!-- LOGO -->
                         <a href="" class="topnav-logo">
                             <span class="topnav-logo-lg">
                                 <img src="assets/images/logo.png" alt="" height="69">
@@ -115,19 +115,62 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     <div class="dropdown-item noti-title">
                                         <h5 class="m-0">
                                             <span class="float-end">
-                                                <a href="javascript: void(0);" class="text-dark">
-                                                    <small>Clear All</small>
-                                                </a>
+
                                             </span>Notification
+
                                         </h5>
                                     </div>
 
+
+                                    <?php
+                                    $sql = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id` DESC, `order_date` ASC LIMIT 5");
+
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        $orders = array();
+
+                                        while ($row = mysqli_fetch_assoc($sql)) {
+                                            $order_id = $row['order_id'];
+
+                                            // Use order_id as the key and update the status if a newer one is found
+                                            if (!isset($orders[$order_id]) || $row['order_date'] > $orders[$order_id]['order_date']) {
+                                                $orders[$order_id] = array(
+                                                    'order_id' => $order_id,
+                                                    'status' => $row['order_status'],
+                                                    'order_date' => $row['order_date'],
+                                                );
+                                            }
+                                        }
+
+                                        foreach ($orders as $order) {
+                                    ?>
+                                            <div style="max-height: 230px;" data-simplebar="">
+
+                                                <a href="order_customer.php" class="dropdown-item notify-item">
+                                                    <div class="notify-icon bg-primary">
+                                                        <i class="mdi mdi-comment-account-outline"></i>
+                                                    </div>
+                                                    <p class="notify-details">Your Order # <?php echo $order['order_id']; ?> has the <br>
+                                                        status of <?php echo $order['status']; ?></p>
+                                                    <small class="text-muted"><?php echo $order['order_date']; ?></small>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<a href="#" class="dropdown-item notify-item">';
+                                        echo '    <p class="notify-details">No orders</p>';
+                                        echo '</a>';
+                                    }
+                                    ?>
+
                                     <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                    <a href="viewall_notif.php" class="dropdown-item text-center text-primary notify-item notify-all">
                                         View All
                                     </a>
 
                                 </div>
+
                             </li>
 
                             <li class="dropdown notification-list">
@@ -160,6 +203,12 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                                     </a>
 
 
+                                    <a href="order_history.php" class="dropdown-item notify-item">
+                                        <i class=" mdi mdi-briefcase-clock"></i>
+                                        <span>Order History</span>
+                                    </a>
+
+
                                     <!-- item-->
                                     <a href="logout.php" class="dropdown-item notify-item">
                                         <i class="mdi mdi-logout me-1"></i>
@@ -187,90 +236,198 @@ if ($user_result && mysqli_num_rows($user_result) > 0) {
                     <div class="border p-3 mt-4 mt-lg-0 rounded">
                         <h3 class="header-title mb-3" style="text-align: center;">Order Summary</h3>
                         <div class="table-responsive">
-                            <table class="table table-centered mb-0">
-                                <tbody>
-                                    <?php
-                                    $select_products = mysqli_query($conn, "SELECT * FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_id`");
-                                    $prev_order_id = null; // Initialize the previous order ID variable
-
-                                    if (mysqli_num_rows($select_products) > 0) {
-                                        while ($row = mysqli_fetch_assoc($select_products)) {
-                                            $current_order_id = $row['order_id'];
-
-                                            // Check if the current order ID is different from the previous one
-                                            if ($current_order_id != $prev_order_id) {
-                                                // Close the previous table if it's not the first iteration
-                                                if ($prev_order_id !== null) {
-                                    ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php
-                                                }
-
-                                                // Display the unique order ID
-                    ?>
-                    <h4 class="header-title mb-3"> Order# <?php echo $current_order_id; ?> </h4>
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                    <th>Order Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
                             <?php
-                                            }
+                            $select_orders = mysqli_query($conn, "SELECT DISTINCT `order_id` FROM `tb_order` WHERE `user_id` = $user_id ORDER BY `order_date` DESC");
 
+                            $statusBadgeClasses = [
+                                'Pending' => 'badge-info-lighten',
+                                'To Ship' => 'badge-primary-lighten',
+                                'To Receive' => 'badge-warning-lighten',
+                                'Declined' => 'badge-danger-lighten',
+                                'Complete' => 'badge-success-lighten',
+                                'Accept' => 'badge-success-lighten',
+                                'Cancelled' => 'badge-danger-lighten',
+                                'Decline' => 'badge-danger-lighten',
+                            ];
+
+                            if (mysqli_num_rows($select_orders) > 0) {
                             ?>
-                            <tr>
-                                <td>
-                                    <img src="uploaded_img/<?php echo $row['image']; ?>" height="100" alt="contact-img" title="contact-img" class="rounded me-2">
-                                    <p class="m-0 d-inline-block align-middle">
-                                        <a href="#" class="text-body fw-semibold"><?php echo $row['name']; ?></a>
-                                        <br>
-                                        <small><?php echo $row['qty']; ?> x <?php echo number_format($row['price']); ?></small>
-                                    </p>
-                                </td>
-                                <td><?php echo $row['qty']; ?></td>
-                                <td>₱<?php echo $row['price']; ?></td>
-                                <td>₱<?php echo $row['qty'] * $row['price']; ?></td>
-                                <td><?php echo $row['order_status']; ?></td>
-                            </tr>
-                        <?php
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Order</th>
+                                                <th>Date</th>
+                                                <th>Order Status</th>
+                                                <th>Grand Total</th>
+                                                <th>Action</th>
+                                                <th>Refund Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            while ($order_row = mysqli_fetch_assoc($select_orders)) {
+                                                $current_order_id = $order_row['order_id'];
 
-                                            // Update the previous order ID variable
-                                            $prev_order_id = $current_order_id;
-                                        }
-                                    }
+                                                // Fetch details for the current order
+                                                $select_products = mysqli_query($conn, "SELECT o.*, r.refund_id, r.status, r.message 
+                                                FROM `tb_order` AS o 
+                                                LEFT JOIN `tb_refund` AS r ON o.order_id = r.order_id
+                                                WHERE o.user_id = $user_id AND o.order_id = $current_order_id 
+                                                ORDER BY o.order_id");
 
-                                    // Close the last table if there are results
-                                    if (mysqli_num_rows($select_products) > 0) {
-                        ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php
-                                    }
-                ?>
+                                                $grand_total = 0;
+                                                $total = 0;
+                                                $sub_total = 0;
+                                                $shipping_fee = 40;
+                                                $discounted_price = 0;
+                                                $discount_rate = 0.03;
+
+                                                // Variables to store order information
+                                                $order_date = "";
+                                                $order_status = "";
+                                                $status = ""; // Move outside the inner loop
+                                                $refundDetails = null; // Initialize variable to store refund details
+
+                                                if (mysqli_num_rows($select_products) > 0) {
+                                                    while ($row = mysqli_fetch_assoc($select_products)) {
+                                                        $qty = $row['qty'];
+                                                        $price = $row['price'];
+
+                                                        // Calculate the total for this item
+                                                        $item_total = $price * $qty;
+                                                        // Add this item's total to the overall total
+                                                        $total += $item_total;
+                                                        $sub_total += $item_total;
+
+                                                        $order_date = $row['order_date']; // Store order date
+                                                        $order_status = $row['order_status']; // Store order status
+                                                        // Store status outside the loop
+                                                        $status = $row['status'];
+
+                                                        // Store refund details
+                                                        $refundDetails = $row;
+                                                    }
+
+                                                    // Calculate discounts, tax, and grand total
+                                                    if ($sub_total >= 5000) {
+                                                        $discounted_price = $sub_total * (1 - $discount_rate); // Apply the 3% discount
+                                                    } else {
+                                                        $discounted_price = $sub_total; // No discount
+                                                    }
+
+                                                    $tax = $discounted_price * 0.12;
+                                                    $grand_total = $discounted_price + $tax + $shipping_fee;
+
+                                                    // Output table row here (outside the inner loop)
+                                            ?>
+                                                    <tr>
+                                                        <td>Order ID #<?= $current_order_id ?></td>
+                                                        <td><?= date('F j, Y g:i A', strtotime($order_date)) ?></td>
+                                                        <td>
+                                                            <span class="badge <?php echo isset($statusBadgeClasses[$order_status]) ? $statusBadgeClasses[$order_status] : 'badge-info-lighten'; ?>">
+                                                                <?php echo $order_status; ?>
+                                                            </span>
+                                                        </td>
+                                                        <td>₱<?= number_format($grand_total, 2) ?></td>
+                                                        <td>
+                                                            <a href="invoice.php?order_id=<?= $current_order_id; ?>" class="btn btn-sm btn-primary">View Invoice</a>
+
+                                                            <br><br>
+                                                            <?php if (isset($order_status)) { ?>
+                                                                <?php if ($order_status == "Pending") { ?>
+                                                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<?php echo $current_order_id; ?>">Cancel Order</button>
+                                                                <?php } ?>
+                                                                <br> <br>
+                                                                <?php if ($order_status == "To Receive") { ?>
+                                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#markReceivedModal_<?php echo $current_order_id; ?>">Order Received</button>
+                                                                <?php } ?>
+                                                                
+                                                                <?php if ($order_status == 'Declined' || $order_status == 'Cancelled') { ?>
+                                                                    <a href="refund.php?order_id=<?php echo $current_order_id; ?>" class="btn btn-sm btn-warning">Request Refund</a>
+                                                                <?php } ?>
+                                                            <?php } ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <h5>
+                                                                <?php if (!empty($status)) : ?>
+                                                                    <span class="badge <?php echo isset($statusBadgeClasses[$status]) ? $statusBadgeClasses[$status] : 'badge-info-lighten'; ?>">
+                                                                        <?php echo $status; ?>
+                                                                    </span>
+                                                                    <?php if ($status === 'Decline' && !empty($refundDetails['message'])) : ?>
+                                                                        <p><?php echo "Message: " . $refundDetails['message']; ?></p>
+                                                                    <?php endif; ?>
+                                                                <?php endif; ?>
+                                                            </h5>
+                                                        </td>
+                                                    </tr>
+
+                                                    <!-- Pending modal -->
+                                                    <div class="modal fade" id="cancelOrderModal_<?php echo $current_order_id; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="standard-modalLabel">Cancel Order Confirmation</h4>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Are you sure you want to cancel this order?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                    <a href="cancel_order.php?order_id=<?php echo $current_order_id; ?>" class="btn btn-primary">Yes, Cancel Order</a>
+                                                                </div>
+                                                            </div><!-- /.modal-content -->
+                                                        </div><!-- /.modal-dialog -->
+                                                    </div><!-- /.modal -->
+
+                                                    <!-- To Receive modal -->
+                                                    <div class="modal fade" id="markReceivedModal_<?php echo $current_order_id; ?>" tabindex="-1" aria-labelledby="standard-modalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="standard-modalLabel">Mark Order as Received</h4>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Are you sure you want to mark this order as received?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                    <a href="mark_received.php?order_id=<?php echo $current_order_id; ?>" class="btn btn-primary">Yes, Mark as Received</a>
+                                                                </div>
+                                                            </div><!-- /.modal-content -->
+                                                        </div><!-- /.modal-dialog -->
+                                                    </div><!-- /.modal -->
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
 
 
-                <!-- end table-responsive -->
+                            <?php
+                            } else {
+                            ?>
+                                <p>No orders found.</p>
+                            <?php
+                            }
+                            ?>
+                            <!-- end table-responsive -->
 
-                    </div>
-                </div> <!-- end col -->
+                        </div>
+                    </div> <!-- end col -->
 
 
-                <!-- end table-responsive -->
-            </div> <!-- end .border-->
+                    <!-- end table-responsive -->
+                </div> <!-- end .border-->
 
-        </div> <!-- end row-->
+            </div> <!-- end row-->
 
-    </div> <!-- end col -->
+        </div> <!-- end col -->
     </div> <!-- end row-->
     </div>
     <!-- End Payment Information Content-->

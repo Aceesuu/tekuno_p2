@@ -22,3 +22,4 @@ if (isset($_POST['add_product'])) {
         echo "Error updating quantity: " . mysqli_error($conn);
     }
 }
+?>

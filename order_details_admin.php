@@ -127,16 +127,73 @@ if (!is_numeric($user_id)) {
                                         <li>
                                             <a href="order_history_admin.php">Order History</a>
                                         </li>
+                                         <li>
+                                            <a href="refund_admin.php">Request Refund</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
+                            
+                           <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
 
+                              <ul class="side-nav">
                             <li class="side-nav-item">
-                                <a href="customers.php" class="side-nav-link">
-                                    <i class="dripicons-user-group"></i>
-                                    <span> Customers </span>
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
                                 </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
+                        </ul>
+                        
                             <li class="side-nav-item">
                                 <a href="admins.php" class="side-nav-link">
                                     <i class="dripicons-user"></i>
@@ -144,12 +201,27 @@ if (!is_numeric($user_id)) {
                                 </a>
                             </li>
                             
-  <li class="side-nav-item">
-                        <a href="sales_report.php" class="side-nav-link">
-                            <i class="dripicons-graph-pie"></i>
-                            <span> Sales Report </span>
-                        </a>
-                    </li>
+                              <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                            
+=
                             <!-- End Sidebar -->
 
                             <div class="clearfix"></div>

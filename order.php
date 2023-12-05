@@ -137,30 +137,100 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                         <li>
                                             <a href="order_history_admin.php">Order History</a>
                                         </li>
+                                        <li>
+                                            <a href="refund_admin.php">Request Refund</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
                         </ul>
 
+                      <ul class="side-nav">
                         <li class="side-nav-item">
-                            <a href="customers.php" class="side-nav-link">
-                                <i class="uil-users-alt"></i>
-                                <span> Customers </span>
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+<ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class="uil-users-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
                         <li class="side-nav-item">
                             <a href="admins.php" class="side-nav-link">
                                 <i class="uil-user-check"></i>
                                 <span> Admins </span>
                             </a>
                         </li>
-                        
-                        <li class="side-nav-item">
-                        <a href="sales_report.php" class="side-nav-link">
-                            <i class="dripicons-graph-pie"></i>
-                            <span> Sales Report </span>
-                        </a>
-                        </li>
+                        <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" uil-shopping-cart-alt"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+
                         <!-- End Sidebar -->
 
                         <div class="clearfix"></div>
@@ -191,12 +261,12 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                             </div>
                         </li>
 
-                     
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                       
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
 
-                            </div>
+
+
+                        </div>
                         </li>
 
                         <li class="dropdown notification-list">
@@ -242,7 +312,7 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                     <button class="button-menu-mobile open-left">
                         <i class="mdi mdi-menu"></i>
                     </button>
-                
+
                 </div>
                 <!-- end Topbar -->
 
@@ -287,251 +357,252 @@ if ($admin_result && mysqli_num_rows($admin_result) > 0) {
                                                 </div>
                                             </form>
                                         </div>
-                                    
 
-                                    <div class="table-responsive">
-                                        <table id="example" class="table dt-responsive nowrap w-100">
-                                            <thead>
-                                                <tr>
-                                                    <th class="all">Order ID</th>
-                                                    <th>Grand Total</th>
-                                                    <th>Order Status</th>
-                                                    <th>Customer Name</th>
-                                                    <th>Proof of Payment</th>
-                                                    <th style="width: 85px;">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $select_products = mysqli_query($conn, "SELECT o.*, u.firstName, u.lastName FROM `tb_order` AS o INNER JOIN `tb_user` AS u ON o.user_id = u.user_id");
-                                                $statusBadgeClasses = [
-                                                    'Pending' => 'badge-info-lighten',
-                                                    'To Ship' => 'badge-primary-lighten',
-                                                    'To Receive' => 'badge-warning-lighten',
-                                                    'Declined' => 'badge-danger-lighten',
-                                                    'Complete' => 'badge-success-lighten',
-                                                    'Cancelled' => 'badge-danger-lighten',
-                                                ];
 
-                                                $allOrders = [];
-
-                                                if (mysqli_num_rows($select_products) > 0) {
-                                                    while ($row = mysqli_fetch_assoc($select_products)) {
-                                                        $orderId = $row['order_id'];
-                                                        // Create a new entry for each order, including single-item orders
-                                                        $orderData = [
-                                                            'order_id' => $orderId,
-                                                            'total' => $row['subtotal'],
-                                                            'shipping' => 40, // Set the shipping cost for each order
-                                                            'order_status' => $row['order_status'],
-                                                            'discount' => $row['discount'],
-                                                            'customerName' => $row['firstName'] . ' ' . $row['lastName'],
-                                                            'proof_image' => $row['proof_image'],
-                                                        ];
-
-                                                        if (!isset($allOrders[$orderId])) {
-                                                            $allOrders[$orderId] = $orderData;
-                                                        } else {
-                                                            // If the order already exists in the array, update the total amount
-                                                            $allOrders[$orderId]['total'] += $orderData['total'];
-                                                        }
-                                                    }
-                                                }
-
-                                                foreach ($allOrders as $order) {
-                                                ?>
+                                        <div class="table-responsive">
+                                            <table id="example" class="table dt-responsive nowrap w-100">
+                                                <thead>
                                                     <tr>
-                                                        <td><u><a href="order_info.php?order_id=<?php echo $order['order_id']; ?>" class="text-body fw-bold">Order #<?php echo $order['order_id']; ?></a></u></td>
-                                                        <td>
-                                                            <?php
-                                                            $total = $order['total'];
-                                                            $discount = $order['discount'];
-                                                            if (is_numeric($total) && is_numeric($discount)) {
-                                                                $finalTotal = $total - $discount;
-                                                                echo '₱' . $finalTotal;
-                                                            } else {
-                                                                echo $order['total'];
-                                                            }
-                                                            ?>
-                                                        </td>
-                                                        <td>
-                                                            <h5><span class="badge <?php echo isset($statusBadgeClasses[$order['order_status']]) ? $statusBadgeClasses[$order['order_status']] : 'badge-info-lighten'; ?>">
-                                                                    <?php echo $order['order_status']; ?>
-                                                                </span></h5>
-                                                        </td>
-                                                        <td><?php echo $order['customerName']; ?></td>
-                                                        <td><img src="proof/<?php echo $order['proof_image']; ?>" height="100" alt="proof" class="thumbnail" data-full-image="proof/<?php echo $order['proof_image']; ?>"></td>
-                                                        <div id="fullImageContainer" class="hidden">
-                                                            <img id="fullImage" src="" alt="">
-                                                        </div>
-                                                        <td class="table-action">
-                                                            <button class="btn btn-primary" onclick="ToShip(<?php echo $order['order_id']; ?>)">To Ship</button>
-                                                            <button class="btn btn-warning" onclick="ToReceive(<?php echo $order['order_id']; ?>)">To Receive</button>
-                                                            <button class="btn btn-danger" onclick="declineOrder(<?php echo $order['order_id']; ?>)">Decline</button>
-                                                        </td>
+                                                        <th class="all">Order ID</th>
+                                                        <th>Grand Total</th>
+                                                        <th>Order Status</th>
+                                                        <th>Customer Name</th>
+                                                        <th>Proof of Payment</th>
+                                                        <th style="width: 85px;">Action</th>
                                                     </tr>
-                                                <?php
-                                                }
-                                                ?>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div> <!-- end card-body-->
-                            </div> <!-- end card-->
-                        </div> <!-- end col -->
-                    </div>
-                    <!-- end row -->
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    $select_products = mysqli_query($conn, "SELECT o.*, u.firstName, u.lastName FROM `tb_order` AS o INNER JOIN `tb_user` AS u ON o.user_id = u.user_id");
+                                                    $statusBadgeClasses = [
+                                                        'Pending' => 'badge-info-lighten',
+                                                        'To Ship' => 'badge-primary-lighten',
+                                                        'To Receive' => 'badge-warning-lighten',
+                                                        'Declined' => 'badge-danger-lighten',
+                                                        'Complete' => 'badge-success-lighten',
+                                                        'Cancelled' => 'badge-danger-lighten',
+                                                    ];
 
-                </div> <!-- container -->
+                                                    $allOrders = [];
 
-            </div> <!-- content -->
+                                                    if (mysqli_num_rows($select_products) > 0) {
+                                                        while ($row = mysqli_fetch_assoc($select_products)) {
+                                                            $orderId = $row['order_id'];
+                                                            $sub_total = $row['subtotal'];
 
-            <!-- Footer Start -->
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6">
-                            © TEKUNO
+                                                            // Create a new entry for each order, including single-item orders
+                                                            $orderData = [
+                                                                'order_id' => $orderId,
+                                                                'total' => $sub_total,
+                                                                'order_status' => $row['order_status'],
+                                                                'customerName' => $row['firstName'] . ' ' . $row['lastName'],
+                                                                'proof_image' => $row['proof_image'],
+                                                            ];
+
+                                                            if (!isset($allOrders[$orderId])) {
+                                                                $allOrders[$orderId] = $orderData;
+                                                            } else {
+                                                                // If the order already exists in the array, update the total amount
+                                                                $allOrders[$orderId]['total'] += $sub_total;
+                                                            }
+                                                        }
+
+                                                        // Calculate discounts, tax, and grand total outside of the loop
+                                                        foreach ($allOrders as &$order) {
+                                                            $shipping_fee = 40;
+                                                            $discount_rate = 0.03; // 3% discount
+                                                            $discounted_price = ($order['total'] >= 5000) ? $order['total'] * (1 - $discount_rate) : $order['total'];
+                                                            $tax = $discounted_price * 0.12;
+                                                            $grand_total = $discounted_price + $tax + $shipping_fee;
+                                                            $order['total'] = $grand_total; // Update the total with the calculated grand total
+                                                        }
+                                                        unset($order); // Unset the reference to avoid unintended changes
+                                                    }
+
+                                                    foreach ($allOrders as $order) {
+                                                    ?>
+                                                        <tr>
+                                                            <td><u><a href="order_info.php?order_id=<?php echo $order['order_id']; ?>" class="text-body fw-bold">Order #<?php echo $order['order_id']; ?></a></u></td>
+                                                            <td>
+                                                                <?php
+                                                                $total = $order['total'];
+                                                                echo '₱' . $total;
+                                                                ?>
+                                                            </td>
+                                                            <td>
+                                                                <h5><span class="badge <?php echo isset($statusBadgeClasses[$order['order_status']]) ? $statusBadgeClasses[$order['order_status']] : 'badge-info-lighten'; ?>">
+                                                                        <?php echo $order['order_status']; ?>
+                                                                    </span></h5>
+                                                            </td>
+                                                            <td><?php echo $order['customerName']; ?></td>
+                                                            <td><img src="proof/<?php echo $order['proof_image']; ?>" height="100" alt="proof" class="thumbnail" data-full-image="proof/<?php echo $order['proof_image']; ?>"></td>
+                                                            <div id="fullImageContainer" class="hidden">
+                                                                <img id="fullImage" src="" alt="">
+                                                            </div>
+                                                            <td class="table-action">
+                                                                <button class="btn btn-primary" onclick="ToShip(<?php echo $order['order_id']; ?>)">To Ship</button>
+                                                                <button class="btn btn-warning" onclick="ToReceive(<?php echo $order['order_id']; ?>)">To Receive</button>
+                                                                <button class="btn btn-danger" onclick="declineOrder(<?php echo $order['order_id']; ?>)">Decline</button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php
+                                                    }
+                                                    ?>
+
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
                         </div>
-                        <div class="col-md-6">
-                            <div class="text-md-end footer-links d-none d-md-block">
-                                <a href="javascript: void(0);">About</a>
-                                <a href="javascript: void(0);">Support</a>
-                                <a href="javascript: void(0);">Contact Us</a>
+                        <!-- end row -->
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                © TEKUNO
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </footer>
-            <!-- end Footer -->
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
 
         </div>
+        <!-- END wrapper -->
 
-        <!-- ============================================================== -->
-        <!-- End Page content -->
-        <!-- ============================================================== -->
-
-
-    </div>
-    <!-- END wrapper -->
-
-    <!-- bundle -->
-    <script src="assets/js/vendor.min.js"></script>
-    <script src="assets/js/app.min.js"></script>
-    <script src="script.js"></script>
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+        <script src="script.js"></script>
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-o6bLTM2BjR41l/6t1Sss/OtX4Yp1p2qE6neGJ0wMmR8=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha256-YozT52Tvl6FsThQz3DlF6b6t8zVf3DzA/0H3A6EiPPE=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-Kay7B3Qj2TqpBMp7rN7R+JGzxp7F2bNQfDHxng5tQ8o66fwW0ueRdKp5l3kI33dM" crossorigin="anonymous"></script>
 
-    <script>
-        function exportToPDF() {
-            // Open a new window or tab with the "pdf.php" URL
-            window.open('pdf.php', '_blank');
-        }
-    </script>
-    <script>
-        function handleOrder(orderId, action) {
-            $.ajax({
-                type: "POST",
-                url: "order_crud.php",
-                data: {
-                    order_id: orderId,
-                    action: action
-                },
-                success: function(response) {
-                    // Handle the success response, e.g., refresh the order list
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
-
-        function ToShip(orderId) {
-            handleOrder(orderId, "toShip");
-        }
-
-        function ToReceive(orderId) {
-            handleOrder(orderId, "toReceive");
-        }
-
-        function declineOrder(orderId) {
-            handleOrder(orderId, "decline");
-        }
-    </script>
-
-    <script>
-        // Get references to the thumbnail and full-size image elements
-        const thumbnail = document.querySelectorAll('.thumbnail');
-        const fullImageContainer = document.getElementById('fullImageContainer');
-        const fullImage = document.getElementById('fullImage');
-
-        // Add click event listeners to each thumbnail
-        thumbnail.forEach((thumb) => {
-            thumb.addEventListener('click', (event) => {
-                const fullImagePath = event.target.getAttribute('data-full-image');
-
-                // Set the src attribute of the full-size image
-                fullImage.src = fullImagePath;
-
-                // Show the full-size image container
-                fullImageContainer.style.display = 'block';
-
-                // Prevent scrolling of the underlying page
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        // Add click event listener to close the full-size image
-        fullImageContainer.addEventListener('click', () => {
-            // Hide the full-size image container
-            fullImageContainer.style.display = 'none';
-
-            // Allow scrolling of the underlying page again
-            document.body.style.overflow = 'auto';
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            // Handle the change event of the select element
-            $('#status-select').change(function() {
-                var selectedStatus = $(this).val(); // Get the selected status value
-
-                // Loop through each row in the table with the new ID "example"
-                $('#example tbody tr').each(function() {
-                    var row = $(this);
-
-                    // Get the status in the current row
-                    var rowStatus = row.find('td:eq(2) span').text().trim();
-
-                    // Show or hide the row based on the selected status
-                    if (selectedStatus === '0' || selectedStatus === '') {
-                        // Show all rows if "All" or no status is selected
-                        row.show();
-                    } else if (selectedStatus === '1' && rowStatus === 'Pending') {
-                        row.show();
-                    } else if (selectedStatus === '2' && rowStatus === 'To Ship') {
-                        row.show();
-                    } else if (selectedStatus === '3' && rowStatus === 'To Receive') {
-                        row.show();
-                    } else if (selectedStatus === '4' && rowStatus === 'Declined') {
-                        row.show();
-                    } else if (selectedStatus === '5' && rowStatus === 'Complete') {
-                        row.show();
-                    } else if (selectedStatus === '6' && rowStatus === 'Cancelled') {
-                        row.show();
-                    } else {
-                        // Hide the row if it doesn't match the selected status
-                        row.hide();
+        <script>
+            function handleOrder(orderId, action) {
+                $.ajax({
+                    type: "POST",
+                    url: "order_crud.php",
+                    data: {
+                        order_id: orderId,
+                        action: action
+                    },
+                    success: function(response) {
+                        // Handle the success response, e.g., refresh the order list
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
                     }
                 });
+            }
+
+            function ToShip(orderId) {
+                handleOrder(orderId, "toShip");
+            }
+
+            function ToReceive(orderId) {
+                handleOrder(orderId, "toReceive");
+            }
+
+            function declineOrder(orderId) {
+                handleOrder(orderId, "decline");
+            }
+        </script>
+
+        <script>
+            // Get references to the thumbnail and full-size image elements
+            const thumbnail = document.querySelectorAll('.thumbnail');
+            const fullImageContainer = document.getElementById('fullImageContainer');
+            const fullImage = document.getElementById('fullImage');
+
+            // Add click event listeners to each thumbnail
+            thumbnail.forEach((thumb) => {
+                thumb.addEventListener('click', (event) => {
+                    const fullImagePath = event.target.getAttribute('data-full-image');
+
+                    // Set the src attribute of the full-size image
+                    fullImage.src = fullImagePath;
+
+                    // Show the full-size image container
+                    fullImageContainer.style.display = 'block';
+
+                    // Prevent scrolling of the underlying page
+                    document.body.style.overflow = 'hidden';
+                });
             });
-        });
-    </script>
+
+            // Add click event listener to close the full-size image
+            fullImageContainer.addEventListener('click', () => {
+                // Hide the full-size image container
+                fullImageContainer.style.display = 'none';
+
+                // Allow scrolling of the underlying page again
+                document.body.style.overflow = 'auto';
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // Handle the change event of the select element
+                $('#status-select').change(function() {
+                    var selectedStatus = $(this).val(); // Get the selected status value
+
+                    // Loop through each row in the table with the new ID "example"
+                    $('#example tbody tr').each(function() {
+                        var row = $(this);
+
+                        // Get the status in the current row
+                        var rowStatus = row.find('td:eq(2) span').text().trim();
+
+                        // Show or hide the row based on the selected status
+                        if (selectedStatus === '0' || selectedStatus === '') {
+                            // Show all rows if "All" or no status is selected
+                            row.show();
+                        } else if (selectedStatus === '1' && rowStatus === 'Pending') {
+                            row.show();
+                        } else if (selectedStatus === '2' && rowStatus === 'To Ship') {
+                            row.show();
+                        } else if (selectedStatus === '3' && rowStatus === 'To Receive') {
+                            row.show();
+                        } else if (selectedStatus === '4' && rowStatus === 'Declined') {
+                            row.show();
+                        } else if (selectedStatus === '5' && rowStatus === 'Complete') {
+                            row.show();
+                        } else if (selectedStatus === '6' && rowStatus === 'Cancelled') {
+                            row.show();
+                        } else {
+                            // Hide the row if it doesn't match the selected status
+                            row.hide();
+                        }
+                    });
+                });
+            });
+        </script>
 
 
 

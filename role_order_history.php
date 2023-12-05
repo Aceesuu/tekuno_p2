@@ -94,12 +94,12 @@ if (isset($_GET['order_id'])) {
 
                         <ul class="side-nav">
                             <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
+                                <a href="#sidebarEcommerceOrder" aria-expanded="false" aria-controls="sidebarEcommerceOrder" class="side-nav-link">
                                     <i class=" uil-shopping-cart-alt"></i>
                                     <span> Order </span>
                                     <span class="menu-arrow"></span>
                                 </a>
-                                <div class="collapse" id="sidebarEcommerceOrder">
+                                <div class="collapse show" id="sidebarEcommerceOrder">
                                     <ul class="side-nav-second-level">
                                         <li>
                                             <a href="role_order.php">Order Details</a>
@@ -109,6 +109,9 @@ if (isset($_GET['order_id'])) {
                                         </li>
                                         <li>
                                             <a href="role_order_history.php">Order History</a>
+                                        </li>
+                                        <li>
+                                            <a href="role_refund_admin.php">Request Refund</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -252,7 +255,7 @@ if (isset($_GET['order_id'])) {
                                                         <td><?php echo $row['user_id']; ?></td>
                                                         <td><?php echo $row['customerName']; ?></td>
                                                         <td><?php echo $row['orderCount']; ?></td>
-                                                        <td><a href="order_details_admin.php?user_id=<?php echo $row['user_id']; ?>" class="action-icon"> <i class="mdi mdi-eye"></i> View</a>
+                                                        <td><a href="role_order_details.php?user_id=<?php echo $row['user_id']; ?>" class="action-icon"> <i class="mdi mdi-eye"></i> View</a>
                                                         </td>
                                                     </tr>
                                                 <?php

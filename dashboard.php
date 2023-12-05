@@ -2,6 +2,15 @@
 session_start(); // Start the session
 include("mysql_connect.php");
 
+// Function to log actions to the audit trail
+function logAction($conn, $admin_id, $role, $action)
+{
+    $action = mysqli_real_escape_string($conn, $action);
+    $role = mysqli_real_escape_string($conn, $role);
+    $query = "INSERT INTO audit_trail (admin_id, role, action) VALUES ('$admin_id', '$role', '$action')";
+    mysqli_query($conn, $query);
+}
+
 if (!isset($_SESSION['admin_id'])) {
     header("Location: index.php");
     exit();
@@ -13,10 +22,13 @@ $admin_result = mysqli_query($conn, $query);
 
 if ($admin_result && mysqli_num_rows($admin_result) > 0) {
     $admin_data = mysqli_fetch_assoc($admin_result);
+
+    // Log the action to the audit trail
+    $action = "Access to Dashboard";
+    logAction($conn, $admin_id, $admin_data['role'], $action);
 } else {
     $error_message = "Error: Unable to retrieve admin data or admin is not authorized.";
 }
-
 
 // SQL query to count the orders
 $sql = "SELECT COUNT(*) AS order_count FROM (SELECT DISTINCT order_id FROM tb_order) AS unique_orders";
@@ -47,6 +59,16 @@ if ($result->num_rows > 0) {
     $admin_count = $row["admin_count"];
 } else {
     $admin_count = 0;
+}
+
+$sql = "SELECT COUNT(*) AS refund_count FROM tb_refund";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $refund_count = $row["refund_count"];
+} else {
+    $refund_count = 0;
 }
 
 // Count of orders with status "Pending"
@@ -388,13 +410,67 @@ function filter($conn)
                                 </div>
                             </li>
                         </ul>
-
+                        
+                                <ul class="side-nav">
                         <li class="side-nav-item">
-                            <a href="customers.php" class="side-nav-link">
-                                <i class="uil-users-alt"></i>
-                                <span> Customers </span>
+                            <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                                <i class=" dripicons-graph-pie"></i>
+                                <span> Sales </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="sidebarSales">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="sales_report.php">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="sales_filter.php">Sales Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
+                    </ul>
+                    
+                     <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProfit" aria-expanded="false" aria-controls="sidebarProfit" class="side-nav-link">
+                                <i class=" uil-money-insert"></i>
+                                <span> Profit </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProfit">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="profit_report.php">Profit Report</a>
+                                    </li>
+                                    <li>
+                                        <a href="profit_filter.php">Profit Filter</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                       <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarCustomer" aria-expanded="false" aria-controls="sidebarCustomer" class="side-nav-link">
+                                    <i class="uil-users-alt"></i>
+                                    <span> Customer </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCustomer">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="customers.php">List of Customers</a>
+                                        </li>
+                                        <li>
+                                            <a href="feedback.php">Customer Concerns</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        
                         <li class="side-nav-item">
                             <a href="admins.php" class="side-nav-link">
                                 <i class="uil-user-check"></i>
@@ -402,13 +478,25 @@ function filter($conn)
                             </a>
                         </li>
 
-                        <li class="side-nav-item">
-                            <a href="sales_report.php" class="side-nav-link">
-                                <i class="dripicons-graph-pie"></i>
-                                <span> Sales Report </span>
-                            </a>
-                        </li>
-
+                        <ul class="side-nav">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarAudit" aria-expanded="false" aria-controls="sidebarAudit" class="side-nav-link">
+                                    <i class=" mdi mdi-file-document-edit-outline"></i>
+                                    <span> Audit Trail </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAudit">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="admin_logs.php">Admin Logs</a>
+                                        </li>
+                                        <li>
+                                            <a href="user_logs.php">User Logs</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
 
                         <div class="clearfix"></div>
                     </ul>
@@ -431,12 +519,6 @@ function filter($conn)
                             <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <i class="dripicons-search noti-icon"></i>
                             </a>
-                        </li>
-
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-
-                        </div>
                         </li>
 
                         <li class="dropdown notification-list">
@@ -471,7 +553,7 @@ function filter($conn)
                                 </a>
 
                                 <!-- item-->
-                                <a href="logout.php" class="dropdown-item notify-item">
+                                <a href="logout_admin.php" class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
                                     <span>Logout</span>
                                 </a>
@@ -551,9 +633,9 @@ function filter($conn)
                                         <div class="col-sm-6 col-xl-3">
                                             <div class="card shadow-none m-0 border-start">
                                                 <div class="card-body text-center">
-                                                    <i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
-                                                    <h3><span><?php echo round(($order_count / $customerCount) * 100) . "%"; ?></span> <i class="mdi mdi-arrow-up text-success"></i></h3>
-                                                    <p class="text-muted font-15 mb-0">Sales</p>
+                                                    <i class="mdi mdi-cash-refund" style="font-size: 24px;"></i>
+                                                    <h3><span><?php echo $refund_count; ?></span></h3>
+                                                    <p class="text-muted font-15 mb-0">Refunds</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -617,12 +699,12 @@ function filter($conn)
                     </div> <!-- end col-->
                 </div>
                 <center>
-                    <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
+                    <div class="col-xl-12 col-lg-12 order-lg-2 order-xl-2">
                         <div class="card">
                             <div class="card-body">
                                 <?php
                                 // Fetch the top 10 products from the tb_order table
-                                $query = "SELECT name, SUM(qty) AS total_quantity, SUM(qty * price) AS total_amount FROM tb_order GROUP BY name ORDER BY total_quantity DESC LIMIT 5";
+                                $query = "SELECT name, SUM(qty) AS total_quantity, SUM(qty * price) AS total_amount, image FROM tb_order GROUP BY name ORDER BY total_quantity DESC LIMIT 5";
                                 $result = $conn->query($query);
                                 ?>
                                 <h4 class="header-title mt-2 mb-3"> Top Selling Products <i class="mdi mdi-chart-timeline-variant-shimmer text-muted" style="font-size: 24px;"></i></h4>
@@ -631,6 +713,7 @@ function filter($conn)
                                     <table class="table table-centered table-nowrap table-hover mb-0">
                                         <thead class="table-light">
                                             <tr>
+                                                <th></th>
                                                 <th>Product Name</th>
                                                 <th>Sold Quantity</th>
                                                 <th>Total Amount</th>
@@ -641,6 +724,7 @@ function filter($conn)
                                             if ($result->num_rows > 0) :
                                                 while ($row = $result->fetch_assoc()) : ?>
                                                     <tr>
+                                                        <td><img src="uploaded_img/<?= $row['image'] ?>" alt="Image" height="100"></td>
                                                         <td><?= $row['name'] ?></td>
                                                         <td><?= $row['total_quantity'] ?></td>
                                                         <td><?= $row['total_amount'] ?></td>
