@@ -632,15 +632,15 @@ function filter($conn)
                                     $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                                             <script type="text/javascript">
                                                 google.charts.load("current", {"packages":["bar"]});
-                                                google.charts.setOnLoadCallback(drawChart);
+                                                google.charts.setOnLoadCallback(drawChart1);
 
-                                                function drawChart() {
-                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+                                                function drawChart1() {
+                                                var data1 = new google.visualization.arrayToDataTable(' . $json_data . ');
 
-                                                var options = ' . json_encode($options) . ';
+                                                var options1 = ' . json_encode($options) . ';
 
-                                                var chart = new google.visualization.BarChart(document.getElementById("daily-profit"));
-                                                chart.draw(data, options);
+                                                var chart1 = new google.visualization.BarChart(document.getElementById("daily-profit"));
+                                                chart1.draw(data1, options1);
                                                 }
                                             </script>';
 
@@ -694,24 +694,24 @@ function filter($conn)
                                         'orientation' => 'horizontal',
                                     );
 
-                                    $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                    $chart_html2 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                                             <script type="text/javascript">
                                                 google.charts.load("current", {"packages":["bar"]});
-                                                google.charts.setOnLoadCallback(drawChart);
+                                                google.charts.setOnLoadCallback(drawChart2);
 
-                                                function drawChart() {
-                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+                                                function drawChart2() {
+                                                var data2 = new google.visualization.arrayToDataTable(' . $json_data . ');
 
-                                                var options = ' . json_encode($options) . ';
+                                                var options2 = ' . json_encode($options) . ';
 
-                                                var chart = new google.visualization.BarChart(document.getElementById("weekly-profit"));
-                                                chart.draw(data, options);
+                                                var chart2 = new google.visualization.BarChart(document.getElementById("weekly-profit"));
+                                                chart.draw(data2, options2);
                                                 }
                                             </script>';
 
                                     // Echo chart HTML and JavaScript
                                     echo '<div id="weekly-profit"></div>';
-                                    echo $chart_html1;
+                                    echo $chart_html2;
                                 } else {
                                     echo "0 results";
                                 }
@@ -759,24 +759,24 @@ function filter($conn)
                                         'orientation' => 'horizontal',
                                     );
 
-                                    $chart_html1 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                                    $chart_html3 = '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                                             <script type="text/javascript">
                                                 google.charts.load("current", {"packages":["bar"]});
-                                                google.charts.setOnLoadCallback(drawChart);
+                                                google.charts.setOnLoadCallback(drawChart3);
 
-                                                function drawChart() {
-                                                var data = new google.visualization.arrayToDataTable(' . $json_data . ');
+                                                function drawChart3() {
+                                                var data3 = new google.visualization.arrayToDataTable(' . $json_data . ');
 
-                                                var options = ' . json_encode($options) . ';
+                                                var options3 = ' . json_encode($options) . ';
 
-                                                var chart = new google.visualization.BarChart(document.getElementById("monthly-profit"));
-                                                chart.draw(data, options);
+                                                var chart3 = new google.visualization.BarChart(document.getElementById("monthly-profit"));
+                                                chart3.draw(data3, options3);
                                                 }
                                             </script>';
 
                                     // Echo chart HTML and JavaScript
                                     echo '<div id="monthly-profit"></div>';
-                                    echo $chart_html1;
+                                    echo $chart_html3;
                                 } else {
                                     echo "0 results";
                                 }
@@ -788,7 +788,7 @@ function filter($conn)
                     </div>
                 </div>
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
                             <div class="card-body">
@@ -857,7 +857,8 @@ function filter($conn)
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
+                
                 <script>
                     // JavaScript code to create a line chart using Chart.js
                     var ctx = document.getElementById('myChart').getContext('2d');
