@@ -728,7 +728,7 @@ function filter($conn)
                     </div>
                 </div>
 
-                <!-- <div class="row">
+                <div class="row d-none">
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
                             <div class="card-body">
@@ -797,7 +797,7 @@ function filter($conn)
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
 
 
                 <script>
